@@ -1,0 +1,121 @@
+body
+{
+	background-color: #bea489;
+	background-image: url(../images/background.png);
+	background-attachment: fixed;
+	background-repeat: repeat;
+	color: #513727;
+	font-size: 16px;
+	font-family: Ubuntu, Arial, sans-serif;
+}
+
+a:link {color: #556B2F;}
+a:visited {color: #556B2F;}
+a:hover {color: #228B22;}
+a:active {color: #00FF00;}
+
+#header 
+{
+	background-color: #ffffff;
+	padding: 10px;
+	border-bottom: 1px solid #000000;
+
+	/* Transparent Gradient */
+	/*
+	background: -webkit-linear-gradient(top, rgba(255,255,255,0.87) 0%,rgba(255,255,255,1) 62%,rgba(255,255,255,0) 100%);
+	background: -o-linear-gradient(top, rgba(255,255,255,0.87) 0%,rgba(255,255,255,1) 62%,rgba(255,255,255,0) 100%);
+	background: linear-gradient(top, rgba(255,255,255,0.87) 0%,rgba(255,255,255,1) 62%,rgba(255,255,255,0) 100%);
+	*/
+}
+#header-image {
+	
+}
+
+#control-panel
+{
+	float: right;
+	margin-right: 10px;
+}
+
+#set-header
+{
+	position: absolute;
+	top: 0px; right: 5px;
+	cursor: pointer;
+}
+
+#notice
+{
+	position: fixed;
+	display: none;
+	padding: 5px;
+	text-align: center;
+	background-color: #ffffff;
+	top:0px;right:200px;
+	width: 150px;
+	border-left: 1px solid #556B2F;
+	border-bottom: 1px solid #556B2F;
+	border-right: 1px solid #556B2F;
+	-moz-border-radius-topleft: 0px;
+	-moz-border-radius-topright: 0px;
+	-moz-border-radius-bottomright: 4px;
+	-moz-border-radius-bottomleft: 4px;
+	-webkit-border-radius: 0px 0px 4px 4px;
+	border-radius: 0px 0px 4px 4px;
+}
+#notice #close
+{
+	color: #FF0000;
+	float: right;
+	padding: 0px 3px 0px 3px;
+	cursor: pointer;
+	border: 1px solid #FF0000;
+}
+
+#navigation
+{
+	background-color: #556B2F;
+	text-align: center;
+	color: #ffffff;
+	padding: 1px;
+}
+
+#navigation a  {color: inherit;padding-left: 10px;}
+#navigation ul {margin:0px;}
+#navigation li {display: inline;}
+
+#content {
+	background-color: #f1e3d1;
+	margin: 0px 15px 4px 15px;
+	padding: 10px;
+	height: 1%;
+	overflow: hidden;	
+	border-bottom: 1px solid #000000
+}
+
+#footer {
+	margin: 0px 15px 10px 15px;
+	font-size: 12px;
+}
+#footer a {
+	color: inherit;
+}
+
+.container {
+	background-color: #ffffff;
+	margin: 5px;
+	padding: 10px;
+
+        -webkit-border-radius: 4px;
+        -moz-border-radius: 4px;
+        border-radius: 4px;
+        -webkit-box-shadow: 4px 4px 15px 1px #514029;
+        -moz-box-shadow: 4px 4px 15px 1px #514029;
+        box-shadow: 4px 4px 15px 1px #514029;
+}
+
+.roundBox {
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+}
