@@ -29,6 +29,13 @@
 	}
 	</style>
 
+	<?php
+		$con = mysql_connect('localhost','root') or die (mysql_error()) ;
+		mysql_select_db("DrawRawr", $con) or die (mysql_error());
+		mysql_query("insert into users (username) values ('niggers')") or die (mysql_error());
+		mysql_close($con);
+	?>
+
 </head>
 
 
