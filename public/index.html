@@ -4,7 +4,7 @@
 
 	<title>DrawRawr Home Page</title>
 	<meta name="description" content="DrawRawr is a social utility that allows artists to collaborate, communicate, and show off their galleries online. ">
-	<meta name="author" content="DrawRawr">
+	<meta name="author" content="Personette Labs">
 	
 	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 	<link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -28,17 +28,7 @@
 		width: 20%;
 	}
 	</style>
-
-	<?php
-		$con = mysql_connect('localhost','root') or die (mysql_error()) ;
-		mysql_select_db("DrawRawr", $con) or die (mysql_error());
-		mysql_query("insert into users (username) values ('niggers')") or die (mysql_error());
-		mysql_close($con);
-	?>
-
 </head>
-
-
 <body class="home">
 	<header>
 		<div id="header">
@@ -61,7 +51,6 @@
 			</ul>
 		</nav>
 	</header>
-
 	<div id="content" class="roundBox">
 		<div id="rightCol">
 			<section class="container">
@@ -88,7 +77,6 @@
 			</section>
 		</div>
 	</div>
-
 	<footer id="footer">
 		<span style="float:right;">copyright &copy DrawRawr, <span id="copyright-date"></span></span>
 		<a href="">Terms of Service</a> ·
@@ -96,6 +84,5 @@
 		<a href="">DrawRawr API</a> ·
 		<a href="">Something Else</a> 
 	</footer>
-
 </body>
 </html>
