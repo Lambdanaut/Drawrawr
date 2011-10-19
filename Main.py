@@ -1,6 +1,6 @@
 import web
 
-render = web.template.render("public/")
+render = web.template.render("templates/")
 
 urls = (
   '/',   'index',
@@ -9,11 +9,16 @@ urls = (
 
 app = web.application(urls, globals())
 
-class index:
+class SitePage:
+  def render(self,pageToRender):
+    head = render.header()
+    return str(head) + str(pageToRender)
+
+class index(SitePage):
   def GET(self):
     return render.index()
 
-class userpage:
+class userpage(SitePage):
   def GET(self):
     return "arf"
 
