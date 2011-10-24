@@ -14,7 +14,7 @@ $def with (content)
 
   <link rel="stylesheet" href="/static/css/mainstyles.css" media="screen">
 
-  $if content.css:
+  $if content.css != "None":
     $for f in content.css.split():
       <link rel="stylesheet" href="$f" media="screen">
 
@@ -22,7 +22,7 @@ $def with (content)
   <script src="/static/js/jquery-1.4.4.min.js"></script>
   <script src="/static/js/main.js"></script>
 
-  $if content.js:
+  $if content.js != "None":
     $for f in content.js.split():
       <script src="$f"></script>
 
@@ -44,7 +44,7 @@ $def with (content)
       <div id="set-header">↑</div>
       <a href="#"><img src="#" class="tinyIcon" style="position:absolute;right:20px;top:2px;" alt="Lambdanaut"></a>
       <aside id="control-panel">
-        <b>Lambdanaut:</b> Submit - | - Settings - | - Logout
+        <b>Lambdanaut:</b> | - Submit - | - Settings - | - Logout - |
       </aside>
       <div id="header-image">
         DRAWRAWR HEADER
