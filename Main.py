@@ -1,25 +1,46 @@
+#! /usr/bin/python
+
 import web
 
-render = web.template.render("templates/")
-
 urls = (
-  '/',   'index',
-  '.*',  'userpage',
+  '/',                      'index',
+  '/art/(.*)',              'art',
+  '/policy/(.*)',           'policy',
+  '/util/redirect/(.*)',    'redirect',
+  '/(.*)',                  'userpage',
 )
 
 app = web.application(urls, globals())
 
-class SitePage:
-  def render(self,pageToRender):
-    head = render.header()
-    return str(head) + str(pageToRender)
+render = web.template.render('templates/', base='layout')
+render_plain = web.template.render('templates/')
 
-class index(SitePage):
+class index():
   def GET(self):
     return render.index()
 
-class userpage(SitePage):
-  def GET(self):
-    return "arf"
+class userpage():
+  def GET(self,name):
+    return render.user(name)
+
+class art():
+  def GET(self,artID):
+    return render.art(artID)
+
+class policy():
+  def GET(self,page):
+    if page == 'terms-of-service':
+      return render.tos()
+    else:
+      raise app.notfound()
+
+class redirect():
+  def POST(self,pageToRedirectTo):
+    raise web.seeother("/"+pageToRedirectTo)
+
+def notfound(): 
+  return web.notfound(render.notfound())
+
+app.notfound = notfound
 
 if __name__ == "__main__": app.run()
