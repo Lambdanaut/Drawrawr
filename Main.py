@@ -1,6 +1,8 @@
-#! /usr/bin/python
+#! /usr/bin/python2
 
 import web
+
+from Config import *
 
 urls = (
   '/',                      'index',
@@ -29,8 +31,10 @@ class art():
 
 class policy():
   def GET(self,page):
-    if page == 'terms-of-service':
+    if   page == 'terms-of-service':
       return render.tos()
+    elif page == 'staff':
+      return render.staff()
     else:
       raise app.notfound()
 
