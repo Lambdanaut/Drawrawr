@@ -1,3 +1,4 @@
+*.swp
 *.js
 *.pyc
 static/artwork/
