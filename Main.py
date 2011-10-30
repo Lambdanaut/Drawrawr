@@ -3,22 +3,28 @@
 import web
 
 from Config import *
+from Crypto import *
 
 urls = (
   '/',                      'index',
   '/art/(.*)',              'art',
+  '/users/login',           'login',
+  '/users/signup',          'signup',
   '/policy/(.*)',           'policy',
   '/util/redirect/(.*)',    'redirect',
   '/(.*)',                  'userpage',
 )
 
 app = web.application(urls, globals())
+db  = web.database(dbn='mysql', db=mysqlDatabase, user=mysqlUsername)
+session = web.session.Session(app, web.session.DiskStore('sessions'), initializer={})
 
-render = web.template.render('templates/', base='layout')
+render = web.template.render('templates', base='layout', globals={'session':session})
 render_plain = web.template.render('templates/')
 
 class index():
   def GET(self):
+    session.username = "arfenhauze"
     return render.index()
 
 class userpage():
@@ -28,6 +34,21 @@ class userpage():
 class art():
   def GET(self,artID):
     return render.art(artID)
+
+class login():
+  def POST(self,username,password):
+    users = db.select("users", where="username='"+username+"'")
+    if len(users) > 0:
+      return render.index()
+    else:
+      return render.art("anus")
+
+class signup():
+  def GET(self):
+    return render.signup()
+  def POST(self):
+    data = web.data()
+    db.insert("users",username=data.username,hash=data.password)
 
 class policy():
   def GET(self,page):
