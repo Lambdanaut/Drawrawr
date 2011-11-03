@@ -8,8 +8,12 @@ body
 	font-family: Ubuntu, Arial, sans-serif;
 }
 
-a      {color: #556B2F;text-decoration: underline;}
-a:link {color: #556B2F;}
+a
+{
+	color: #556B2F;
+	text-decoration: underline;
+	cursor: pointer;
+}
 a:visited {color: #556B2F;}
 a:hover {color: #228B22;}
 a:active {color: #00FF00;}
@@ -76,8 +80,7 @@ a:active {color: #00FF00;}
 }
 #modal div {
 	width: 300px;
-	margin: 100px auto;
-	padding: 15px;
+	margin: 85px auto;
 	text-align: center;
 }
 #notice #close:hover {background-color:#F5F5DC; }
