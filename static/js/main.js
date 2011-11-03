@@ -90,10 +90,15 @@
     return Modal;
   })();
   $(document).ready(function() {
-    /* Keeps the copyright up to date on the current year */;    var date, header, modal;
+    /* Keeps the copyright up to date on the current year */;    var date, header;
     date = new Date();
     $("#copyright-date").html(date.getFullYear());
-    header = new Header(false);
-    return modal = new Modal("arf", "nigger");
+    /* Registration button */;
+    $("#register-button").click(__bind(function() {
+      var signupModal;
+      return signupModal = new Modal("Registration", "Signup now!");
+    }, this));
+    /* Set up the header */;
+    return header = new Header(false);
   });
 }).call(this);

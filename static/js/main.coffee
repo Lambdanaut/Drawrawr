@@ -75,5 +75,9 @@ $(document).ready ->
 	date = new Date()
 	$("#copyright-date").html date.getFullYear()
 
+	/* Registration button */
+	$("#register-button").click () =>
+		signupModal = new Modal "Registration", "Signup now!"
+
+	/* Set up the header */
 	header = new Header false
-	modal = new Modal "arf", "nigger"
