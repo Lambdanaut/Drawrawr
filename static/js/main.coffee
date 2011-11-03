@@ -48,13 +48,27 @@ class Notice
 	constructor: (@title,@content) ->
 		$("#notice").slideDown "slow"
 		
-		$("#notice").html "<span id='close'>X</span><h4>" + @title + "</h4><p>" + @content + "</p>"
+		$("#notice").html "<span class='close'>X</span><h4>" + @title + "</h4><p>" + @content + "</p>"
 
-		$("#notice #close").click @die
+		$("#notice .close").click @die
 
 	die: () ->
 		$("#notice").slideUp "fast", () =>
 			$("#notice").hide()
+
+class Modal
+	constructor: (@title,@content) ->
+		$("#modal div").html "<span class='close'>X</span><h4>" + @title + "</h4><p>" + @content + "</p>"
+
+		$("#modal .close").click @die
+
+		@show()
+	show: () ->
+		@visible=true
+		$("#modal").css("visibility","visible")
+	die: () ->
+		@visible=false
+		$("#modal").css("visibility","hidden")
 
 $(document).ready ->
 	/* Keeps the copyright up to date on the current year */
@@ -62,3 +76,4 @@ $(document).ready ->
 	$("#copyright-date").html date.getFullYear()
 
 	header = new Header false
+	modal = new Modal "arf", "nigger"

@@ -1,5 +1,5 @@
 (function() {
-  var Header, Notice;
+  var Header, Modal, Notice;
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   Header = (function() {
     function Header(glued) {
@@ -61,8 +61,8 @@
       this.title = title;
       this.content = content;
       $("#notice").slideDown("slow");
-      $("#notice").html("<span id='close'>X</span><h4>" + this.title + "</h4><p>" + this.content + "</p>");
-      $("#notice #close").click(this.die);
+      $("#notice").html("<span class='close'>X</span><h4>" + this.title + "</h4><p>" + this.content + "</p>");
+      $("#notice .close").click(this.die);
     }
     Notice.prototype.die = function() {
       return $("#notice").slideUp("fast", __bind(function() {
@@ -71,10 +71,29 @@
     };
     return Notice;
   })();
+  Modal = (function() {
+    function Modal(title, content) {
+      this.title = title;
+      this.content = content;
+      $("#modal div").html("<span class='close'>X</span><h4>" + this.title + "</h4><p>" + this.content + "</p>");
+      $("#modal .close").click(this.die);
+      this.show();
+    }
+    Modal.prototype.show = function() {
+      this.visible = true;
+      return $("#modal").css("visibility", "visible");
+    };
+    Modal.prototype.die = function() {
+      this.visible = false;
+      return $("#modal").css("visibility", "hidden");
+    };
+    return Modal;
+  })();
   $(document).ready(function() {
-    /* Keeps the copyright up to date on the current year */;    var date, header;
+    /* Keeps the copyright up to date on the current year */;    var date, header, modal;
     date = new Date();
     $("#copyright-date").html(date.getFullYear());
-    return header = new Header(false);
+    header = new Header(false);
+    return modal = new Modal("arf", "nigger");
   });
 }).call(this);

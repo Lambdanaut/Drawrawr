@@ -4,6 +4,7 @@ import web
 
 from Config import *
 from Crypto import *
+from Database import *
 
 urls = (
   '/',                      'index',
@@ -22,6 +23,16 @@ session = web.session.Session(app, web.session.DiskStore('sessions'), initialize
 render = web.template.render('templates', base='layout', globals={'session':session})
 render_plain = web.template.render('templates/')
 
+def userPassCheck(username,password):
+  if len (db.select("users", where="username='"+username+"' and hash='"+password+"'") ) > 0:
+    return True
+  else: return False
+
+def userExists(username):
+  if len (db.select("users", where="username='"+username+"'") ) > 0:
+    return True
+  else: return False
+
 class index():
   def GET(self):
     session.username = "arfenhauze"
@@ -37,8 +48,7 @@ class art():
 
 class login():
   def POST(self,username,password):
-    users = db.select("users", where="username='"+username+"'")
-    if len(users) > 0:
+    if userPassCheck(username,password):
       return render.index()
     else:
       return render.art("anus")
@@ -47,8 +57,9 @@ class signup():
   def GET(self):
     return render.signup()
   def POST(self):
-    data = web.data()
-    db.insert("users",username=data.username,hash=data.password)
+    data = web.input()
+    if not userExists(data.username):
+      db.insert("users",username=data.username,hash=data.password)
 
 class policy():
   def GET(self,page):
