@@ -90,7 +90,7 @@
     return Modal;
   })();
   $(document).ready(function() {
-    /* Keeps the copyright up to date on the current year */;    var date, header, notice;
+    /* Keeps the copyright up to date on the current year */;    var date, header;
     date = new Date();
     $("#copyright-date").html(date.getFullYear());
     /* Registration button */;
@@ -99,7 +99,6 @@
       return signupModal = new Modal("CREATE A NEW ACCOUNT", $("#register-form").html());
     }, this));
     /* Set up the header */;
-    header = new Header(false);
-    return notice = new Notice("MESSAGE THINGY", "Catherine: The message thingy?");
+    return header = new Header(false);
   });
 }).call(this);

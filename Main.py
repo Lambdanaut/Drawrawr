@@ -11,8 +11,6 @@ __author__  = 'DrawRawr'
 import web
 
 from Config import *
-from Crypto import *
-from Database import *
 
 urls = (
   '/',                      'index',
@@ -43,7 +41,6 @@ def userExists(username):
 
 class index():
   def GET(self):
-    session.username = "arfenhauze"
     return render.index()
 
 class userpage():
@@ -57,15 +54,16 @@ class art():
 class login():
   def POST(self,username,password):
     if userPassCheck(username,password):
-      return render.index()
+      session.username=username
+      session.password=password
+      return "1"
     else:
-      return render.art("anus")
+      return "0"
 
 class signup():
   def POST(self):
     data = web.input()
     if not userExists(data.username) and len(data.username) > 0:
-      saltHash = hash_password(data.password1)
       db.insert("users",username=data.username,hash=data.password1,email=data.email)
       return "1" #SUCCESS
     else: return "0" #ERROR, User doesn't exist or username is too small

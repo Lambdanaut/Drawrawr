@@ -81,4 +81,3 @@ $(document).ready ->
 
 	/* Set up the header */
 	header = new Header false
-	notice = new Notice "MESSAGE THINGY","Catherine: The message thingy?"
