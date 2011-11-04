@@ -96,7 +96,7 @@
     /* Registration button */;
     $("#register-button").click(__bind(function() {
       var signupModal;
-      return signupModal = new Modal("Registration", "Signup now!");
+      return signupModal = new Modal("CREATE A NEW ACCOUNT", "			<form method='post' action='/users/signup'>				USERNAME: <input type='text' name='username'> <br>				PASSWORD: <input type='password' name='password'> <br><br>				<input type='submit'>			</form>		");
     }, this));
     /* Set up the header */;
     return header = new Header(false);
