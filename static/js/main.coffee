@@ -48,7 +48,7 @@ class Notice
 	constructor: (@title,@content) ->
 		$("#notice").slideDown "slow"
 		
-		$("#notice").html "<span class='close'>X</span><h4>" + @title + "</h4><p>" + @content + "</p>"
+		$("#notice").html "<span class='close'></span><h4>" + @title + "</h4><p>" + @content + "</p>"
 
 		$("#notice .close").click @die
 
@@ -58,7 +58,7 @@ class Notice
 
 class Modal
 	constructor: (@title,@content) ->
-		$("#modal div").html "<span class='close'>X</span><h4>" + @title + "</h4><p>" + @content + "</p>"
+		$("#modal div").html "<span class='close'></span><h4>" + @title + "</h4><p>" + @content + "</p>"
 
 		$("#modal .close").click @die
 
@@ -81,3 +81,4 @@ $(document).ready ->
 
 	/* Set up the header */
 	header = new Header false
+	notice = new Notice "MESSAGE THINGY","Catherine: The message thingy?"
