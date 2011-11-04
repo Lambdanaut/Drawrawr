@@ -62,12 +62,13 @@ class login():
       return render.art("anus")
 
 class signup():
-  def GET(self):
-    return render.signup()
   def POST(self):
     data = web.input()
-    if not userExists(data.username):
-      db.insert("users",username=data.username,hash=data.password)
+    if not userExists(data.username) and len(data.username) > 0:
+      saltHash = hash_password(data.password1)
+      db.insert("users",username=data.username,hash=data.password1,email=data.email)
+      return "1" #SUCCESS
+    else: return "0" #ERROR, User doesn't exist or username is too small
 
 class policy():
   def GET(self,page):

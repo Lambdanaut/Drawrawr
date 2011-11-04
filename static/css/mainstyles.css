@@ -149,10 +149,13 @@ a:active {color: #00FF00;}
 .textInput {border: 1px #513727 solid;}
 .close
 {
-	color: #FF0000;
+	background-image: url(/static/images/XUnclick.png);
+	width: 16px;
+	height: 16px;
 	float: right;
-	padding: 0px 3px 0px 3px;
 	cursor: pointer;
-	border: 1px solid #FF0000;
+}
+.close:hover { 
+	background-image: url(/static/images/XHover.png);
 }
 .close:hover {background-color:#F5F5DC; }

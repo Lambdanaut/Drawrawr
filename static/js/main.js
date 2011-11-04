@@ -61,7 +61,7 @@
       this.title = title;
       this.content = content;
       $("#notice").slideDown("slow");
-      $("#notice").html("<span class='close'>X</span><h4>" + this.title + "</h4><p>" + this.content + "</p>");
+      $("#notice").html("<span class='close'></span><h4>" + this.title + "</h4><p>" + this.content + "</p>");
       $("#notice .close").click(this.die);
     }
     Notice.prototype.die = function() {
@@ -75,7 +75,7 @@
     function Modal(title, content) {
       this.title = title;
       this.content = content;
-      $("#modal div").html("<span class='close'>X</span><h4>" + this.title + "</h4><p>" + this.content + "</p>");
+      $("#modal div").html("<span class='close'></span><h4>" + this.title + "</h4><p>" + this.content + "</p>");
       $("#modal .close").click(this.die);
       this.show();
     }
@@ -90,7 +90,7 @@
     return Modal;
   })();
   $(document).ready(function() {
-    /* Keeps the copyright up to date on the current year */;    var date, header;
+    /* Keeps the copyright up to date on the current year */;    var date, header, notice;
     date = new Date();
     $("#copyright-date").html(date.getFullYear());
     /* Registration button */;
@@ -99,6 +99,7 @@
       return signupModal = new Modal("CREATE A NEW ACCOUNT", $("#register-form").html());
     }, this));
     /* Set up the header */;
-    return header = new Header(false);
+    header = new Header(false);
+    return notice = new Notice("MESSAGE THINGY", "Catherine: The message thingy?");
   });
 }).call(this);
