@@ -7,7 +7,11 @@ body
 	font-size: 16px;
 	font-family: Ubuntu, Arial, sans-serif;
 }
-
+h6 
+{
+	margin-bottom: 1px;
+	font-size: 10px;
+}
 a
 {
 	color: #556B2F;
@@ -34,7 +38,9 @@ a:active {color: #00FF00;}
 #header-image {
 	
 }
-
+#register-form {
+	display: none;
+}
 #control-panel
 {
 	float: right;
@@ -80,7 +86,7 @@ a:active {color: #00FF00;}
 }
 #modal div {
 	width: 300px;
-	margin: 85px auto;
+	margin: 5% auto;
 	text-align: center;
 }
 #notice #close:hover {background-color:#F5F5DC; }
@@ -139,6 +145,8 @@ a:active {color: #00FF00;}
 	height: 35px;
 	border-style: none;
 }
+.button {color: #556B2f;}
+.textInput {border: 1px #513727 solid;}
 .close
 {
 	color: #FF0000;

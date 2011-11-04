@@ -77,13 +77,7 @@ $(document).ready ->
 
 	/* Registration button */
 	$("#register-button").click () =>
-		signupModal = new Modal "CREATE A NEW ACCOUNT", "
-			<form method='post' action='/users/signup'>
-				USERNAME: <input type='text' name='username'> <br>
-				PASSWORD: <input type='password' name='password'> <br><br>
-				<input type='submit'>
-			</form>
-		"
+		signupModal = new Modal "CREATE A NEW ACCOUNT", $("#register-form").html()
 
 	/* Set up the header */
 	header = new Header false
