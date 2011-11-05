@@ -16,8 +16,14 @@ Now you can either begin developing with DrawRawr or start hosting art; you can 
 Dependancies
 ------------
 
+### Python dependancies
 * bcrypt
 * web.py
+
+### Network dependancies
+* [ArtServer](https://github.com/DrawRawr/ArtServer) (*optional*)
+* memcache (*optional*)
+* MySQL
 
 
 License
