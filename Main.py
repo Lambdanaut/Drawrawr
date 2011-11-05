@@ -12,6 +12,14 @@ import system.cryptography
 import web
 
 from Config import *
+from optparse import OptionParser
+
+parser = OptionParser()
+parser.add_option("-q", "--quiet", action="store_false", dest="verbose", 
+                  default=True, help="Silence all output from DrawRawr")
+
+
+
 
 urls = (
   '/',                      'index',
