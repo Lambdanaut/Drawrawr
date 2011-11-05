@@ -8,7 +8,7 @@
 __version__ = '2.0'
 __author__  = 'DrawRawr'
 
-import bcrypt
+import system.cryptography
 import web
 
 from Config import *
@@ -59,7 +59,7 @@ class login():
     userData = db.select("users", where="username='"+postData.username+"'")
     if len(userData) > 0:
       userData = userData[0]
-      if bcrypt.hashpw(postData.password,userData.hash) == userData.hash:
+      if system.cryptography(postData.password, True) == userData.hash:
         session.username=postData.username
         session.password=userData.hash
         return "1"
@@ -71,7 +71,7 @@ class signup():
   def POST(self):
     data = web.input()
     if not userExists(data.username) and len(data.username) > 0 and data.password1 == data.password2:
-      hashed = bcrypt.hashpw(data.password1, bcrypt.gensalt() )
+      hashed = system.cryptography(data.password1, True)
       db.insert("users",username=data.username,hash=hashed,email=data.email)
       return "1" #SUCCESS
     else: return "0" #ERROR, User doesn't exist or username is too small
