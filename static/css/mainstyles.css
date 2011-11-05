@@ -86,13 +86,13 @@ a:active {color: #00FF00;}
 }
 #modal div {
 	width: 300px;
-	margin: 5% auto;
+	margin: 2% auto;
 	text-align: center;
 }
 #notice #close:hover {background-color:#F5F5DC; }
 #navigation
 {
-	background-color: #556B2F;
+	background-color: #637E63;
 	text-align: center;
 	color: #ffffff;
 	padding: 1px;

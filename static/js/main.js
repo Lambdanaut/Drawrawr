@@ -93,10 +93,20 @@
     /* Keeps the copyright up to date on the current year */;    var date, header;
     date = new Date();
     $("#copyright-date").html(date.getFullYear());
-    /* Registration button */;
+    /* Registration */;
     $("#register-button").click(__bind(function() {
       var signupModal;
-      return signupModal = new Modal("CREATE A NEW ACCOUNT", $("#register-form").html());
+      signupModal = new Modal("CREATE A NEW ACCOUNT", $("#register-form").html());
+      return $("#modal button").click(__bind(function() {
+        return $.ajax({
+          url: "/users/signup",
+          type: "POST",
+          data: $("#modal form").serialize(),
+          success: __bind(function(data) {
+            return alert(data);
+          }, this)
+        });
+      }, this));
     }, this));
     /* Set up the header */;
     return header = new Header(false);

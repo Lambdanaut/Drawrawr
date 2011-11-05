@@ -8,6 +8,7 @@
 __version__ = '2.0'
 __author__  = 'DrawRawr'
 
+import bcrypt
 import web
 
 from Config import *
@@ -17,6 +18,7 @@ urls = (
   '/art/(.*)',              'art',
   '/users/login',           'login',
   '/users/signup',          'signup',
+  '/users/userexists/(.*)', 'userExistsCheck',
   '/policy/(.*)',           'policy',
   '/util/redirect/(.*)',    'redirect',
   '/(.*)',                  'userpage',
@@ -53,20 +55,29 @@ class art():
 
 class login():
   def POST(self,username,password):
-    if userPassCheck(username,password):
-      session.username=username
-      session.password=password
-      return "1"
+    userData = db.select("users", where="username='"+username+"'")
+    if len(userData) > 0:
+      if bcrypt.hashpw(password,userData.password) == userData.password:
+        session.username=username
+        session.password=password
+        return "1"
     else:
       return "0"
 
 class signup():
   def POST(self):
     data = web.input()
-    if not userExists(data.username) and len(data.username) > 0:
-      db.insert("users",username=data.username,hash=data.password1,email=data.email)
+    if not userExists(data.username) and len(data.username) > 0 and data.password1 == data.password2:
+      hashed = bcrypt.hashpw(data.password1, bcrypt.gensalt() )
+      db.insert("users",username=data.username,hash=hashed,email=data.email)
       return "1" #SUCCESS
     else: return "0" #ERROR, User doesn't exist or username is too small
+
+class userExistsCheck():
+  def GET(self,username):
+    if userExists(username):
+      return "1"
+    else: return "0"
 
 class policy():
   def GET(self,page):

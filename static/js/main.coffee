@@ -74,10 +74,18 @@ $(document).ready ->
 	/* Keeps the copyright up to date on the current year */
 	date = new Date()
 	$("#copyright-date").html date.getFullYear()
-
-	/* Registration button */
+	
+	/* Registration */
 	$("#register-button").click () =>
 		signupModal = new Modal "CREATE A NEW ACCOUNT", $("#register-form").html()
+		
+		$("#modal button").click () =>
+			$.ajax 
+				url:  "/users/signup",
+				type: "POST",
+				data: $("#modal form").serialize(),
+				success: (data) =>
+					alert data
 
 	/* Set up the header */
 	header = new Header false
