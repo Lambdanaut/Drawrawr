@@ -87,5 +87,17 @@ $(document).ready ->
 				success: (data) =>
 					alert data
 
+	/* Login */
+	$("#login-button").click () =>
+		loginModal = new Modal "LOGIN", $("#login-form").html()
+
+		$("#modal button").click () =>
+			$.ajax
+				url:  "/users/login",
+				type: "POST",
+				data: $("#modal form").serialize(),
+				success: (data) =>
+					alert data
+
 	/* Set up the header */
 	header = new Header false

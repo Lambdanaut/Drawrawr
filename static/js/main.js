@@ -108,6 +108,21 @@
         });
       }, this));
     }, this));
+    /* Login */;
+    $("#login-button").click(__bind(function() {
+      var loginModal;
+      loginModal = new Modal("LOGIN", $("#login-form").html());
+      return $("#modal button").click(__bind(function() {
+        return $.ajax({
+          url: "/users/login",
+          type: "POST",
+          data: $("#modal form").serialize(),
+          success: __bind(function(data) {
+            return alert(data);
+          }, this)
+        });
+      }, this));
+    }, this));
     /* Set up the header */;
     return header = new Header(false);
   });
