@@ -43,11 +43,12 @@ CREATE TABLE IF NOT EXISTS `journals` (
 
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `username` char(50) DEFAULT NULL,
-  `hash` char(125) DEFAULT NULL,
+  `username` varchar(50) NOT NULL,
+  `password` binary(64) NOT NULL,
   `email` varchar(200) NOT NULL,
   `lastLogin` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=39 ;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
