@@ -21,6 +21,7 @@ a
 a:visited {color: #556B2F;}
 a:hover {color: #228B22;}
 a:active {color: #00FF00;}
+a img{border: 0px;}
 
 #header 
 {
