@@ -59,9 +59,9 @@ class login():
     userData = db.select("users", where="username='"+postData.username+"'")
     if len(userData) > 0:
       userData = userData[0]
-      if system.cryptography.encryptPassword(postData.password, True) == userData.hash:
+      if system.cryptography.encryptPassword(postData.password, True) == userData.password:
         session.username=postData.username
-        session.password=userData.hash
+        session.password=userData.password
         return "1"
       else: return "0"
     else:
@@ -72,7 +72,7 @@ class signup():
     data = web.input()
     if not userExists(data.username) and len(data.username) > 0 and data.password1 == data.password2:
       hashed = system.cryptography.encryptPassword(data.password1, True)
-      db.insert("users",username=data.username,hash=hashed,email=data.email)
+      db.insert("users",username=data.username,password=hashed,email=data.email)
       return "1" #SUCCESS
     else: return "0" #ERROR, User doesn't exist or username is too small
 
