@@ -16,6 +16,12 @@ Now you can either begin developing with DrawRawr or start hosting art; you can 
 Dependancies
 ------------
 
+### Software
+* Python 2.x
+
+### Libraries
+* bcrypt (*see __Python dependancies__*)
+
 ### Python dependancies
 * bcrypt
 * web.py
