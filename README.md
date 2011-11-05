@@ -20,10 +20,9 @@ Dependancies
 * Python 2.x
 
 ### Libraries
-* bcrypt (*see __Python dependancies__*)
+* OpenSSL (*see __Python dependancies__*)
 
 ### Python dependancies
-* bcrypt
 * web.py
 
 ### Network dependancies
