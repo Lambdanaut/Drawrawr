@@ -32,7 +32,7 @@ render = web.template.render('templates', base='layout', globals={'session':sess
 render_plain = web.template.render('templates/')
 
 def userPassCheck(username,password):
-  if len (db.select("users", where="username='"+username+"' and hash='"+password+"'") ) > 0:
+  if len (db.select("users", where="username='"+username+"' and password='"+password+"'") ) > 0:
     return True
   else: return False
 
