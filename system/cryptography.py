@@ -9,6 +9,6 @@ def saltPassword(password):
   
   return password
 
-def encryptPassword(password, salt):
+def encryptPassword(password, salt = False):
   if(salt): password = saltPassword(password)
   return sha512(password).digest()
