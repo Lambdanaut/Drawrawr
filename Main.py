@@ -54,13 +54,16 @@ class art():
     return render.art(artID)
 
 class login():
-  def POST(self,username,password):
-    userData = db.select("users", where="username='"+username+"'")
+  def POST(self):
+    postData = web.input()
+    userData = db.select("users", where="username='"+postData.username+"'")
     if len(userData) > 0:
-      if bcrypt.hashpw(password,userData.password) == userData.password:
-        session.username=username
-        session.password=password
+      userData = userData[0]
+      if bcrypt.hashpw(postData.password,userData.hash) == userData.hash:
+        session.username=postData.username
+        session.password=userData.hash
         return "1"
+      else: return "0"
     else:
       return "0"
 
