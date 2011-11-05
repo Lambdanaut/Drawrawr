@@ -1,11 +1,23 @@
 # __DrawRawr__ - A Social Website for Artists
 
-Running DrawRawr
-----------------
+Quick start
+-----------
 
-`python2 main.py` 
-Invokes the server on 127.0.0.1, port 8080.
+This simple **3-step** process instantly gets you started with DrawRawr.
 
+1. `git clone git://github.com/DrawRawr/DrawRawr.git`
+2. `cd DrawRawr/ && chmod +x ./drawrawr`
+3. ... *and finally:* `./drawrawr debug`
+
+Congrats! You now have your very own DrawRawr clone working on <pre>localhost</pre> with the port <pre>8080</pre>!
+Now you can either begin developing with DrawRawr or start hosting art; you can create very complicated setups with this software -- ours is at [drawrawr.com](http://www.drawrawr.com/)!
+
+
+Dependancies
+------------
+
+* bcrypt
+* web.py
 
 
 License
