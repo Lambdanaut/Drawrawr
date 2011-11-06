@@ -10,3 +10,4 @@ def onCommentPost(user, commentContent):
   if commentContent.lower()[0:12].strip() is 'no one cares':
     pass
     # MySQL query count of occurances for user.
+    
