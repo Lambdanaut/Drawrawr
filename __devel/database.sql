@@ -90,18 +90,3 @@ CREATE TABLE IF NOT EXISTS `users-rp` (
   UNIQUE KEY `slug` (`slug`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `journals-users`
---
-ALTER TABLE `journals-users`
-  ADD CONSTRAINT `journals@002dusers_ibfk_1` FOREIGN KEY (`owner`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
---
--- Constraints for table `users-rp`
---
-ALTER TABLE `users-rp`
-  ADD CONSTRAINT `users@002drp_ibfk_1` FOREIGN KEY (`id`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
