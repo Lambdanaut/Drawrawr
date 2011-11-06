@@ -117,4 +117,4 @@ def notfound():
 app.notfound = notfound
 
 if __name__ == "__main__": app.run()
-
+else: print("DrawRawr isn't a module, silly.")
