@@ -42,15 +42,14 @@ $def with (content)
   <header>
     <div id="header">
       <div id="set-header">↑</div>
-      <a href="#"><img src="#" class="tinyIcon" style="position:absolute;right:20px;top:2px;" alt="Lambdanaut"></a>
       <aside id="control-panel">
-        <a id="login-button">Login</a> or <a id="register-button">Register</a> in seconds! 
+        <a id="login-button">Login</a> or <a id="register-button">Register</a> in seconds!
       </aside>
       <aside id='register-form' style='display:none;'>
         <form>
           <h6>USERNAME:</h6> <input type='text' class='textInput' name='username'>
-          <div style='height:0px; width:0px; position:relative; top:30px; left:-311px; z-index: 1001;"'><img src='/static/images/leftRegisterMascot.png' alt='Green Mascot'></div>
-          <div style='height:0px; width:0px; position:relative; top:-5px; left:105px; z-index: 1001;"'><img src='/static/images/rightRegisterMascot.png' alt='Brown Mascot'></div>
+          <div style='height:0px; width:0px; position:relative; top:30px; left:-311px;"'><img src='/static/images/leftRegisterMascot.png' alt='Green Mascot'></div>
+          <div style='height:0px; width:0px; position:relative; top:-5px; left:105px;"'><img src='/static/images/rightRegisterMascot.png' alt='Brown Mascot'></div>
           <h6>EMAIL: (<i>optional</i>)</h6> <input type = 'text' class='textInput' name = 'email'>
           <h6>PASSWORD:</h6> <input type='password' class='textInput' name='password1'>
           <h6>VERIFY PASSWORD:</h6> <input type='password' class='textInput' name='password2'> <br>
@@ -66,23 +65,18 @@ $def with (content)
         </form>
         <button class='button'>Log In</button>
       </aside>
-      <div id="header-image">
-        DRAWRAWR HEADER
-      </div>
+      <a href="#"><div id="header-image"><img src="/static/images/regheader.png"></div></a>
     </div>
     <aside id="notice"></aside>
     <aside id="modal"><div class="container"></div></aside>
     <nav id="navigation" class="roundBox">
       <ul>
-        <li><a href="#"><img src='/static/images/tinyCLUBS.png' alt="News">News</a></li> 
-        <li><a href="#"><img src='/static/images/tinySEARCH.png' alt="Search">Search</a></li> 
-        <li><a href="#"><img src='/static/images/tinyDRAWRBOARD.png' alt="DrawrBoard">Draw</a></li> 
-        <li><a href="#"><img src='/static/images/tinyCHAT.png' alt="Chat">Chat</a></li> 
-        <li><a href="#"><img src='/static/images/tinyDONATE.png' alt="Donate">Donate</a></li>
+        <li><a href="#"><img src='/static/images/tinyCLUBS.png' alt="News">News</a></li><li><a href="#"><img src='/static/images/tinySEARCH.png' alt="Search">Search</a></li><li><a href="#"><img src='/static/images/tinyDRAWRBOARD.png' alt="DrawrBoard">Draw</a></li><li><a href="#"><img src='/static/images/tinyCHAT.png' alt="Chat">Chat</a></li><li class='final'><a href="#"><img src='/static/images/tinyDONATE.png' alt="Donate">Donate</a></li>
       </ul>
     </nav>
   </header>
   <div id="content" class="roundBox">
+
     $:content
   </div>
   <footer id="footer">

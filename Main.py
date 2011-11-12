@@ -27,8 +27,6 @@ for engine in enginesDirectory:
   if engineParts[1] is '.py' and engineParts[0] is not '__init__':
     engines[engineParts[0]] = __import__("system.engines." + engineParts[0])
 
-
-
 urls = (
   '/',                      'index',
   '/art/(.*)',              'art',
@@ -42,7 +40,7 @@ urls = (
 
 app = web.application(urls, globals())
 db  = web.database(dbn='mysql', db=mysqlDatabase, user=mysqlUsername)
-session = web.session.Session(app, web.session.DiskStore('sessions'), initializer={})
+session = web.session.Session(app, web.session.DiskStore('sessions'),initializer={"username":"test","password":""})
 
 render = web.template.render('templates', base='layout', globals={'session':session})
 render_plain = web.template.render('templates/')
@@ -76,8 +74,10 @@ class login():
     if len(userData) > 0:
       userData = userData[0]
       if system.cryptography.encryptPassword(postData.password, True) == userData.password:
-        session.username=postData.username
+        session.username=userData.username
         session.password=userData.password
+        web.setcookie("user",userData.username)
+        web.setcookie("pass",userData.password)
         return "1"
       else: return "0"
     else:
