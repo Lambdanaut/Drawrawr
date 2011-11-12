@@ -47,7 +47,7 @@
         "margin": "auto"
       };
       navCSS = {
-        "margin": "50px 15px 4px 15px"
+        "margin": "83px 15px 4px 15px"
       };
       $("#header").css(headerCSS);
       $("#navigation").css(navCSS);
