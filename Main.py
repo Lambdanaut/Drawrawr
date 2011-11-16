@@ -8,11 +8,13 @@
 __version__ = '2.0'
 __author__  = 'DrawRawr'
 
-import system.cryptography, os, sys, MySQLdb
-
-from Config import *
-import flask
+from flask import *
 from optparse import OptionParser
+from system.database import *
+
+import system.cryptography, system.config
+
+import os, sys
 
 parser = OptionParser()
 parser.add_option("-q", "--quiet", action="store_false", dest="verbose", 
@@ -28,52 +30,54 @@ for engine in enginesDirectory:
   if engineParts[1] is '.py' and engineParts[0] is not '__init__':
     engines[engineParts[0]] = __import__("system.engines." + engineParts[0])
 
-app = flask.Flask(__name__)
+app = Flask(__name__)
+app.secret_key = os.urandom(24)
 
 #render = web.template.render('templates', base='layout', globals={'session':session})
 
 def userPassCheck(username,password):
-  if len (db.select("users", where="username='"+username+"' and password='"+password+"'") ) > 0:
+  cur.execute("select * from users where username='"+username+"' and password='"+password+"'")
+  if len (cur.fetchall() ) > 0:
     return True
   else: return False
 
 def userExists(username):
-  if len (db.select("users", where="username='"+username+"'") ) > 0:
+  cur.execute("select * from users where username='"+username+"'")
+  if len (cur.fetchall() ) > 0:
     return True
   else: return False
 
 @app.route('/')
 def index():
-  return flask.render_template("index.html")
+  return render_template("index.html")
 
 @app.route('/<username>')
 def userpage(username):
     return username
 
-#class login():
-#  def POST(self):
-#    postData = web.input()
-#    userData = db.select("users", where="username='"+postData.username+"'")
-#    if len(userData) > 0:
-#      userData = userData[0]
-#      if system.cryptography.encryptPassword(postData.password, True) == userData.password:
-#        session.username=userData.username
-#        session.password=userData.password
-#        web.setcookie("user",userData.username)
-#        web.setcookie("pass",userData.password)
-#        return "1"
-#      else: return "0"
-#    else:
-#      return "0"
+@app.route('/users/login', methods=['GET', 'POST'])
+def login():
+  if request.method == 'POST':
+    cur.execute("select * from users where username='"+request.form['username']+"'")
+    userData = cur.fetchall()
+    if len(userData) > 0:
+      userData = userData[0]
+      if system.cryptography.encryptPassword(request.form['password'], True) == userData['password']: 
+        session['username']=userData['username']
+        session['password']=userData['password']
+        return "1"
+      else: return "0"
+    else:
+      return "0"
+  else: return "None"
 
-#class signup():
-#  def POST(self):
-#    data = web.input()
-#    if not userExists(data.username) and len(data.username) > 0 and data.password1 == data.password2:
-#      hashed = system.cryptography.encryptPassword(data.password1, True)
-#      db.insert("users",username=data.username,password=hashed,email=data.email)
-#      return "1" #SUCCESS
-#    else: return "0" #ERROR, User doesn't exist or username is too small
+@app.route('/users/signup', methods=['GET', 'POST'])
+def signup():
+  if not userExists(request.form['username']) and len(request.form['username']) > 0 and request.form['password1'] == request.form['password2']:
+    hashed = system.cryptography.encryptPassword(request.form['password1'], True)
+    cur.execute("insert into users (username,password,email) values ('"+request.form['username']+"','"+hashed+"','"+request.form['email']+"')")
+    return "1" #SUCCESS
+  else: return "0" #ERROR, User doesn't exist or username is too small
 
 #class policy():
 #  def GET(self,page):
