@@ -1,7 +1,19 @@
-$var title: DrawRawr Home Page
-$var css: None
-$var js: None
-
+{% extends "layout.html" %}
+{% block title %} DrawRawr Home Page{% endblock %}
+{% block head %}
+<style media="screen" type="text/css">
+#rightCol
+{
+  float: right;
+  width: 80%;
+}
+#leftCol
+{
+  width: 20%;
+}
+</style>
+{% endblock %}
+{% block content %}
 <div id="rightCol">
   <section class="container">
     <h1>POPULAR ART</h1>
@@ -26,3 +38,4 @@ $var js: None
     <p>Prolly like some recent journals or recent poops go here. </p>
   </section>
 </div>
+{% endblock %}

@@ -8,9 +8,10 @@
 __version__ = '2.0'
 __author__  = 'DrawRawr'
 
-import system.cryptography, web, os, sys
+import system.cryptography, os, sys, MySQLdb
 
 from Config import *
+import flask
 from optparse import OptionParser
 
 parser = OptionParser()
@@ -27,23 +28,9 @@ for engine in enginesDirectory:
   if engineParts[1] is '.py' and engineParts[0] is not '__init__':
     engines[engineParts[0]] = __import__("system.engines." + engineParts[0])
 
-urls = (
-  '/',                      'index',
-  '/art/(.*)',              'art',
-  '/users/login',           'login',
-  '/users/signup',          'signup',
-  '/users/userexists/(.*)', 'userExistsCheck',
-  '/policy/(.*)',           'policy',
-  '/util/redirect/(.*)',    'redirect',
-  '/(.*)',                  'userpage',
-)
+app = flask.Flask(__name__)
 
-app = web.application(urls, globals())
-db  = web.database(dbn='mysql', db=mysqlDatabase, user=mysqlUsername)
-session = web.session.Session(app, web.session.DiskStore('sessions'),initializer={"username":"test","password":""})
-
-render = web.template.render('templates', base='layout', globals={'session':session})
-render_plain = web.template.render('templates/')
+#render = web.template.render('templates', base='layout', globals={'session':session})
 
 def userPassCheck(username,password):
   if len (db.select("users", where="username='"+username+"' and password='"+password+"'") ) > 0:
@@ -55,66 +42,54 @@ def userExists(username):
     return True
   else: return False
 
-class index():
-  def GET(self):
-    return render.index()
+@app.route('/')
+def index():
+  return flask.render_template("index.html")
 
-class userpage():
-  def GET(self,name):
-    return render.user(name)
+@app.route('/<username>')
+def userpage(username):
+    return username
 
-class art():
-  def GET(self,artID):
-    return render.art(artID)
+#class login():
+#  def POST(self):
+#    postData = web.input()
+#    userData = db.select("users", where="username='"+postData.username+"'")
+#    if len(userData) > 0:
+#      userData = userData[0]
+#      if system.cryptography.encryptPassword(postData.password, True) == userData.password:
+#        session.username=userData.username
+#        session.password=userData.password
+#        web.setcookie("user",userData.username)
+#        web.setcookie("pass",userData.password)
+#        return "1"
+#      else: return "0"
+#    else:
+#      return "0"
 
-class login():
-  def POST(self):
-    postData = web.input()
-    userData = db.select("users", where="username='"+postData.username+"'")
-    if len(userData) > 0:
-      userData = userData[0]
-      if system.cryptography.encryptPassword(postData.password, True) == userData.password:
-        session.username=userData.username
-        session.password=userData.password
-        web.setcookie("user",userData.username)
-        web.setcookie("pass",userData.password)
-        return "1"
-      else: return "0"
-    else:
-      return "0"
+#class signup():
+#  def POST(self):
+#    data = web.input()
+#    if not userExists(data.username) and len(data.username) > 0 and data.password1 == data.password2:
+#      hashed = system.cryptography.encryptPassword(data.password1, True)
+#      db.insert("users",username=data.username,password=hashed,email=data.email)
+#      return "1" #SUCCESS
+#    else: return "0" #ERROR, User doesn't exist or username is too small
 
-class signup():
-  def POST(self):
-    data = web.input()
-    if not userExists(data.username) and len(data.username) > 0 and data.password1 == data.password2:
-      hashed = system.cryptography.encryptPassword(data.password1, True)
-      db.insert("users",username=data.username,password=hashed,email=data.email)
-      return "1" #SUCCESS
-    else: return "0" #ERROR, User doesn't exist or username is too small
+#class policy():
+#  def GET(self,page):
+#    if   page == 'terms-of-service':
+#      return render.tos()
+#    elif page == 'staff':
+#      return render.staff()
+#    else:
+#      raise app.notfound()
 
-class userExistsCheck():
-  def GET(self,username):
-    if userExists(username):
-      return "1"
-    else: return "0"
+#class redirect():
+#  def POST(self,pageToRedirectTo):
+#    raise web.seeother("/"+pageToRedirectTo)
 
-class policy():
-  def GET(self,page):
-    if   page == 'terms-of-service':
-      return render.tos()
-    elif page == 'staff':
-      return render.staff()
-    else:
-      raise app.notfound()
+#def notfound(): 
+#  return web.notfound(render.notfound())
 
-class redirect():
-  def POST(self,pageToRedirectTo):
-    raise web.seeother("/"+pageToRedirectTo)
-
-def notfound(): 
-  return web.notfound(render.notfound())
-
-app.notfound = notfound
-
-if __name__ == "__main__": app.run()
+if __name__ == "__main__": app.run(host='0.0.0.0',debug=True)
 else: print("DrawRawr isn't a module, silly.")
