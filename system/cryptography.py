@@ -8,4 +8,4 @@ def saltPassword(password):
 
 def encryptPassword(password, salt = False):
   if(salt): password = saltPassword(password)
-  return sha512(password).digest()
+  return sha512(password).hexdigest()
