@@ -1,9 +1,8 @@
-$def with (content)
 <!doctype html>
 <head>
   <meta charset="utf-8">
 
-  <title>$content.title</title>
+  <title>{% block title %}{% endblock %}</title>
   <meta name="description" content="DrawRawr is a social utility that allows artists to collaborate, communicate, and show off their galleries online. ">
   <meta name="author" content="Personette Labs">
   
@@ -14,29 +13,12 @@ $def with (content)
 
   <link rel="stylesheet" href="/static/css/mainstyles.css" media="screen">
 
-  $if content.css != "None":
-    $for f in content.css.split():
-      <link rel="stylesheet" href="$f" media="screen">
-
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
   <script src="/static/js/modernizr-1.6.min.js"></script>
   <script src="/static/js/main.js"></script>
 
-  $if content.js != "None":
-    $for f in content.js.split():
-      <script src="$f"></script>
+  {% block head %}{% endblock %}
 
-  <style media="screen" type="text/css">
-  #rightCol 
-  {
-    float: right;
-    width: 80%;
-  }
-  #leftCol
-  {
-    width: 20%;
-  }
-  </style>
 </head>
 <body class="home">
   <header>
@@ -76,8 +58,7 @@ $def with (content)
     </nav>
   </header>
   <div id="content" class="roundBox">
-
-    $:content
+    {% block content %}{% endblock %}
   </div>
   <footer id="footer">
     <span style="float:right;">copyright &copy; DrawRawr, <span id="copyright-date"></span></span>
