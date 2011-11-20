@@ -100,4 +100,11 @@ $(document).ready ->
 					alert data
 
 	/* Set up the header */
-	header = new Header false
+	$.ajax
+		url:  "/users/glued",
+		type: "POST",
+		success: (data) =>
+			if data == "1"
+				header = new Header false
+			else
+				header = new Header true

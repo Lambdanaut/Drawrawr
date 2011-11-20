@@ -33,12 +33,12 @@ for engine in enginesDirectory:
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
-#render = web.template.render('templates', base='layout', globals={'session':session})
-
-def userPassCheck(username,password):
-  cur.execute("select * from users where username='"+username+"' and password='"+password+"'")
-  if len (cur.fetchall() ) > 0:
-    return True
+def userPassCheck():
+  if (session['username'] and session['password']):
+    cur.execute("select * from users where username='"+session['username']+"' and password='"+session['password']+"'")
+    if len (cur.fetchall() ) > 0:
+      return True
+    else: return False
   else: return False
 
 def userExists(username):
@@ -49,7 +49,7 @@ def userExists(username):
 
 @app.route('/')
 def index():
-  return render_template("index.html")
+  return render_template("index.html", session=session)
 
 @app.route('/<username>')
 def userpage(username):
@@ -76,8 +76,17 @@ def signup():
   if not userExists(request.form['username']) and len(request.form['username']) > 0 and request.form['password1'] == request.form['password2']:
     hashed = system.cryptography.encryptPassword(request.form['password1'], True)
     cur.execute("insert into users (username,password,email) values ('"+request.form['username']+"','"+hashed+"','"+request.form['email']+"')")
+    session['username']=request.form['username']
+    session['password']=request.form['password']
     return "1" #SUCCESS
   else: return "0" #ERROR, User doesn't exist or username is too small
+
+@app.route('/users/glued', methods=['POST'])
+def glued():
+  cur.execute("select * from users where username='"+session['username']+"'")
+  userData = cur.fetchall()
+  return str(userData[0]['glued'])
+
 
 #class policy():
 #  def GET(self,page):

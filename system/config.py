@@ -1,4 +1,4 @@
-mysqlHost     = "localhost"
-mysqlUsername = "root"
-mysqlPassword = ""
-mysqlDatabase = "DrawRawr"
+dbHost     = "localhost"
+dbUsername = "root"
+dbPassword = ""
+dbDatabase = "DR"
