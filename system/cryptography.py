@@ -7,5 +7,5 @@ def saltPassword(password):
   return password
 
 def encryptPassword(password, salt = False):
-  if(salt): password = saltPassword(password)
+  if salt: password = saltPassword(password)
   return sha512(password).hexdigest()

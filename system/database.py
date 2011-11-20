@@ -1,8 +1,6 @@
 import sys, MySQLdb
 from config import *
 
-con = None
-
 try:
   con = MySQLdb.connect(mysqlHost, mysqlUsername, mysqlPassword, mysqlDatabase);
 

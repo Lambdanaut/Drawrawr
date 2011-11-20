@@ -90,7 +90,7 @@
     return Modal;
   })();
   $(document).ready(function() {
-    /* Keeps the copyright up to date on the current year */;    var date, header;
+    /* Keeps the copyright up to date on the current year */;    var date;
     date = new Date();
     $("#copyright-date").html(date.getFullYear());
     /* Registration */;
@@ -124,6 +124,17 @@
       }, this));
     }, this));
     /* Set up the header */;
-    return header = new Header(false);
+    return $.ajax({
+      url: "/users/glued",
+      type: "POST",
+      success: __bind(function(data) {
+        var header;
+        if (data === "1") {
+          return header = new Header(false);
+        } else {
+          return header = new Header(true);
+        }
+      }, this)
+    });
   });
 }).call(this);
