@@ -2,12 +2,20 @@ class Header
 	constructor: (@glued) ->
 		@switchGlue()
 
-		$("#set-header").click () => @switchGlue()
+		$("#set-header").click () => 
+			@switchGlue()
+			@updateDatabaseGlue()
 
 	switchGlue: () ->
 		if @glued
 			@unglue()
 		else @glue()
+		
+	updateDatabaseGlue: () ->
+		$.ajax
+			url:  "/users/glue",
+			type: "POST",
+			data: "glued=" + (@glued + 0)
 
 	/* Glue the header to the top of the page */
 	glue: () -> 
@@ -97,14 +105,14 @@ $(document).ready ->
 				type: "POST",
 				data: $("#modal form").serialize(),
 				success: (data) =>
-					alert data
+					if data == "1"
+						location.reload()
 
 	/* Set up the header */
+	header = new Header false
 	$.ajax
 		url:  "/users/glued",
-		type: "POST",
+		type: "GET",
 		success: (data) =>
-			if data == "1"
-				header = new Header false
-			else
-				header = new Header true
+			if data == "0"
+				header.switchGlue()

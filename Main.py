@@ -9,12 +9,13 @@ __version__ = '2.0'
 __author__  = 'DrawRawr'
 
 from flask import *
+import os, sys
+
 from optparse import OptionParser
-from system.database import *
+
+from modules.database import Database
 
 import system.cryptography, system.config
-
-import os, sys
 
 parser = OptionParser()
 parser.add_option("-q", "--quiet", action="store_false", dest="verbose", 
@@ -33,19 +34,7 @@ for engine in enginesDirectory:
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
-def userPassCheck():
-  if (session['username'] and session['password']):
-    cur.execute("select * from users where username='"+session['username']+"' and password='"+session['password']+"'")
-    if len (cur.fetchall() ) > 0:
-      return True
-    else: return False
-  else: return False
-
-def userExists(username):
-  cur.execute("select * from users where username='"+username+"'")
-  if len (cur.fetchall() ) > 0:
-    return True
-  else: return False
+db = Database(system.config.dbHost,system.config.dbPort)
 
 @app.route('/')
 def index():
@@ -58,13 +47,11 @@ def userpage(username):
 @app.route('/users/login', methods=['GET', 'POST'])
 def login():
   if request.method == 'POST':
-    cur.execute("select * from users where username='"+request.form['username']+"'")
-    userData = cur.fetchall()
-    if len(userData) > 0:
-      userData = userData[0]
-      if system.cryptography.encryptPassword(request.form['password'], True) == userData['password']: 
-        session['username']=userData['username']
-        session['password']=userData['password']
+    user = db.db.users.find_one({"username": request.form['username']})
+    if user != None:
+      if system.cryptography.encryptPassword(request.form['password'], True) == user['password']: 
+        session['username']=user['username']
+        session['password']=user['password']
         return "1"
       else: return "0"
     else:
@@ -73,36 +60,33 @@ def login():
 
 @app.route('/users/signup', methods=['GET', 'POST'])
 def signup():
-  if not userExists(request.form['username']) and len(request.form['username']) > 0 and request.form['password1'] == request.form['password2']:
+  if not db.userExists(request.form['username']) and len(request.form['username']) > 0 and request.form['password1'] == request.form['password2']:
     hashed = system.cryptography.encryptPassword(request.form['password1'], True)
-    cur.execute("insert into users (username,password,email) values ('"+request.form['username']+"','"+hashed+"','"+request.form['email']+"')")
-    session['username']=request.form['username']
-    session['password']=request.form['password']
+    print db.db.users.insert({"username" : request.form['username'],"password" : hashed, "email" : request.form['email'], "glued" : 1}) 
+    session['username'] = request.form['username']
+    session['password'] = hashed
     return "1" #SUCCESS
   else: return "0" #ERROR, User doesn't exist or username is too small
 
-@app.route('/users/glued', methods=['POST'])
+@app.route('/users/glued', methods=['GET'])
 def glued():
-  cur.execute("select * from users where username='"+session['username']+"'")
-  userData = cur.fetchall()
-  return str(userData[0]['glued'])
+  if 'username' in session:
+    user = db.db.users.find_one({'username' : session['username']})
+    if user != None:
+      return str(user["glued"])
+    else: return "1"
+  else: return "1"
 
+@app.route('/users/glue', methods=['POST'])
+def glue():
+  if 'username' in session:
+    db.db.users.update({"username": session['username']}, {"$set": {"glued": request.form['glued']}})
+    return "1"
+  else: return "0"
 
-#class policy():
-#  def GET(self,page):
-#    if   page == 'terms-of-service':
-#      return render.tos()
-#    elif page == 'staff':
-#      return render.staff()
-#    else:
-#      raise app.notfound()
-
-#class redirect():
-#  def POST(self,pageToRedirectTo):
-#    raise web.seeother("/"+pageToRedirectTo)
-
-#def notfound(): 
-#  return web.notfound(render.notfound())
+@app.route('/meta/terms-of-service', methods=['GET'])
+def policy():
+  return render_template("tos.html", session=session)
 
 if __name__ == "__main__": app.run(host='0.0.0.0',debug=True)
 else: print("DrawRawr isn't a module, silly.")
