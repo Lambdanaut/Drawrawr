@@ -56,6 +56,7 @@ def login():
       if system.cryptography.encryptPassword(request.form['password'], True) == user['password']: 
         session['username']=user['username']
         session['password']=user['password']
+        session.permanent = True
         return "1"
       else: return "0"
     else:
@@ -77,6 +78,7 @@ def signup():
     print db.db.users.insert({"username" : request.form['username'],"lowername" : request.form['username'].lower(), "password" : hashed, "email" : request.form['email'], "glued" : 1}) 
     session['username'] = request.form['username']
     session['password'] = hashed
+    session.permanent = True
     return "1" #SUCCESS
   else: return "0" #ERROR, User doesn't exist or username is too small
 
