@@ -10,12 +10,12 @@ class Database:
     self.con = pymongo.Connection(host, port)
     self.db  = self.con.DR
   def userPassCheck(self,username,password):
-    user = self.db.users.find_one({'username' : username,'password' : password})
+    user = self.db.users.find_one({'lowername' : username.lower(),'password' : password})
     if user == None:
       return False
     else: return True
   def userExists(self,username):
-    user = self.db.users.find_one({"username":username})
+    user = self.db.users.find_one({"lowername":username.lower()})
     if user == None:
       return False
     else: return True

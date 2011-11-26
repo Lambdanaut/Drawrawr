@@ -42,12 +42,16 @@ def index():
 
 @app.route('/<username>')
 def userpage(username):
-    return username
+  user = db.db.users.find_one({'lowername' : username.lower() })
+  if user != None:
+    return render_template("user.html", session=session, username=user["username"])
+  else:
+    abort(404)
 
 @app.route('/users/login', methods=['GET', 'POST'])
 def login():
   if request.method == 'POST':
-    user = db.db.users.find_one({"lowername": request.form['username'].lower() })
+    user = db.db.users.find_one({'lowername' : request.form['username'].lower() })
     if user != None:
       if system.cryptography.encryptPassword(request.form['password'], True) == user['password']: 
         session['username']=user['username']

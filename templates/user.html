@@ -1,8 +1,29 @@
-$def with (name)
-
-$var title: $name's Userpage
-$var css: None
-$var js: None
-
-$if name:
-  This is $name's page.
+{% extends "layout.html" %}
+{% block title %} {{ username }} @ DrawRawr  {% endblock %}
+{% block head %}
+<style media="screen" type="text/css">
+#rightCol
+{
+  float: right;
+  width: 25%;
+}
+#leftCol
+{
+  width: 75%;
+}
+</style>
+{% endblock %}
+{% block content %}
+<div id="rightCol">
+  <section class="container">
+    <h1>Right Column</h1>
+    <p>Watchers, Friends, Nearby users</p>
+  </section>
+</div>  
+<div id="leftCol">
+  <section class="container">
+    <h1>LEFT COLUMN</h1>
+    <p>User Profile </p>
+  </section>
+</div>
+{% endblock %}
