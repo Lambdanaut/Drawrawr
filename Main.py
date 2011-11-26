@@ -9,7 +9,7 @@ __version__ = '2.0'
 __author__  = 'DrawRawr'
 
 from flask import *
-import os, sys
+import os, sys, random
 
 from optparse import OptionParser
 
@@ -47,7 +47,7 @@ def userpage(username):
 @app.route('/users/login', methods=['GET', 'POST'])
 def login():
   if request.method == 'POST':
-    user = db.db.users.find_one({"username": request.form['username']})
+    user = db.db.users.find_one({"lowername": request.form['username'].lower() })
     if user != None:
       if system.cryptography.encryptPassword(request.form['password'], True) == user['password']: 
         session['username']=user['username']
@@ -58,11 +58,19 @@ def login():
       return "0"
   else: return "None"
 
+@app.route('/users/logout', methods=['POST'])
+def logout():
+  if "username" and "password" in session:
+    session.pop('username')
+    session.pop('password')
+    return "1"
+  else: return "0"
+
 @app.route('/users/signup', methods=['GET', 'POST'])
 def signup():
   if not db.userExists(request.form['username']) and len(request.form['username']) > 0 and request.form['password1'] == request.form['password2']:
     hashed = system.cryptography.encryptPassword(request.form['password1'], True)
-    print db.db.users.insert({"username" : request.form['username'],"password" : hashed, "email" : request.form['email'], "glued" : 1}) 
+    print db.db.users.insert({"username" : request.form['username'],"lowername" : request.form['username'].lower(), "password" : hashed, "email" : request.form['email'], "glued" : 1}) 
     session['username'] = request.form['username']
     session['password'] = hashed
     return "1" #SUCCESS
@@ -87,6 +95,24 @@ def glue():
 @app.route('/meta/terms-of-service', methods=['GET'])
 def policy():
   return render_template("tos.html", session=session)
+
+@app.errorhandler(404)
+def page_not_found(e):
+  rando = random.randint(0,5)
+  print rando
+  if   rando == 0:
+    randimg = "scary404.png"
+  elif rando == 1:
+    randimg = "vonderdevil404.png"
+  elif rando == 2:
+    randimg = "cute404.png"
+  elif rando == 3:
+    randimg = "bomb404.png"
+  elif rando == 4:
+    randimg = "bile404.png"
+  elif rando == 5:
+    randimg = "sexy404.png"
+  return render_template('404.html',session=session,randimg=randimg), 404
 
 if __name__ == "__main__": app.run(host='0.0.0.0',debug=True)
 else: print("DrawRawr isn't a module, silly.")

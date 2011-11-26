@@ -82,7 +82,16 @@ $(document).ready ->
 	/* Keeps the copyright up to date on the current year */
 	date = new Date()
 	$("#copyright-date").html date.getFullYear()
-	
+
+	/* Set up the header */
+	header = new Header false
+	$.ajax
+		url:  "/users/glued",
+		type: "GET",
+		success: (data) =>
+			if data == "0"
+				header.switchGlue()
+
 	/* Registration */
 	$("#register-button").click () =>
 		signupModal = new Modal "CREATE A NEW ACCOUNT", $("#register-form").html()
@@ -93,7 +102,8 @@ $(document).ready ->
 				type: "POST",
 				data: $("#modal form").serialize(),
 				success: (data) =>
-					alert data
+					if data == "1"
+						location.reload()
 
 	/* Login */
 	$("#login-button").click () =>
@@ -107,12 +117,14 @@ $(document).ready ->
 				success: (data) =>
 					if data == "1"
 						location.reload()
+					else
+						new Notice "Incorrect Login Combo", "The username and password didn't match any in our records. Try again! "
 
-	/* Set up the header */
-	header = new Header false
-	$.ajax
-		url:  "/users/glued",
-		type: "GET",
-		success: (data) =>
-			if data == "0"
-				header.switchGlue()
+	/* Logout */
+	$("#logout-button").click () =>
+		$.ajax
+			url:  "/users/logout",
+			type: "POST",
+			success: (data) =>
+				if data == "1"
+					location.reload()

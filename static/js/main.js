@@ -101,6 +101,17 @@
     /* Keeps the copyright up to date on the current year */;    var date, header;
     date = new Date();
     $("#copyright-date").html(date.getFullYear());
+    /* Set up the header */;
+    header = new Header(false);
+    $.ajax({
+      url: "/users/glued",
+      type: "GET",
+      success: __bind(function(data) {
+        if (data === "0") {
+          return header.switchGlue();
+        }
+      }, this)
+    });
     /* Registration */;
     $("#register-button").click(__bind(function() {
       var signupModal;
@@ -111,7 +122,9 @@
           type: "POST",
           data: $("#modal form").serialize(),
           success: __bind(function(data) {
-            return alert(data);
+            if (data === "1") {
+              return location.reload();
+            }
           }, this)
         });
       }, this));
@@ -128,21 +141,24 @@
           success: __bind(function(data) {
             if (data === "1") {
               return location.reload();
+            } else {
+              return new Notice("Incorrect Login Combo", "The username and password didn't match any in our records. Try again! ");
             }
           }, this)
         });
       }, this));
     }, this));
-    /* Set up the header */;
-    header = new Header(false);
-    return $.ajax({
-      url: "/users/glued",
-      type: "GET",
-      success: __bind(function(data) {
-        if (data === "0") {
-          return header.switchGlue();
-        }
-      }, this)
-    });
+    /* Logout */;
+    return $("#logout-button").click(__bind(function() {
+      return $.ajax({
+        url: "/users/logout",
+        type: "POST",
+        success: __bind(function(data) {
+          if (data === "1") {
+            return location.reload();
+          }
+        }, this)
+      });
+    }, this));
   });
 }).call(this);

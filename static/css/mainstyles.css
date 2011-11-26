@@ -29,13 +29,6 @@ a img{border: 0px;}
 	padding: 10px;
 	border-bottom: 1px solid #000000;
 	height: 50px;
-
-	/* Transparent Gradient */
-	/*
-	background: -webkit-linear-gradient(top, rgba(255,255,255,0.87) 0%,rgba(255,255,255,1) 62%,rgba(255,255,255,0) 100%);
-	background: -o-linear-gradient(top, rgba(255,255,255,0.87) 0%,rgba(255,255,255,1) 62%,rgba(255,255,255,0) 100%);
-	background: linear-gradient(top, rgba(255,255,255,0.87) 0%,rgba(255,255,255,1) 62%,rgba(255,255,255,0) 100%);
-	*/
 }
 #header-image {
 	position: absolute;
@@ -47,6 +40,21 @@ a img{border: 0px;}
 	float: right;
 	margin-right: 85px;
 	overflow: hidden;
+}
+#options-tab div
+{
+	padding: 2px;
+	background-color: #ffffff;
+	border-bottom: 1px solid black;
+}
+#options-tab div
+{
+	position: absolute;
+	display: none;
+}
+#options-tab:hover div
+{
+	display: block;
 }
 #set-header
 {
@@ -72,6 +80,7 @@ a img{border: 0px;}
 	-moz-border-radius-bottomleft: 4px;
 	-webkit-border-radius: 0px 0px 4px 4px;
 	border-radius: 0px 0px 4px 4px;
+	z-index: 1001;
 }
 #modal 
 {

@@ -26,17 +26,26 @@
       <div id="set-header">↑</div>
       {% if session['username'] %}
         <aside id="control-panel">
+          <div style="float:right;">
+            <b><a href='/{{ session['username'] }}'>{{ session['username'] }}</a></b><br>
+            <a>Updates</a><br>
+            <div id="options-tab">
+              <u style="cursor:pointer;">Options</u>
+              <div class="roundBox">
+                <a id="submit-button">Submit Art</a><br>
+                <a id="journal-button">Journals</a><br>
+                <a id="settings-button">Settings</a><br>
+                <a id="logout-button">Logout</a>
+              </div>
+            </div>
+          </div>
           <a href = '/{{ session['username'] }}'>
-            <img src='/static/images/newbyicon.png' class='tinyIcon' style='float:left;margin-right:5px;'>
-          </a> 
-          <b>{{ session['username'] }}</b> 
-          Submit 
-          Logout
-          
+            <img src='/static/images/newbyicon.png' class='tinyIcon'  style='margin-right: 5px;'>
+          </a>
         </aside>
       {% else %}
         <aside id="control-panel">
-          <a id="login-button">Login</a> or <a id="register-button">Register</a> in seconds!
+          <br><b><a id="login-button">Login</a></b> or <b><a id="register-button">Register</a></b> in seconds!
         </aside>
         <aside id='register-form' style='display:none;'>
           <form>
