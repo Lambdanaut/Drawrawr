@@ -98,7 +98,9 @@ def glue():
 
 @app.route('/meta/terms-of-service', methods=['GET'])
 def policy():
-  return render_template("tos.html", session=session)
+  f = open("static/legal/tos")
+  tos = f.read()
+  return render_template("tos.html", session=session, tos=tos)
 
 @app.errorhandler(404)
 def page_not_found(e):

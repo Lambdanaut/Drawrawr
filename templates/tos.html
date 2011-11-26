@@ -1,10 +1,26 @@
 {% extends "layout.html" %}
 {% block title %} Terms of Service {% endblock %}
 {% block head %}
+<style media="screen" type="text/css">
+#tos
+{
+	font-size: 12px;
+}
+#tos h4
+{
+	font-size: 14px;
+}
+#tos h4:before
+{
+	content: " ● ";
+}
+</style>
 {% endblock %}
 {% block content %}
-  <section class="container">
-    <h1>About Us: Terms of Service</h1>
-     <p>TOS TOS TOS</p>
+  <section id="tos" class="container">
+    <h1>Terms of Service</h1>
+    {% autoescape false %}
+      {{ tos }}
+    {% endautoescape %}
   </section>
 {% endblock %}
