@@ -48,7 +48,7 @@ def userpage(username):
   else:
     abort(404)
 
-@app.route('/users/login', methods=['GET', 'POST'])
+@app.route('/users/login', methods=['POST'])
 def login():
   if request.method == 'POST':
     user = db.db.users.find_one({'lowername' : request.form['username'].lower() })
@@ -76,17 +76,20 @@ def signup():
   if not db.userExists(request.form['username']) and len(request.form['username']) > 0 and request.form['password1'] == request.form['password2']:
     hashed = system.cryptography.encryptPassword(request.form['password1'], True)
     print db.db.users.insert({
-      "username"  : request.form['username'],
-      "lowername" : request.form['username'].lower(),
-      "password"  : hashed, 
-      "email"     : request.form['email'],
-      "layout"    : {
+      "username"   : request.form['username'],
+      "lowername"  : request.form['username'].lower(),
+      "password"   : hashed, 
+      "email"      : request.form['email'],
+      "layout"     : {
+        #t == top; l == left; r == right; b == bottom; h == hidden
         "profile"  : "t",
         "gallery"  : "l",
         "watches"  : "r",
         "comments" : "b"
       },
-      "glued" : 1
+      "theme"      : "default",
+      "bground"    : "",
+      "glued"      : 1
     }) 
     session['username'] = request.form['username']
     session['password'] = hashed
@@ -109,6 +112,12 @@ def glue():
     db.db.users.update({"username": session['username']}, {"$set": {"glued": request.form['glued']}})
     return "1"
   else: return "0"
+
+@app.route('/users/settings', methods=['GET'])
+def settings():
+  if "username" and "password" in session:
+    return render_template("settings.html", session=session)
+  else: abort(401)
 
 @app.route('/meta/terms-of-service', methods=['GET'])
 def policy():
@@ -133,6 +142,10 @@ def page_not_found(e):
   elif rando == 5:
     randimg = "sexy404.png"
   return render_template('404.html',session=session,randimg=randimg), 404
+
+@app.errorhandler(401)
+def unauthorized(e):
+  return render_template('401.html',session=session), 401
 
 if __name__ == "__main__": app.run(host='0.0.0.0',debug=True)
 else: print("DrawRawr isn't a module, silly.")

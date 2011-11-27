@@ -127,4 +127,4 @@ $(document).ready ->
 			type: "POST",
 			success: (data) =>
 				if data == "1"
-					location.reload()
+					window.location = "/"

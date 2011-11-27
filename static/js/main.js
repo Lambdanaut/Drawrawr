@@ -155,7 +155,7 @@
         type: "POST",
         success: __bind(function(data) {
           if (data === "1") {
-            return location.reload();
+            return window.location = "/";
           }
         }, this)
       });

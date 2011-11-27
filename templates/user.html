@@ -17,12 +17,30 @@
 {
 	width: 50%;
 }
+
+{# Color Theme Settings #}
+{% if user["theme"] == "blue" %}
+#content
+{
+	background-color: blue;
+	color: green;
+}
+{% else %}
 #content
 {
 	background-color: default;
 	color: inherit;
-	font-family: inherit;
 }
+{% endif %}
+
+{# Background Image Settings #}
+{% if user["bground"] != "" %}
+body
+{
+	background-image: url("{{ user["bground"] }}");
+}
+{% endif %}
+
 </style>
 {% endblock %}
 
@@ -55,10 +73,10 @@
 {% endmacro %}
 
 {% macro row(rowName) %}
-    {% if user["layout"]["profile" ] == rowName %} {{ profile () }} {% endif %}
-    {% if user["layout"]["gallery" ] == rowName %} {{ gallery () }} {% endif %}
-    {% if user["layout"]["watches" ] == rowName %} {{ watches () }} {% endif %}
-    {% if user["layout"]["comments"] == rowName %} {{ comments() }} {% endif %}
+  {% if user["layout"]["profile" ] == rowName %} {{ profile () }} {% endif %}
+  {% if user["layout"]["gallery" ] == rowName %} {{ gallery () }} {% endif %}
+  {% if user["layout"]["watches" ] == rowName %} {{ watches () }} {% endif %}
+  {% if user["layout"]["comments"] == rowName %} {{ comments() }} {% endif %}
 {% endmacro %}
 
 {% block content %}
