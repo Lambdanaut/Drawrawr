@@ -44,7 +44,7 @@ def index():
 def userpage(username):
   user = db.db.users.find_one({'lowername' : username.lower() })
   if user != None:
-    return render_template("user.html", session=session, username=user["username"])
+    return render_template("user.html", session=session, user=user)
   else:
     abort(404)
 
@@ -75,7 +75,19 @@ def logout():
 def signup():
   if not db.userExists(request.form['username']) and len(request.form['username']) > 0 and request.form['password1'] == request.form['password2']:
     hashed = system.cryptography.encryptPassword(request.form['password1'], True)
-    print db.db.users.insert({"username" : request.form['username'],"lowername" : request.form['username'].lower(), "password" : hashed, "email" : request.form['email'], "glued" : 1}) 
+    print db.db.users.insert({
+      "username"  : request.form['username'],
+      "lowername" : request.form['username'].lower(),
+      "password"  : hashed, 
+      "email"     : request.form['email'],
+      "layout"    : {
+        "profile"  : "t",
+        "gallery"  : "l",
+        "watches"  : "r",
+        "comments" : "b"
+      },
+      "glued" : 1
+    }) 
     session['username'] = request.form['username']
     session['password'] = hashed
     session.permanent = True

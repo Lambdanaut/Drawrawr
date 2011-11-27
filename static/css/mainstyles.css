@@ -148,7 +148,9 @@ a img{border: 0px;}
 }
 .container {
 	background-color: #ffffff;
-	margin: 5px;
+	margin-bottom: 5px;
+	margin-left: 5px;
+	margin-right: 5px;
 	padding: 10px;
 
 	border-bottom: 1px solid #000000;

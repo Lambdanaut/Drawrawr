@@ -1,29 +1,79 @@
 {% extends "layout.html" %}
-{% block title %} {{ username }} @ DrawRawr  {% endblock %}
+{% block title %} {{ user["username"] }} @ DrawRawr  {% endblock %}
 {% block head %}
+<script src="/static/js/userpage.js"></script>
 <style media="screen" type="text/css">
+.fullRow
+{
+	width: 100%;
+	clear: both;
+}
 #rightCol
 {
-  float: right;
-  width: 25%;
+	float: right;
+	width: 50%;
 }
 #leftCol
 {
-  width: 75%;
+	width: 50%;
+}
+#content
+{
+	background-color: default;
+	color: inherit;
+	font-family: inherit;
 }
 </style>
 {% endblock %}
+
+{% macro profile() %}
+  <section class="container">
+    <h1>Profile</h1>
+    <p>{{ user["profile"] }}</p>
+  </section>
+{% endmacro %}
+
+{% macro gallery() %}
+  <section class="container">
+    <h1>Gallery</h1>
+    <p>Gallery Goes Here</p>
+  </section>
+{% endmacro %}
+
+{% macro watches() %}
+  <section class="container">
+    <h1>Watches</h1>
+    <p>Watches Go Here</p>
+  </section>
+{% endmacro %}
+
+{% macro comments() %}
+  <section class="container">
+    <h1>Comments</h1>
+    <p>Comments Go Here</p>
+  </section>
+{% endmacro %}
+
+{% macro row(rowName) %}
+    {% if user["layout"]["profile" ] == rowName %} {{ profile () }} {% endif %}
+    {% if user["layout"]["gallery" ] == rowName %} {{ gallery () }} {% endif %}
+    {% if user["layout"]["watches" ] == rowName %} {{ watches () }} {% endif %}
+    {% if user["layout"]["comments"] == rowName %} {{ comments() }} {% endif %}
+{% endmacro %}
+
 {% block content %}
-<div id="rightCol">
-  <section class="container">
-    <h1>Right Column</h1>
-    <p>Watchers, Friends, Nearby users</p>
-  </section>
-</div>  
-<div id="leftCol">
-  <section class="container">
-    <h1>LEFT COLUMN</h1>
-    <p>User Profile </p>
-  </section>
+<div id="top" class="fullRow">
+  {{ row("t") }}
+</div>
+<div id="middle">
+  <div id="rightCol">
+    {{ row("r") }}
+  </div>
+  <div id="leftCol">
+    {{ row("l") }}
+  </div>
+</div>
+<div id="bottom" class="fullRow">
+  {{ row("b") }}
 </div>
 {% endblock %}
