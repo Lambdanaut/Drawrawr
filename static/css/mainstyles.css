@@ -1,7 +1,7 @@
 body
 {
 	background-color: #bea489;
-	background-image: url(../images/background.png);
+	background-image: url("../images/userpage/defaultbg.png");
 	background-repeat: repeat;
 	color: #513727;
 	font-size: 16px;

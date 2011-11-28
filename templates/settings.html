@@ -1,9 +1,19 @@
 {% extends "layout.html" %}
-{% block title %} Settings {% endblock %}
+{% block title %}Settings{% endblock %}
 {% block head %}
+<script src="/static/js/widgets.js"></script>
+<link rel="stylesheet" href="/static/css/widgets.css" media="screen">
 {% endblock %}
 {% block content %}
-  <section class="container" style="text-align:center;">
-    <h1>Settings</h1>
-  </section>
+  <div id="tabs">
+    <ul>
+      <li id="settings">General Settings</li>
+      <li id="profile">My Profile</li>
+      <li id="layout">Page Layout</li>
+    </ul>
+  </div>
+  <section id="tab-content" class="container"></section>
+  <div id="tab-settings"> SETTINGS </div>
+  <div id="tab-profile"> PROFILE </div>
+  <div id="tab-layout"> LAYOUT </div>
 {% endblock %}
