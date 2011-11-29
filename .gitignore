@@ -5,3 +5,4 @@
 *.pyc
 static/artwork/
 sessions/
+uploads/
