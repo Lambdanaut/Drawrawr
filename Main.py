@@ -14,8 +14,11 @@ import os, sys, random
 from optparse import OptionParser
 
 from modules.database import Database
+from werkzeug import secure_filename
 
-import system.cryptography, system.config
+import system.config as config
+import system.util as util
+import system.cryptography
 
 parser = OptionParser()
 parser.add_option("-q", "--quiet", action="store_false", dest="verbose", 
@@ -33,8 +36,9 @@ for engine in enginesDirectory:
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
+app.config['UPLOAD_FOLDER'] = config.uploadsDir
 
-db = Database(system.config.dbHost,system.config.dbPort)
+db = Database(config.dbHost,config.dbPort)
 
 @app.route('/')
 def index():
@@ -113,17 +117,41 @@ def glue():
     return "1"
   else: return "0"
 
-@app.route('/users/settings', methods=['GET'])
+@app.route('/users/settings', methods=['GET','POST'])
 def settings():
-  if "username" and "password" in session:
-    return render_template("settings.html", session=session)
-  else: abort(401)
+  if request.method == 'GET':
+    if "username" and "password" in session:
+      user = db.db.users.find_one({'lowername' : session['username'].lower() })
+      if user != None:
+        return render_template("settings.html", session=session, user=user)
+      else: abort(401)
+    else: abort(401)
+  elif request.method == 'POST':
+    if "username" and "password" in session:
+      user = db.db.users.find_one({'lowername' : session['username'].lower(), 'password' : session['password'] })
+      if user != None:
+        # User Icon
+        file = request.files['iconUpload']
+        if file and util.allowedFile(file.filename,config.imageExtensions):
+          file.save(os.path.join(config.iconsDir, user['lowername']))
+          return "1"
+        else: abort(401)
+      else: abort(401)
+    else: abort(401)
 
 @app.route('/meta/terms-of-service', methods=['GET'])
 def policy():
   f = open("static/legal/tos")
   tos = f.read()
   return render_template("tos.html", session=session, tos=tos)
+
+@app.route('/icons/<filename>')
+def iconFiles(filename):
+    return send_from_directory(config.iconsDir,filename)
+
+@app.route('/art/<filename>')
+def artFiles(filename):
+    return send_from_directory(config.artDir,filename)
 
 @app.errorhandler(404)
 def page_not_found(e):

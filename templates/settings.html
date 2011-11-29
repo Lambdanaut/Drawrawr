@@ -1,19 +1,56 @@
 {% extends "layout.html" %}
 {% block title %}Settings{% endblock %}
 {% block head %}
-<script src="/static/js/widgets.js"></script>
-<link rel="stylesheet" href="/static/css/widgets.css" media="screen">
+<script src="/static/js/tabs.js"></script>
+<link rel="stylesheet" href="/static/css/tabs.css" media="screen">
+<style media="screen" type="text/css">
+h3
+{
+  margin: 2px;
+}
+#leftCol
+{
+  float: left;
+  width: 33%;
+}
+#middleCol
+{
+  float: left;
+  width: 33%
+}
+#rightCol
+{
+  float: left;
+  width: 33%;
+}
+</style>
 {% endblock %}
 {% block content %}
   <div id="tabs">
     <ul>
-      <li id="settings">General Settings</li>
+      <li id="general">General Settings</li>
       <li id="profile">My Profile</li>
       <li id="layout">Page Layout</li>
     </ul>
   </div>
-  <section id="tab-content" class="container"></section>
-  <div id="tab-settings"> SETTINGS </div>
+  <form enctype="multipart/form-data" method="POST" action="/users/settings">
+    <section id="tab-content" class="container"></section>
+    <div style="text-align:center;"><input type="submit" value="Update Profile"></div>
+  </form>
+  <div id="tab-general"> 
+    <div id="leftCol">
+      <h3>Upload a New Icon: </h3>
+        <img src = '/icons/{{ user["lowername"] }}' style='float:left;' class='userIcon'>
+        <input name="iconUpload" id="iconUpload" type=file><br>
+    </div>
+    <div id="middleCol">
+      middle
+    </div>
+    <div id="rightCol">
+       right
+    </div>
+    <div style="clear: both;"></div>
+  </div>
   <div id="tab-profile"> PROFILE </div>
   <div id="tab-layout"> LAYOUT </div>
 {% endblock %}

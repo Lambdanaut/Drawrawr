@@ -40,7 +40,7 @@
             </div>
           </div>
           <a href = '/{{ session['username'] }}'>
-            <img src='/static/images/newbyicon.png' class='tinyIcon'  style='margin-right: 5px;'>
+            <img src='/icons/{{ session["username"].lower() }}' class='tinyIcon'  style='margin-right: 5px;'>
           </a>
         </aside>
       {% else %}

@@ -10,7 +10,7 @@
 	border-bottom-width: 0;
 	margin: -0.5em 0.5em 0 0;
 	padding: 2px;
-	color: white;
+	color: #FFFFFF;
 	cursor: pointer;
 	background-color: #93AE83;
         -moz-border-radius-topleft: 4px;
@@ -18,11 +18,16 @@
         -webkit-border-radius: 4px 4px 0px 0px;
         border-radius: 4px 4px 0px 0px;
 }
-
+#tabs li:hover {
+	background-color: #AACC99;
+}
 #tabs .tab-selected {
 	position: relative;
 	color: inherit;
 	top: 1px;
-	background: white;
+	background: #FFFFFF;
+}
+#tabs .tab-selected:hover {
+	background-color: #FFFFFF;
 }
 
