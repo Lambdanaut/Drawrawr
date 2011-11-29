@@ -9,12 +9,16 @@ __version__ = '2.0'
 __author__  = 'DrawRawr'
 
 from flask import *
+import os, sys, random
+
 from optparse import OptionParser
-from system.database import *
 
-import system.cryptography, system.config
+from modules.database import Database
+from werkzeug import secure_filename
 
-import os, sys
+import system.config as config
+import system.util as util
+import system.cryptography
 
 parser = OptionParser()
 parser.add_option("-q", "--quiet", action="store_false", dest="verbose", 
@@ -32,20 +36,9 @@ for engine in enginesDirectory:
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
+app.config['UPLOAD_FOLDER'] = config.uploadsDir
 
-def userPassCheck():
-  if (session['username'] and session['password']):
-    cur.execute("select * from users where username='"+session['username']+"' and password='"+session['password']+"'")
-    if len (cur.fetchall() ) > 0:
-      return True
-    else: return False
-  else: return False
-
-def userExists(username):
-  cur.execute("select * from users where username='"+username+"'")
-  if len (cur.fetchall() ) > 0:
-    return True
-  else: return False
+db = Database(config.dbHost,config.dbPort)
 
 @app.route('/')
 def index():
@@ -53,56 +46,134 @@ def index():
 
 @app.route('/<username>')
 def userpage(username):
-    return username
+  user = db.db.users.find_one({'lowername' : username.lower() })
+  if user != None:
+    return render_template("user.html", session=session, user=user)
+  else:
+    abort(404)
 
-@app.route('/users/login', methods=['GET', 'POST'])
+@app.route('/users/login', methods=['POST'])
 def login():
   if request.method == 'POST':
-    cur.execute("select * from users where username='"+request.form['username']+"'")
-    userData = cur.fetchall()
-    if len(userData) > 0:
-      userData = userData[0]
-      if system.cryptography.encryptPassword(request.form['password'], True) == userData['password']: 
-        session['username']=userData['username']
-        session['password']=userData['password']
+    user = db.db.users.find_one({'lowername' : request.form['username'].lower() })
+    if user != None:
+      if system.cryptography.encryptPassword(request.form['password'], True) == user['password']: 
+        session['username']=user['username']
+        session['password']=user['password']
+        session.permanent = True
         return "1"
       else: return "0"
     else:
       return "0"
   else: return "None"
 
+@app.route('/users/logout', methods=['POST'])
+def logout():
+  if "username" and "password" in session:
+    session.pop('username')
+    session.pop('password')
+    return "1"
+  else: return "0"
+
 @app.route('/users/signup', methods=['GET', 'POST'])
 def signup():
-  if not userExists(request.form['username']) and len(request.form['username']) > 0 and request.form['password1'] == request.form['password2']:
+  if not db.userExists(request.form['username']) and len(request.form['username']) > 0 and request.form['password1'] == request.form['password2']:
     hashed = system.cryptography.encryptPassword(request.form['password1'], True)
-    cur.execute("insert into users (username,password,email) values ('"+request.form['username']+"','"+hashed+"','"+request.form['email']+"')")
-    session['username']=request.form['username']
-    session['password']=request.form['password']
+    print db.db.users.insert({
+      "username"   : request.form['username'],
+      "lowername"  : request.form['username'].lower(),
+      "password"   : hashed, 
+      "email"      : request.form['email'],
+      "layout"     : {
+        #t == top; l == left; r == right; b == bottom; h == hidden
+        "profile"  : "t",
+        "gallery"  : "l",
+        "watches"  : "r",
+        "comments" : "b"
+      },
+      "theme"      : "default",
+      "bground"    : "",
+      "glued"      : 1
+    }) 
+    session['username'] = request.form['username']
+    session['password'] = hashed
+    session.permanent = True
     return "1" #SUCCESS
   else: return "0" #ERROR, User doesn't exist or username is too small
 
-@app.route('/users/glued', methods=['POST'])
+@app.route('/users/glued', methods=['GET'])
 def glued():
-  cur.execute("select * from users where username='"+session['username']+"'")
-  userData = cur.fetchall()
-  return str(userData[0]['glued'])
+  if 'username' in session:
+    user = db.db.users.find_one({'username' : session['username']})
+    if user != None:
+      return str(user["glued"])
+    else: return "1"
+  else: return "1"
 
+@app.route('/users/glue', methods=['POST'])
+def glue():
+  if 'username' in session:
+    db.db.users.update({"username": session['username']}, {"$set": {"glued": request.form['glued']}})
+    return "1"
+  else: return "0"
 
-#class policy():
-#  def GET(self,page):
-#    if   page == 'terms-of-service':
-#      return render.tos()
-#    elif page == 'staff':
-#      return render.staff()
-#    else:
-#      raise app.notfound()
+@app.route('/users/settings', methods=['GET','POST'])
+def settings():
+  if request.method == 'GET':
+    if "username" and "password" in session:
+      user = db.db.users.find_one({'lowername' : session['username'].lower() })
+      if user != None:
+        return render_template("settings.html", session=session, user=user)
+      else: abort(401)
+    else: abort(401)
+  elif request.method == 'POST':
+    if "username" and "password" in session:
+      user = db.db.users.find_one({'lowername' : session['username'].lower(), 'password' : session['password'] })
+      if user != None:
+        # User Icon
+        file = request.files['iconUpload']
+        if file and util.allowedFile(file.filename,config.imageExtensions):
+          file.save(os.path.join(config.iconsDir, user['lowername']))
+          return "1"
+        else: abort(401)
+      else: abort(401)
+    else: abort(401)
 
-#class redirect():
-#  def POST(self,pageToRedirectTo):
-#    raise web.seeother("/"+pageToRedirectTo)
+@app.route('/meta/terms-of-service', methods=['GET'])
+def policy():
+  f = open("static/legal/tos")
+  tos = f.read()
+  return render_template("tos.html", session=session, tos=tos)
 
-#def notfound(): 
-#  return web.notfound(render.notfound())
+@app.route('/icons/<filename>')
+def iconFiles(filename):
+    return send_from_directory(config.iconsDir,filename)
+
+@app.route('/art/<filename>')
+def artFiles(filename):
+    return send_from_directory(config.artDir,filename)
+
+@app.errorhandler(404)
+def page_not_found(e):
+  rando = random.randint(0,5)
+  print rando
+  if   rando == 0:
+    randimg = "scary404.png"
+  elif rando == 1:
+    randimg = "vonderdevil404.png"
+  elif rando == 2:
+    randimg = "cute404.png"
+  elif rando == 3:
+    randimg = "bomb404.png"
+  elif rando == 4:
+    randimg = "bile404.png"
+  elif rando == 5:
+    randimg = "sexy404.png"
+  return render_template('404.html',session=session,randimg=randimg), 404
+
+@app.errorhandler(401)
+def unauthorized(e):
+  return render_template('401.html',session=session), 401
 
 if __name__ == "__main__": app.run(host='0.0.0.0',debug=True)
 else: print("DrawRawr isn't a module, silly.")

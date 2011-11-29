@@ -1,8 +1,97 @@
-$def with (name)
+{% extends "layout.html" %}
+{% block title %} {{ user["username"] }} @ DrawRawr  {% endblock %}
+{% block head %}
+<script src="/static/js/userpage.js"></script>
+<style media="screen" type="text/css">
+.fullRow
+{
+	width: 100%;
+	clear: both;
+}
+#rightCol
+{
+	float: right;
+	width: 30%;
+}
+#leftCol
+{
+	width: 70%;
+}
 
-$var title: $name's Userpage
-$var css: None
-$var js: None
+{# Color Theme Settings #}
+{% if user["theme"] == "blue" %}
+#content
+{
+	background-color: blue;
+	color: green;
+}
+{% else %}
+#content
+{
+	background-color: default;
+	color: inherit;
+}
+{% endif %}
 
-$if name:
-  This is $name's page.
+{# Background Image Settings #}
+{% if user["bground"] != "" %}
+body
+{
+	background-image: url("{{ user["bground"] }}");
+}
+{% endif %}
+
+</style>
+{% endblock %}
+
+{% macro profile() %}
+  <section class="container">
+    <h1>Profile</h1>
+    <p>{{ user["profile"] }}</p>
+  </section>
+{% endmacro %}
+
+{% macro gallery() %}
+  <section class="container">
+    <h1>Gallery</h1>
+    <p>Gallery Goes Here</p>
+  </section>
+{% endmacro %}
+
+{% macro watches() %}
+  <section class="container">
+    <h1>Watches</h1>
+    <p>Watches Go Here</p>
+  </section>
+{% endmacro %}
+
+{% macro comments() %}
+  <section class="container">
+    <h1>Comments</h1>
+    <p>Comments Go Here</p>
+  </section>
+{% endmacro %}
+
+{% macro row(rowName) %}
+  {% if user["layout"]["profile" ] == rowName %} {{ profile () }} {% endif %}
+  {% if user["layout"]["gallery" ] == rowName %} {{ gallery () }} {% endif %}
+  {% if user["layout"]["watches" ] == rowName %} {{ watches () }} {% endif %}
+  {% if user["layout"]["comments"] == rowName %} {{ comments() }} {% endif %}
+{% endmacro %}
+
+{% block content %}
+<div id="top" class="fullRow">
+  {{ row("t") }}
+</div>
+<div id="middle">
+  <div id="rightCol">
+    {{ row("r") }}
+  </div>
+  <div id="leftCol">
+    {{ row("l") }}
+  </div>
+</div>
+<div id="bottom" class="fullRow">
+  {{ row("b") }}
+</div>
+{% endblock %}

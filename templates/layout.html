@@ -17,26 +17,35 @@
   <script src="/static/js/modernizr-1.6.min.js"></script>
   <script src="/static/js/main.js"></script>
 
-{% block head %}{% endblock %}
+  {% block head %}{% endblock %}
 
 </head>
-<body class="home">
+<body>
   <header>
     <div id="header">
       <div id="set-header">↑</div>
       {% if session['username'] %}
         <aside id="control-panel">
+          <div style="float:right;">
+            <b><a href='/{{ session['username'] }}'>{{ session['username'] }}</a></b><br>
+            <a>Updates</a><br>
+            <div id="options-tab">
+              <u style="cursor:pointer;">Options</u>
+              <div class="roundBox">
+                <a href="/art/submit">Submit Art</a><br>
+                <a href="/journals/view">Journals</a><br>
+                <a href="/users/settings">Settings</a><br>
+                <a id="logout-button">Logout</a>
+              </div>
+            </div>
+          </div>
           <a href = '/{{ session['username'] }}'>
-            <img src='/static/images/newbyicon.png' class='tinyIcon' style='float:left;margin-right:5px;'>
-          </a> 
-          <b>{{ session['username'] }}</b> <br>
-          Submit <br>
-          Logout
-          
+            <img src='/icons/{{ session["username"].lower() }}' class='tinyIcon'  style='margin-right: 5px;'>
+          </a>
         </aside>
       {% else %}
         <aside id="control-panel">
-          <a id="login-button">Login</a> or <a id="register-button">Register</a> in seconds!
+          <br><b><a id="login-button">Login</a></b> or <b><a id="register-button">Register</a></b> in seconds!
         </aside>
         <aside id='register-form' style='display:none;'>
           <form>
@@ -59,7 +68,7 @@
           <button class='button'>Log In</button>
         </aside>
       {% endif %}
-      <a href="#"><div id="header-image"><img src="/static/images/regheader.png" alt="Header"></div></a>
+      <a href="/"><div id="header-image"><img src="/static/images/regheader.png" alt="Header"></div></a>
     </div>
     <aside id="notice"></aside>
     <aside id="modal"><div class="container"></div></aside>
@@ -74,8 +83,8 @@
   </div>
   <footer id="footer">
     <span style="float:right;">copyright &copy; DrawRawr, <span id="copyright-date"></span></span>
-    <a href="/policy/terms-of-service">Terms of Service</a> ·
-    <a href="/policy/staff">Staff</a> ·
+    <a href="/meta/terms-of-service">Terms of Service</a> ·
+    <a href="/meta/staff">Staff</a> ·
     <a href="">DrawRawr API</a> ·
     <a href="">Something Else</a> 
   </footer>

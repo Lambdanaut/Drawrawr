@@ -6,7 +6,8 @@
       this.glued = glued;
       this.switchGlue();
       $("#set-header").click(__bind(function() {
-        return this.switchGlue();
+        this.switchGlue();
+        return this.updateDatabaseGlue();
       }, this));
     }
     Header.prototype.switchGlue = function() {
@@ -15,6 +16,13 @@
       } else {
         return this.glue();
       }
+    };
+    Header.prototype.updateDatabaseGlue = function() {
+      return $.ajax({
+        url: "/users/glue",
+        type: "POST",
+        data: "glued=" + (this.glued + 0)
+      });
     };
     /* Glue the header to the top of the page */;
     Header.prototype.glue = function() {
@@ -90,9 +98,20 @@
     return Modal;
   })();
   $(document).ready(function() {
-    /* Keeps the copyright up to date on the current year */;    var date;
+    /* Keeps the copyright up to date on the current year */;    var date, header;
     date = new Date();
     $("#copyright-date").html(date.getFullYear());
+    /* Set up the header */;
+    header = new Header(false);
+    $.ajax({
+      url: "/users/glued",
+      type: "GET",
+      success: __bind(function(data) {
+        if (data === "0") {
+          return header.switchGlue();
+        }
+      }, this)
+    });
     /* Registration */;
     $("#register-button").click(__bind(function() {
       var signupModal;
@@ -103,7 +122,9 @@
           type: "POST",
           data: $("#modal form").serialize(),
           success: __bind(function(data) {
-            return alert(data);
+            if (data === "1") {
+              return location.reload();
+            }
           }, this)
         });
       }, this));
@@ -118,23 +139,26 @@
           type: "POST",
           data: $("#modal form").serialize(),
           success: __bind(function(data) {
-            return alert(data);
+            if (data === "1") {
+              return location.reload();
+            } else {
+              return new Notice("Incorrect Login Combo", "The username and password didn't match any in our records. Try again! ");
+            }
           }, this)
         });
       }, this));
     }, this));
-    /* Set up the header */;
-    return $.ajax({
-      url: "/users/glued",
-      type: "POST",
-      success: __bind(function(data) {
-        var header;
-        if (data === "1") {
-          return header = new Header(false);
-        } else {
-          return header = new Header(true);
-        }
-      }, this)
-    });
+    /* Logout */;
+    return $("#logout-button").click(__bind(function() {
+      return $.ajax({
+        url: "/users/logout",
+        type: "POST",
+        success: __bind(function(data) {
+          if (data === "1") {
+            return window.location = "/";
+          }
+        }, this)
+      });
+    }, this));
   });
 }).call(this);

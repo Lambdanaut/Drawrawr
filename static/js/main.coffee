@@ -2,12 +2,20 @@ class Header
 	constructor: (@glued) ->
 		@switchGlue()
 
-		$("#set-header").click () => @switchGlue()
+		$("#set-header").click () => 
+			@switchGlue()
+			@updateDatabaseGlue()
 
 	switchGlue: () ->
 		if @glued
 			@unglue()
 		else @glue()
+		
+	updateDatabaseGlue: () ->
+		$.ajax
+			url:  "/users/glue",
+			type: "POST",
+			data: "glued=" + (@glued + 0)
 
 	/* Glue the header to the top of the page */
 	glue: () -> 
@@ -74,7 +82,16 @@ $(document).ready ->
 	/* Keeps the copyright up to date on the current year */
 	date = new Date()
 	$("#copyright-date").html date.getFullYear()
-	
+
+	/* Set up the header */
+	header = new Header false
+	$.ajax
+		url:  "/users/glued",
+		type: "GET",
+		success: (data) =>
+			if data == "0"
+				header.switchGlue()
+
 	/* Registration */
 	$("#register-button").click () =>
 		signupModal = new Modal "CREATE A NEW ACCOUNT", $("#register-form").html()
@@ -85,7 +102,8 @@ $(document).ready ->
 				type: "POST",
 				data: $("#modal form").serialize(),
 				success: (data) =>
-					alert data
+					if data == "1"
+						location.reload()
 
 	/* Login */
 	$("#login-button").click () =>
@@ -97,14 +115,16 @@ $(document).ready ->
 				type: "POST",
 				data: $("#modal form").serialize(),
 				success: (data) =>
-					alert data
+					if data == "1"
+						location.reload()
+					else
+						new Notice "Incorrect Login Combo", "The username and password didn't match any in our records. Try again! "
 
-	/* Set up the header */
-	$.ajax
-		url:  "/users/glued",
-		type: "POST",
-		success: (data) =>
-			if data == "1"
-				header = new Header false
-			else
-				header = new Header true
+	/* Logout */
+	$("#logout-button").click () =>
+		$.ajax
+			url:  "/users/logout",
+			type: "POST",
+			success: (data) =>
+				if data == "1"
+					window.location = "/"
