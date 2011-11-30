@@ -9,12 +9,13 @@ __version__ = '2.0'
 __author__  = 'DrawRawr'
 
 from flask import *
-import os, sys, random
+import os, shutil, sys, random, logging
 
 from optparse import OptionParser
 
 from modules.database import Database
 from werkzeug import secure_filename
+from PIL import Image
 
 import system.config as config
 import system.util as util
@@ -36,19 +37,20 @@ for engine in enginesDirectory:
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
-app.config['UPLOAD_FOLDER'] = config.uploadsDir
 
 db = Database(config.dbHost,config.dbPort)
 
+if config.logging: logging.basicConfig(filename='logs/DR.log',level=logging.DEBUG)
+
 @app.route('/')
 def index():
-  return render_template("index.html", session=session)
+  return render_template("index.html")
 
 @app.route('/<username>')
 def userpage(username):
   user = db.db.users.find_one({'lowername' : username.lower() })
   if user != None:
-    return render_template("user.html", session=session, user=user)
+    return render_template("user.html", user=user)
   else:
     abort(404)
 
@@ -79,7 +81,8 @@ def logout():
 def signup():
   if not db.userExists(request.form['username']) and len(request.form['username']) > 0 and request.form['password1'] == request.form['password2']:
     hashed = system.cryptography.encryptPassword(request.form['password1'], True)
-    print db.db.users.insert({
+    shutil.copy("static/images/newbyicon.png", "uploads/icons/" + request.form['username'].lower() + ".png")
+    db.db.users.insert({
       "username"   : request.form['username'],
       "lowername"  : request.form['username'].lower(),
       "password"   : hashed, 
@@ -93,6 +96,7 @@ def signup():
       },
       "theme"      : "default",
       "bground"    : "",
+      "icon"       : request.form['username'].lower() + ".png",
       "glued"      : 1
     }) 
     session['username'] = request.form['username']
@@ -123,7 +127,7 @@ def settings():
     if "username" and "password" in session:
       user = db.db.users.find_one({'lowername' : session['username'].lower() })
       if user != None:
-        return render_template("settings.html", session=session, user=user)
+        return render_template("settings.html", user=user)
       else: abort(401)
     else: abort(401)
   elif request.method == 'POST':
@@ -131,10 +135,21 @@ def settings():
       user = db.db.users.find_one({'lowername' : session['username'].lower(), 'password' : session['password'] })
       if user != None:
         # User Icon
-        file = request.files['iconUpload']
-        if file and util.allowedFile(file.filename,config.imageExtensions):
-          file.save(os.path.join(config.iconsDir, user['lowername']))
-          return "1"
+        icon = request.files['iconUpload']
+        if icon and util.allowedFile(icon.filename,config.iconExtensions):
+          try: os.remove(config.iconsDir + user["icon"])
+          except: 
+            if config.logging: logging.warning("Error: Couldn't remove user \"" + session['username']+ "\"'s old icon while attempting to upload a new icon. ")
+          fileName = user['lowername'] + "." + util.fileType(icon.filename)
+          fileLocation = os.path.join(config.iconsDir, fileName)
+          db.db.users.update({"username": session['username']}, {"$set": {"icon": fileName}})
+          icon.save(fileLocation)
+          image = Image.open(fileLocation)
+          resized = image.resize(config.iconSize)
+          try: resized.save(fileLocation)
+          except: 
+            if config.logging: logging.warning("Error: Couldn't save user \"" + session['username'] + "\"'s new icon while attempting to upload a new icon. ")
+          else: return "1"
         else: abort(401)
       else: abort(401)
     else: abort(401)
@@ -143,7 +158,7 @@ def settings():
 def policy():
   f = open("static/legal/tos")
   tos = f.read()
-  return render_template("tos.html", session=session, tos=tos)
+  return render_template("tos.html", tos=tos)
 
 @app.route('/icons/<filename>')
 def iconFiles(filename):
@@ -169,11 +184,11 @@ def page_not_found(e):
     randimg = "bile404.png"
   elif rando == 5:
     randimg = "sexy404.png"
-  return render_template('404.html',session=session,randimg=randimg), 404
+  return render_template('404.html',randimg=randimg), 404
 
 @app.errorhandler(401)
 def unauthorized(e):
-  return render_template('401.html',session=session), 401
+  return render_template('401.html'), 401
 
 if __name__ == "__main__": app.run(host='0.0.0.0',debug=True)
 else: print("DrawRawr isn't a module, silly.")

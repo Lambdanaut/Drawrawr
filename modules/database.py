@@ -19,3 +19,6 @@ class Database:
     if user == None:
       return False
     else: return True
+  def getUser(self,session):
+    if "username" in session:
+      return self.db.users.find_one({"lowername":session["username"].lower()})

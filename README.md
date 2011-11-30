@@ -21,6 +21,7 @@ Dependancies
 
 ### Libraries
 * OpenSSL (*see __Python dependancies__*)
+* Python Imaging Library
 
 ### Python dependancies
 * web.py
