@@ -1,3 +1,5 @@
+{% extends "macros.html" %}
+{% block layout %}
 <!doctype html>
 <head>
   <meta charset="utf-8">
@@ -24,10 +26,10 @@
   <header>
     <div id="header">
       <div id="set-header">↑</div>
-      {% if session['username'] %}
+      {% if loggedInUser['username'] %}
         <aside id="control-panel">
           <div style="float:right;">
-            <b><a href='/{{ session['username'] }}'>{{ session['username'] }}</a></b><br>
+            <b><a href='/{{ loggedInUser['username'] }}'>{{ loggedInUser['username'] }}</a></b><br>
             <a>Updates</a><br>
             <div id="options-tab">
               <u style="cursor:pointer;">Options</u>
@@ -39,8 +41,8 @@
               </div>
             </div>
           </div>
-          <a href = '/{{ session['username'] }}'>
-            <img src='/icons/{{ session["username"].lower() }}' class='tinyIcon'  style='margin-right: 5px;'>
+          <a href = '/{{ loggedInUser['username'] }}'>
+            <img src='/icons/{{ loggedInUser["username"].lower() }}.{{ loggedInUser["icon"] }}' class='tinyIcon'  style='margin-right: 5px;' alt='User Icon'>
           </a>
         </aside>
       {% else %}
@@ -55,7 +57,7 @@
             <h6>EMAIL: (<i>optional</i>)</h6> <input type = 'text' class='textInput' name = 'email'>
             <h6>PASSWORD:</h6> <input type='password' class='textInput' name='password1'>
             <h6>VERIFY PASSWORD:</h6> <input type='password' class='textInput' name='password2'> <br>
-            <input type='checkbox' name='rememberMe'>Remember Me<br>
+            <input type='checkbox' name='tosAgree'><span style="font-size:12px;">You Agree to Our <a href="/meta/terms-of-service">Terms of Service</a></span><br>
           </form>
           <button class='button'>Register</button><br>
         </aside>
@@ -90,3 +92,4 @@
   </footer>
 </body>
 </html>
+{% endblock %}

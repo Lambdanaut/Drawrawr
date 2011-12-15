@@ -17,6 +17,17 @@ db = Database(config.dbHost,config.dbPort)
 
 if config.logging: logging.basicConfig(filename='logs/DR.log',level=logging.DEBUG)
 
+@app.before_request
+def beforeRequest():
+  if "username" and "password" in session:
+    user = db.db.users.find_one({'lowername' : session["username"].lower(), 'password' : session["password"] }) 
+    g.loggedInUser = user
+  else: g.loggedInUser = None
+
+@app.context_processor
+def injectUser():
+  return dict (loggedInUser = g.loggedInUser)
+
 @app.route('/')
 def index():
   return render_template("index.html")
@@ -32,11 +43,11 @@ def userpage(username):
 @app.route('/users/login', methods=['POST'])
 def login():
   if request.method == 'POST':
-    user = db.db.users.find_one({'lowername' : request.form['username'].lower() })
-    if user != None:
-      if system.cryptography.encryptPassword(request.form['password'], True) == user['password']: 
-        session['username']=user['username']
-        session['password']=user['password']
+    userResult = db.db.users.find_one({'lowername' : request.form['username'].lower() })
+    if userResult != None:
+      if system.cryptography.encryptPassword(request.form['password'], True) == userResult['password']: 
+        session['username']=userResult['username']
+        session['password']=userResult['password']
         session.permanent = True
         return "1"
       else: return "0"
@@ -71,7 +82,7 @@ def signup():
       },
       "theme"      : "default",
       "bground"    : "",
-      "icon"       : request.form['username'].lower() + ".png",
+      "icon"       : "png",
       "glued"      : 1
     }) 
     session['username'] = request.form['username']
@@ -80,53 +91,51 @@ def signup():
     return "1" #SUCCESS
   else: return "0" #ERROR, User doesn't exist or username is too small
 
-@app.route('/users/glued', methods=['GET'])
-def glued():
-  if 'username' in session:
-    user = db.db.users.find_one({'username' : session['username']})
-    if user != None:
-      return str(user["glued"])
-    else: return "1"
-  else: return "1"
-
-@app.route('/users/glue', methods=['POST'])
+@app.route('/users/glue', methods=['GET','POST'])
 def glue():
-  if 'username' in session:
-    db.db.users.update({"username": session['username']}, {"$set": {"glued": request.form['glued']}})
-    return "1"
-  else: return "0"
+  if request.method == 'GET':
+    if 'username' in session:
+      if g.loggedInUser != None:
+        return str(g.loggedInUser["glued"])
+      else: return "1"
+    else: return "1"
+  elif request.method == 'POST':
+    if g.loggedInUser != None:
+      db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"glued": request.form['glued']}})
+      return "1"
+    else: return "0"
 
 @app.route('/users/settings', methods=['GET','POST'])
 def settings():
   if request.method == 'GET':
-    if "username" and "password" in session:
-      user = db.db.users.find_one({'lowername' : session['username'].lower() })
-      if user != None:
-        return render_template("settings.html", user=user)
-      else: abort(401)
+    if g.loggedInUser != None:
+      return render_template("settings.html")
     else: abort(401)
   elif request.method == 'POST':
-    if "username" and "password" in session:
-      user = db.db.users.find_one({'lowername' : session['username'].lower(), 'password' : session['password'] })
-      if user != None:
-        # User Icon
-        icon = request.files['iconUpload']
-        if icon and util.allowedFile(icon.filename,config.iconExtensions):
-          try: os.remove(config.iconsDir + user["icon"])
-          except: 
-            if config.logging: logging.warning("Error: Couldn't remove user \"" + session['username']+ "\"'s old icon while attempting to upload a new icon. ")
-          fileName = user['lowername'] + "." + util.fileType(icon.filename)
-          fileLocation = os.path.join(config.iconsDir, fileName)
-          db.db.users.update({"username": session['username']}, {"$set": {"icon": fileName}})
-          icon.save(fileLocation)
-          image = Image.open(fileLocation)
-          resized = image.resize(config.iconSize)
-          try: resized.save(fileLocation)
-          except: 
-            if config.logging: logging.warning("Error: Couldn't save user \"" + session['username'] + "\"'s new icon while attempting to upload a new icon. ")
-          else: return "1"
-        else: abort(401)
-      else: abort(401)
+    if g.loggedInUser != None:
+      # User Icon
+      icon = request.files['iconUpload']
+      if icon and util.allowedFile(icon.filename,config.iconExtensions):
+        try: os.remove(config.iconsDir + g.loggedInUser['lowername'] + "." + g.loggedInUser["icon"])
+        except: 
+          if config.logging: logging.warning("Error: Couldn't remove user \"" + g.loggedInUser['username']+ "\"'s old icon while attempting to upload a new icon. ")
+        fileName = g.loggedInUser['lowername'] + "." + util.fileType(icon.filename)
+        fileLocation = os.path.join(config.iconsDir, fileName)
+        db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"icon": util.fileType(fileName) }})
+        icon.save(fileLocation)
+        image = Image.open(fileLocation)
+        resized = image.resize(config.iconSize)
+        try: resized.save(fileLocation)
+        except: 
+          if config.logging: logging.warning("Error: Couldn't save user \"" + g.loggedInUser['username'] + "\"'s new icon while attempting to upload a new icon. ")
+      # Password
+      if request.form["changePassCurrent"] and request.form["changePassNew1"] and request.form["changePassNew2"]:
+        if system.cryptography.encryptPassword(request.form["changePassCurrent"], True) == g.loggedInUser['password']:
+          if request.form["changePassNew1"] == request.form["changePassNew2"]:
+            hashed = system.cryptography.encryptPassword(request.form['changePassNew1'], True)
+            db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"password": hashed}})
+            session['password']=hashed
+      return "1"
     else: abort(401)
 
 @app.route('/meta/terms-of-service', methods=['GET'])

@@ -86,7 +86,7 @@ $(document).ready ->
 	/* Set up the header */
 	header = new Header false
 	$.ajax
-		url:  "/users/glued",
+		url:  "/users/glue",
 		type: "GET",
 		success: (data) =>
 			if data == "0"
