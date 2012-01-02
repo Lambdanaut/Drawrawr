@@ -77,7 +77,6 @@ class Modal
 	die: () ->
 		@visible=false
 		$("#modal").css("visibility","hidden")
-
 $(document).ready ->
 	/* Keeps the copyright up to date on the current year */
 	date = new Date()

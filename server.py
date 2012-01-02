@@ -65,7 +65,7 @@ def logout():
 
 @app.route('/users/signup', methods=['GET', 'POST'])
 def signup():
-  if not db.userExists(request.form['username']) and len(request.form['username']) > 0 and request.form['password1'] == request.form['password2']:
+  if not db.userExists(request.form['username']) and len(request.form['username']) > 0 and request.form['password1'] == request.form['password2'] and request.form['tosAgree'] == 'true':
     hashed = system.cryptography.encryptPassword(request.form['password1'], True)
     shutil.copy("static/images/newbyicon.png", "uploads/icons/" + request.form['username'].lower() + ".png")
     db.db.users.insert({
@@ -74,16 +74,19 @@ def signup():
       "password"   : hashed, 
       "email"      : request.form['email'],
       "layout"     : {
-        #t == top; l == left; r == right; b == bottom; h == hidden
+        # t == top; l == left; r == right; b == bottom; h == hidden
         "profile"  : "t",
         "gallery"  : "l",
         "watches"  : "r",
         "comments" : "b"
       },
       "theme"      : "default",
+      "profile"    : "",
       "bground"    : "",
       "icon"       : "png",
-      "glued"      : 1
+      "glued"      : 1,
+      # m == Male; f == Female; h == Hide Gender
+      "gender"     : "h"
     }) 
     session['username'] = request.form['username']
     session['password'] = hashed
@@ -135,6 +138,12 @@ def settings():
             hashed = system.cryptography.encryptPassword(request.form['changePassNew1'], True)
             db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"password": hashed}})
             session['password']=hashed
+      # Gender
+      if request.form["changeGender"] != g.loggedInUser["gender"]:
+        db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"gender": request.form["changeGender"] }})
+      # Profile
+      #if request.form["changeProfile"] != g.loggedInUser["profile"]:
+      #  db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"profile": request.form["changeProfile"] }})
       return "1"
     else: abort(401)
 
@@ -147,6 +156,10 @@ def policy():
 @app.route('/icons/<filename>')
 def iconFiles(filename):
     return send_from_directory(config.iconsDir,filename)
+
+@app.route('/art/submit', methods=['GET','POST'])
+def submitArt():
+  return render_template("submit.html")
 
 @app.route('/art/<filename>')
 def artFiles(filename):

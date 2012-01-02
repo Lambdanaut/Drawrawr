@@ -3,10 +3,10 @@
 <!doctype html>
 <head>
   <meta charset="utf-8">
-
-  <title>{% block title %}{% endblock %}</title>
   <meta name="description" content="DrawRawr is a social utility that allows artists to collaborate, communicate, and show off their galleries online. ">
   <meta name="author" content="Personette Labs">
+
+  <title>{% block title %}{% endblock %}</title>
   
   <link rel="shortcut icon" href="/static/favicon.ico" type="image/x-icon">
   <link rel="apple-touch-icon" href="/static/apple-touch-icon.png">
@@ -19,6 +19,8 @@
   <script src="/static/js/modernizr-1.6.min.js"></script>
   <script src="/static/js/main.js"></script>
 
+  <script>
+  </script>
   {% block head %}{% endblock %}
 
 </head>
@@ -57,7 +59,7 @@
             <h6>EMAIL: (<i>optional</i>)</h6> <input type = 'text' class='textInput' name = 'email'>
             <h6>PASSWORD:</h6> <input type='password' class='textInput' name='password1'>
             <h6>VERIFY PASSWORD:</h6> <input type='password' class='textInput' name='password2'> <br>
-            <input type='checkbox' name='tosAgree'><span style="font-size:12px;">You Agree to Our <a href="/meta/terms-of-service">Terms of Service</a></span><br>
+            <input type='checkbox' name='tosAgree' value='true'><span style="font-size:12px;">You Agree to Our <a href="/meta/terms-of-service">Terms of Service</a></span><br>
           </form>
           <button class='button'>Register</button><br>
         </aside>
@@ -65,7 +67,7 @@
           <form>
             <h6>USERNAME:</h6> <input type='text' class='textInput' name='username'> <br>
             <h6>PASSWORD:</h6> <input type='password' class='textInput' name='password'> <br><br>
-            <input type='checkbox' name='rememberMe'>Remember Me<br>
+            <input type='checkbox' name='rememberMe' value='true'>Remember Me<br>
           </form>
           <button class='button'>Log In</button>
         </aside>
@@ -84,7 +86,7 @@
     {% block content %}{% endblock %}
   </div>
   <footer id="footer">
-    <span style="float:right;">copyright &copy; DrawRawr, <span id="copyright-date"></span></span>
+    <span style="float:right;">copyright &copy; DrawRawr, 2010-<span id="copyright-date"></span></span>
     <a href="/meta/terms-of-service">Terms of Service</a> ·
     <a href="/meta/staff">Staff</a> ·
     <a href="">DrawRawr API</a> ·
