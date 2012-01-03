@@ -82,6 +82,7 @@ def signup():
       },
       "theme"      : "default",
       "profile"    : "",
+      "bbsProfile" : "",
       "bground"    : "",
       "icon"       : "png",
       "glued"      : 1,
@@ -142,8 +143,9 @@ def settings():
       if request.form["changeGender"] != g.loggedInUser["gender"]:
         db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"gender": request.form["changeGender"] }})
       # Profile
-      #if request.form["changeProfile"] != g.loggedInUser["profile"]:
-      #  db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"profile": request.form["changeProfile"] }})
+      if request.form["changeProfile"] != g.loggedInUser["profile"]:
+        db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"profile": request.form["changeProfile"], "bbsProfile": parseBBS(request.form["changeProfile"]) } })
+
       return "1"
     else: abort(401)
 
@@ -163,7 +165,11 @@ def submitArt():
 
 @app.route('/art/<filename>')
 def artFiles(filename):
-    return send_from_directory(config.artDir,filename)
+  return send_from_directory(config.artDir,filename)
+
+@app.route('/util/parseBBS/<text>')
+def parseBBS(text):
+  return text
 
 @app.errorhandler(404)
 def page_not_found(e):

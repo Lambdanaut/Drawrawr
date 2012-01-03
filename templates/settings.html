@@ -2,26 +2,32 @@
 {% block title %}Settings{% endblock %}
 {% block head %}
 <script src="/static/js/tabs.js"></script>
+<script src="/static/js/settings.js"></script>
 <link rel="stylesheet" href="/static/css/tabs.css" media="screen">
 <style media="screen" type="text/css">
 h3
 {
   margin: 2px;
 }
-#leftCol
+.leftCol
 {
   float: left;
   width: 33%;
 }
-#middleCol
+.middleCol
 {
   float: left;
   width: 33%
 }
-#rightCol
+.rightCol
 {
   float: left;
   width: 33%;
+}
+.layoutDivider
+{
+  border: solid 1px #513727; 
+  margin: 1px;
 }
 </style>
 {% endblock %}
@@ -35,40 +41,55 @@ h3
   </div>
   <form enctype="multipart/form-data" method="POST" action="/users/settings">
     <section id="tab-content" class="container">
-
-  <div id="tab-general"> 
-    <div id="leftCol">
-      <h3>Upload a New Icon: </h3>
-        <img src = '/icons/{{ loggedInUser["lowername"] }}.{{ loggedInUser["icon"] }}' style='float:left;' class='userIcon' alt='Current User Icon'>
-        <input name="iconUpload" id="iconUpload" type=file><br style="clear: both;"><br>
-      <h3>Change your Password: </h3>
-        Current Password: <br>
-        <input type="password" name="changePassCurrent"><br>
-        New Password: <br>
-        <input type="password" name="changePassNew1"><br>
-        New Password(Repeat): <br>
-        <input type="password" name="changePassNew2"><br>
-    </div>
-    <div id="middleCol">
-      <h3>Gender: </h3>
-      <select name="changeGender">
-        <option value="h">Hide Gender</option>
-        <option value="m">Male</option>
-        <option value="f">Female</option>
-      </select><br><br>
-      <h3>DOB: </h3>
-    </div>
-    <div id="rightCol">
-       right
-    </div>
-    <div style="clear: both;"></div>
-  </div>
-  <div id="tab-profile">
-    <h3>Profile Text: </h3>
-    <textarea name="changeProfile" style="width: 100%; height: 125px;"></textarea>
-  </div>
-  <div id="tab-layout"> LAYOUT </div>
+      <div id="tab-general"> 
+        <div class="leftCol">
+          <h3>Upload a New Icon: </h3>
+          <img src = '/icons/{{ loggedInUser["lowername"] }}.{{ loggedInUser["icon"] }}' style='float:left;' class='userIcon' alt='Current User Icon'>
+          <input type="file" name="iconUpload" id="iconUpload"><br style="clear: both;"><br>
+          <h3>Change your Password: </h3>
+          Current Password: <br>
+          <input type="password" name="changePassCurrent"><br>
+          New Password: <br>
+          <input type="password" name="changePassNew1"><br>
+          New Password(Repeat): <br>
+          <input type="password" name="changePassNew2"><br>
+        </div>
+        <div class="middleCol">
+          <h3>Gender: </h3>
+          <select name="changeGender" id="changeGender" >
+            <option value="h"{% if loggedInUser['gender'] == 'h' %} id='defaultGender'{% endif %}>Hide Gender</option>
+            <option value="m"{% if loggedInUser['gender'] == 'm' %} id='defaultGender'{% endif %}>Male</option>
+            <option value="f"{% if loggedInUser['gender'] == 'f' %} id='defaultGender'{% endif %}>Female</option>
+          </select><br><br>
+          <h3>DOB: </h3>
+        </div>
+        <div class="rightCol">
+          right
+        </div>
+        <div style="clear: both;"></div>
+      </div>
+      <div id="tab-profile">
+        <h3>Profile Text: </h3>
+        <textarea name="changeProfile" style="width: 100%; height: 125px;">{{ loggedInUser["profile"] }}</textarea>
+      </div>
+      <div id="tab-layout"> 
+        <p>
+          <div style='float:left; width: 50%'>
+            <div class='layoutSection'>
+              This is where you can move, hide, or add "<i>Sections</i>" to your userpage! <br>
+              Drag and Drop the sections below onto the display to the right to add sections to your userpage. Drag them back to the "<i>Hidden</i>" area below to remove or hide them from your userpage. <br>
+              Some sections can only be placed in certain areas of your userpage. Mouse over the sections to see where they can be placed, or click the "<i>?</i>" for more info on this section.
+            </div>
+          </div>
+          <div style='float:left; width: 50%'>
+            <div class='layoutSection'>
+              And cadmium and calcium and chromium
+            </div>
+          </div>
+        </p>
+        <div style="clear: both;"></div>
+      </div>
     </section>
-    <div style="text-align:center;"><input type="submit" value="Update Profile"></div>
+    <div style="text-align:center;"><input type="submit" value="Update Profile" class="button"></div>
   </form>
 {% endblock %}

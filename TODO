@@ -1,1 +1,0 @@
-1. Allow .coffee objects to be callable from other .coffee scripts. Right now you can't use modals or popups in external scripts. The solution should be simple, but it's eluding me. 

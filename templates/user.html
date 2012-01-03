@@ -17,6 +17,16 @@
 {
 	width: 70%;
 }
+#topArea
+{
+	margin-top: -5px;
+	margin-left: 5px;
+}
+.tabButton
+{
+	float: right;
+	padding: 3px 5px 3px 5px;
+}
 
 {# Color Theme Settings #}
 {% if user["theme"] == "blue" %}
@@ -46,8 +56,16 @@ body
 
 {% macro profile() %}
   <section class="container">
-    <h1>Profile</h1>
-    <p>{{ user["profile"] }}</p>
+  <div style="float:left;height:100%;margin-right:5px;">
+    <a href='/{{ user['username'] }}'>
+      <img src='/icons/{{ user["lowername"] }}.{{ user["icon"] }}' alt="{{ user["username"] }}'s Icon" class="userIcon">
+    </a>
+  </div>
+  <div style="float:left;">
+    <h3 style="margin-top:0px; display: inline;">{{ user['username'] }}</h3> {{ user["gender"] }} Birthday
+    <p>{{ user["bbsProfile"] }}</p>
+  </div>
+  <div style="clear: both;"></div>
   </section>
 {% endmacro %}
 
@@ -80,6 +98,10 @@ body
 {% endmacro %}
 
 {% block content %}
+<div id="topArea">
+  <div class="container tabButton"> + watch </div>
+  <div class="container tabButton"> ~ message </div>
+</div>
 <div id="top" class="fullRow">
   {{ row("t") }}
 </div>
