@@ -1,11 +1,12 @@
 from flask import *
 
-import os, shutil, sys, random, logging
+import os, shutil, sys, random, logging, datetime
 
 from modules.database import Database
 from werkzeug import secure_filename
 from PIL import Image
-         
+
+import system.usercode as usercode
 import system.config as config
 import system.util as util
 import system.cryptography
@@ -49,10 +50,15 @@ def login():
         session['username']=userResult['username']
         session['password']=userResult['password']
         session.permanent = True
+        # Add the user's IP to the front of the list of his IPs
+        ip = userResult["ip"]
+        try: ip.remove(request.remote_addr)
+	except ValueError: pass
+        ip.insert(0,request.remote_addr)
+        db.db.users.update({"lowername": userResult['lowername']}, {"$set": {"ip": ip} })
         return "1"
       else: return "0"
-    else:
-      return "0"
+    else: return "0"
   else: return "None"
 
 @app.route('/users/logout', methods=['POST'])
@@ -69,22 +75,25 @@ def signup():
     hashed = system.cryptography.encryptPassword(request.form['password1'], True)
     shutil.copy("static/images/newbyicon.png", "uploads/icons/" + request.form['username'].lower() + ".png")
     db.db.users.insert({
-      "username"   : request.form['username'],
-      "lowername"  : request.form['username'].lower(),
-      "password"   : hashed, 
-      "email"      : request.form['email'],
-      "layout"     : {
+      "username"    : request.form['username'],
+      "lowername"   : request.form['username'].lower(),
+      "password"    : hashed, 
+      "email"       : request.form['email'],
+      "ip"          : [request.remote_addr],
+      "dob"         : None,
+      "dateJoined"  : datetime.datetime.today(),
+      "layout"      : {
         # t == top; l == left; r == right; b == bottom; h == hidden
         "profile"  : "t",
         "gallery"  : "l",
         "watches"  : "r",
         "comments" : "b"
       },
-      "theme"      : "default",
-      "profile"    : "",
-      "bbsProfile" : "",
-      "bground"    : "",
-      "icon"       : "png",
+      "theme"       : "default",
+      "profile"     : "",
+      "codeProfile" : "",
+      "bground"     : None,
+      "icon"        : "png",
       "glued"      : 1,
       # m == Male; f == Female; h == Hide Gender
       "gender"     : "h"
@@ -144,7 +153,7 @@ def settings():
         db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"gender": request.form["changeGender"] }})
       # Profile
       if request.form["changeProfile"] != g.loggedInUser["profile"]:
-        db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"profile": request.form["changeProfile"], "bbsProfile": parseBBS(request.form["changeProfile"]) } })
+        db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"profile": request.form["changeProfile"], "codeProfile": usercode.parse(request.form["changeProfile"]) } })
 
       return "1"
     else: abort(401)
@@ -167,9 +176,9 @@ def submitArt():
 def artFiles(filename):
   return send_from_directory(config.artDir,filename)
 
-@app.route('/util/parseBBS/<text>')
-def parseBBS(text):
-  return text
+@app.route('/util/parseUsercode/<text>')
+def parseUsercode(text):
+  return usercode.parse(text)
 
 @app.errorhandler(404)
 def page_not_found(e):

@@ -28,19 +28,23 @@
     Header.prototype.glue = function() {
       var headerCSS, navCSS;
       this.glued = true;
+      /* Old Header Style. This doesn't stretch across the page */;
+      /* headerCSS = "position":"relative","top":"auto","left":"auto","right":"auto","margin":"5px 15px 4px 15px" */;
+      /* navCSS ="margin":"0px 15px 4px 15px" */;
+      /* $("#header").addClass("roundBox") */;
+      /* New Header Style. This stetches all the was across the page */;
       headerCSS = {
-        "position": "relative",
-        "top": "auto",
-        "left": "auto",
-        "right": "auto",
-        "margin": "5px 15px 4px 15px"
+        "position": "absolute",
+        "top": "5px",
+        "left": "0px",
+        "right": "0px",
+        "margin": "auto"
       };
       navCSS = {
-        "margin": "0px 15px 4px 15px"
+        "margin": "83px 15px 4px 15px"
       };
       $("#header").css(headerCSS);
       $("#navigation").css(navCSS);
-      $("#header").addClass("roundBox");
       return $("#set-header").html("↓");
     };
     /* Unglue the header from the top of the page */;
@@ -59,7 +63,8 @@
       };
       $("#header").css(headerCSS);
       $("#navigation").css(navCSS);
-      $("#header").removeClass("roundBox");
+      /* Old Header Style fix. Only required for old header */;
+      /* $("#header").removeClass("roundBox") */;
       return $("#set-header").html("↑");
     };
     return Header;
@@ -103,15 +108,9 @@
     $("#copyright-date").html(date.getFullYear());
     /* Set up the header */;
     header = new Header(false);
-    $.ajax({
-      url: "/users/glue",
-      type: "GET",
-      success: __bind(function(data) {
-        if (data === "0") {
-          return header.switchGlue();
-        }
-      }, this)
-    });
+    if ($("#glued").attr("data-glued") === "0") {
+      header.switchGlue();
+    }
     /* Registration */;
     $("#register-button").click(__bind(function() {
       var signupModal;

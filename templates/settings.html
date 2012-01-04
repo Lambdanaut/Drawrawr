@@ -3,32 +3,58 @@
 {% block head %}
 <script src="/static/js/tabs.js"></script>
 <script src="/static/js/settings.js"></script>
+<script src="/static/js/draggable.js"></script>
 <link rel="stylesheet" href="/static/css/tabs.css" media="screen">
 <style media="screen" type="text/css">
 h3
 {
-  margin: 2px;
+	margin: 2px;
 }
 .leftCol
 {
-  float: left;
-  width: 33%;
+	float: left;
+	width: 33%;
 }
 .middleCol
 {
-  float: left;
-  width: 33%
+	float: left;
+	width: 33%
 }
 .rightCol
 {
-  float: left;
-  width: 33%;
+	float: left;
+	width: 33%;
 }
-.layoutDivider
+#contentMimic
 {
-  border: solid 1px #513727; 
-  margin: 1px;
+	float: left;
+	width: 60%;
+	background-color: #f1e3d1;
 }
+.profileFullRow
+{
+	width: 100%;
+	clear: both;
+	padding-top: 5px;
+}
+#profileTop
+{
+	border-bottom: dashed 1px #513727;
+}
+#profileRightCol
+{
+	float: right;
+	width: 30%;
+}
+#profileLeftCol
+{
+	width: 70%;
+}
+#profileBottom
+{
+	border-top: dashed 1px #513727;
+}
+
 </style>
 {% endblock %}
 {% block content %}
@@ -61,7 +87,6 @@ h3
             <option value="m"{% if loggedInUser['gender'] == 'm' %} id='defaultGender'{% endif %}>Male</option>
             <option value="f"{% if loggedInUser['gender'] == 'f' %} id='defaultGender'{% endif %}>Female</option>
           </select><br><br>
-          <h3>DOB: </h3>
         </div>
         <div class="rightCol">
           right
@@ -74,16 +99,33 @@ h3
       </div>
       <div id="tab-layout"> 
         <p>
-          <div style='float:left; width: 50%'>
+          <div style='float:left; width: 40%;'>
             <div class='layoutSection'>
               This is where you can move, hide, or add "<i>Sections</i>" to your userpage! <br>
               Drag and Drop the sections below onto the display to the right to add sections to your userpage. Drag them back to the "<i>Hidden</i>" area below to remove or hide them from your userpage. <br>
               Some sections can only be placed in certain areas of your userpage. Mouse over the sections to see where they can be placed, or click the "<i>?</i>" for more info on this section.
             </div>
           </div>
-          <div style='float:left; width: 50%'>
+          <div id="contentMimic" class='roundBox'>
             <div class='layoutSection'>
-              And cadmium and calcium and chromium
+              <div id="visibleArea">
+                <div id="profileTop" class="profileFullRow">
+                    <div class="draggable container">Profile</div>
+                    <div class="draggable container">Profile</div>
+                </div>
+                <div id="profileMiddle" class="profileFullRow">
+                  <div id="profileRightCol">
+                    <div class="draggable container">Profile</div>
+                  </div>
+                  <div id="profileLeftCol">
+                    <div class="draggable container">Profile</div>
+                    <div class="draggable container">Profile</div>
+                  </div>
+                </div>
+                <div id="profileBottom" class="profileFullRow">
+                    <div class="draggable container">Profile</div>
+                </div>
+              </div>
             </div>
           </div>
         </p>

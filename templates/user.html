@@ -44,7 +44,7 @@
 {% endif %}
 
 {# Background Image Settings #}
-{% if user["bground"] != "" %}
+{% if user["bground"] != None %}
 body
 {
 	background-image: url("{{ user["bground"] }}");
@@ -62,8 +62,16 @@ body
     </a>
   </div>
   <div style="float:left;">
-    <h3 style="margin-top:0px; display: inline;">{{ user['username'] }}</h3> {{ user["gender"] }} Birthday
-    <p>{{ user["bbsProfile"] }}</p>
+    <h3 style="margin-top:0px; display: inline;">{{ user['username'] }}</h3> 
+    {% if user["gender"] == "m"   %} <img src='/static/images/male.png'>
+    {% elif user["gender"] == "f" %} <img src='/static/images/female.png'> 
+    {% endif %}
+    {% if user["dob"] != None %}
+      <span style="font-size:12px;">
+        Birthday: {{ monthName(user["dob"].month) }} {{ user["dob"].day }}, {{ user["dob"].year }}
+      </span>
+    {% endif %}
+    {{ user["codeProfile"] | safe }}
   </div>
   <div style="clear: both;"></div>
   </section>
@@ -105,7 +113,7 @@ body
 <div id="top" class="fullRow">
   {{ row("t") }}
 </div>
-<div id="middle">
+<div id="middle" class="fullRow">
   <div id="rightCol">
     {{ row("r") }}
   </div>

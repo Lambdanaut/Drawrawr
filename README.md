@@ -21,10 +21,11 @@ Dependancies
 
 ### Libraries
 * OpenSSL (*see __Python dependancies__*)
-* Python Imaging Library
 
 ### Python dependancies
 * web.py
+* Python Imaging Library
+* markdown
 
 ### Network dependancies
 * [ArtServer](https://github.com/DrawRawr/ArtServer) (*optional*)

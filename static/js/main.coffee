@@ -20,18 +20,22 @@ class Header
 	/* Glue the header to the top of the page */
 	glue: () -> 
 		@glued=true
+		
+		/* Old Header Style. This doesn't stretch across the page */
+		/* headerCSS = "position":"relative","top":"auto","left":"auto","right":"auto","margin":"5px 15px 4px 15px" */
+		/* navCSS ="margin":"0px 15px 4px 15px" */
+		/* $("#header").addClass("roundBox") */
 
+		/* New Header Style. This stetches all the was across the page */
 		headerCSS = 
-			"position":"relative",
-			"top":"auto","left":"auto","right":"auto",
-			"margin":"5px 15px 4px 15px"
+			"position":"absolute",
+			"top":"5px","left":"0px","right":"0px",
+			"margin":"auto"
 		navCSS =
-			"margin":"0px 15px 4px 15px"
+			"margin":"83px 15px 4px 15px"
 
 		$("#header").css headerCSS
 		$("#navigation").css navCSS
-
-		$("#header").addClass("roundBox")
 
 		$("#set-header").html "↓"
 
@@ -48,7 +52,8 @@ class Header
 		$("#header").css headerCSS
 		$("#navigation").css navCSS
 
-		$("#header").removeClass("roundBox")
+		/* Old Header Style fix. Only required for old header */
+		/* $("#header").removeClass("roundBox") */
 
 		$("#set-header").html "↑"
 
@@ -84,12 +89,8 @@ $(document).ready ->
 
 	/* Set up the header */
 	header = new Header false
-	$.ajax
-		url:  "/users/glue",
-		type: "GET",
-		success: (data) =>
-			if data == "0"
-				header.switchGlue()
+	if $("#glued").attr("data-glued") == "0"
+		header.switchGlue()
 
 	/* Registration */
 	$("#register-button").click () =>
