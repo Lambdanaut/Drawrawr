@@ -1,10 +1,11 @@
 {% extends "layout.html" %}
 {% block title %}Settings{% endblock %}
 {% block head %}
+<script src="/static/js/jquery-ui-1.8.16.custom.min.js"></script>
 <script src="/static/js/tabs.js"></script>
 <script src="/static/js/settings.js"></script>
-<script src="/static/js/draggable.js"></script>
 <link rel="stylesheet" href="/static/css/tabs.css" media="screen">
+<link rel="stylesheet" href="/static/css/draggable.css" media="screen">
 <style media="screen" type="text/css">
 h3
 {
@@ -39,22 +40,42 @@ h3
 }
 #profileTop
 {
+	min-height: 75px;
 	border-bottom: dashed 1px #513727;
 }
 #profileRightCol
 {
 	float: right;
-	width: 30%;
+	min-height: 75px;
+	width: 35%;
 }
 #profileLeftCol
 {
-	width: 70%;
+	width: 65%;
+	min-height: 75px;
 }
 #profileBottom
 {
 	border-top: dashed 1px #513727;
+	min-height: 75px;
 }
-
+#profileHiddenDivider
+{
+	text-align:center;
+	border-top: double 1px #513727;	
+}
+#profileHidden
+{
+	min-height: 150px;
+}
+#profileHidden .draggable
+{
+        float: left;
+        display: inline;
+        color: #bbbbbb;
+        background-color: #637e63;
+        width: 20%;
+}
 </style>
 {% endblock %}
 {% block content %}
@@ -101,30 +122,37 @@ h3
         <p>
           <div style='float:left; width: 40%;'>
             <div class='layoutSection'>
-              This is where you can move, hide, or add "<i>Sections</i>" to your userpage! <br>
-              Drag and Drop the sections below onto the display to the right to add sections to your userpage. Drag them back to the "<i>Hidden</i>" area below to remove or hide them from your userpage. <br>
-              Some sections can only be placed in certain areas of your userpage. Mouse over the sections to see where they can be placed, or click the "<i>?</i>" for more info on this section.
+              <p>This is where you can customize the layout and design of your userpage! Drag and Drop "sections" to add them to your page or change their placement.</p>
+              <ul>
+                <li>Drag sections to the "Hidden" area to remove them from your page.</li>
+                <li>Some sections can only be placed in certain areas of your userpage.</li>
+                <li>Mouse over the sections to see where they can be placed.</li>
+                <li>Click the "?" button on a section to learn more about it!</li>
+              </ul>
             </div>
           </div>
           <div id="contentMimic" class='roundBox'>
             <div class='layoutSection'>
               <div id="visibleArea">
-                <div id="profileTop" class="profileFullRow">
-                    <div class="draggable container">Profile</div>
-                    <div class="draggable container">Profile</div>
+                <div id="profileTop" class="profileFullRow dragBox">
+                  <div class="draggable container">Profile</div>
+                  <div class="draggable container">Profile</div>
                 </div>
                 <div id="profileMiddle" class="profileFullRow">
-                  <div id="profileRightCol">
+                  <div id="profileRightCol" class="dragBox">
                     <div class="draggable container">Profile</div>
                   </div>
-                  <div id="profileLeftCol">
+                  <div id="profileLeftCol" class="dragBox">
                     <div class="draggable container">Profile</div>
                     <div class="draggable container">Profile</div>
                   </div>
                 </div>
-                <div id="profileBottom" class="profileFullRow">
-                    <div class="draggable container">Profile</div>
+                <div id="profileBottom" class="profileFullRow dragBox">
+                  <div class="draggable container">Profile</div>
                 </div>
+                <div id="profileHiddenDivider"><h3>Hidden Modules</h3></div>
+		<div id="profileHidden" class="profileFullRow dragBox">
+		</div>
               </div>
             </div>
           </div>

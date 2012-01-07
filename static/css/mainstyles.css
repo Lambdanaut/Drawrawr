@@ -26,6 +26,7 @@ a img{border: 0px;}
 #header 
 {
 	background-color: #ffffff;
+	z-index: 900;
 	padding: 10px;
 	border-bottom: 1px solid #000000;
 	height: 50px;
