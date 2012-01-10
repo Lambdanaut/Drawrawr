@@ -1,16 +1,80 @@
 {% extends "layout.html" %}
 {% block title %}Submit Art{% endblock %}
 {% block head %}
+<script src= "/static/js/submit.js"></script>
+<style>
+
+.artArea
+{
+	display:none;
+}
+.text
+{
+	margin-left: 35%;
+	margin-right: 15px;
+	float:left;
+}
+
+</style>
 {% endblock %}
 {% block content %}
-  <section class="container">
-    HI WUD U LIEK SUBMIT ART?? LUL XD
-    <select>
-      <option>IMAGELOLZ</option>
-      <option>HEHE PENIZ</option>
-      <option>JURNAL. JK NOT IN ART NOOB. IN UR MENU. HEHE</option>
-      <option><b>BOLD TEXT J 4 FUN</b></option>
-      <option>cullinary</option>
-    </select>
+  <section class="container" style="text-align: center; min-height: 200px;">
+    <img src= "/static/images/placeholdergreen.png" alt="GREENY" style="position: absolute; left: 10%; ">
+    <img src= "/static/images/placeholderbrown.png" alt="BROWNIE" style="position: absolute; right: 10%;">
+    <div style="position:relative;top: 50px;">
+      <h2 id="submitTitle"> Submit Artwork </h2>
+      <b>Submission type:</b>
+      <select id="artOptions" name="artOptions">
+        <option id="ignore">-----</option>
+        <option>Image</option>
+        <option>Audio</option>
+        <option>Literature</option>
+        <option>Craft</option>
+        <option>Culinary</option>
+        <option>Performance</option>
+      </select>
+    </div>
   </section>
+    <div id="imageArea" class="artArea">
+      <form enctype="multipart/form-data" class="container">
+        <span class="text">File: </span><input type="file"><br><br>
+        <span class="text">Title: </span><input type="text"><br><br>
+        <span class="text" style="margin-top:75px;">Description: </span><textarea cols=50 rows=10 style="width: 400px; 150px;"></textarea><br>
+        </form>
+    </div>
+    <div id="audioArea" class="artArea">
+      <form enctype="multipart/form-data" class="container">
+        <span class="text">File: </span><input type="file"><br><br>
+        <span class="text">Title: </span><input type="text"><br><br>
+        <span class="text" style="margin-top:75px;">Description: </span><textarea cols=50 rows=10 style="width: 400px; 150px;"></textarea><br>
+        </form>
+    </div>
+    <div id="literatureArea" class="artArea">
+      <form enctype="multipart/form-data" class="container">
+        <span class="text">File: </span><input type="file"><br><br>
+        <span class="text">Title: </span><input type="text"><br><br>
+        <span class="text" style="margin-top:75px;">Description: </span><textarea cols=50 rows=10 style="width: 400px; 150px;"></textarea><br>
+        </form>
+    </div>
+    <div id="craftArea" class="artArea">
+      <form enctype="multipart/form-data" class="container">
+        <span class="text">File: </span><input type="file"><br><br>
+        <span class="text">Title: </span><input type="text"><br><br>
+        <span class="text" style="margin-top:75px;">Description: </span><textarea cols=50 rows=10 style="width: 400px; 150px;"></textarea><br>
+        </form>
+    </div>
+    <div id="culinaryArea" class="artArea">
+      <form enctype="multipart/form-data" class="container">
+        <span class="text">File: </span><input type="file"><br><br>
+        <span class="text">Title: </span><input type="text"><br><br>
+        <span class="text" style="margin-top:75px;">Description: </span><textarea cols=50 rows=10 style="width: 400px; 150px;"></textarea><br>
+        </form>
+    </div>
+    <div id="performanceArea" class="artArea">
+      <form enctype="multipart/form-data" class="container">
+        <span class="text">File: </span><input type="file"><br><br>
+        <span class="text">Title: </span><input type="text"><br><br>
+        <span class="text" style="margin-top:75px;">Description: </span><textarea cols=50 rows=10 style="width: 400px; 150px;"></textarea><br>
+        </form>
+    </div>
 {% endblock %}

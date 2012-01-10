@@ -164,6 +164,10 @@ def policy():
   tos = f.read()
   return render_template("tos.html", tos=tos)
 
+@app.route('/meta/about', methods=['GET'])
+def about():
+  return render_template("about.html")
+
 @app.route('/icons/<filename>')
 def iconFiles(filename):
     return send_from_directory(config.iconsDir,filename)
