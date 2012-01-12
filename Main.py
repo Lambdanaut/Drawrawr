@@ -27,5 +27,5 @@ for engine in enginesDirectory:
     engines[engineParts[0]] = __import__("system.engines." + engineParts[0])
 
 # Run Server
-if __name__ == "__main__": server.app.run(host='0.0.0.0',debug=True)
+if __name__ == "__main__": server.main()
 else: print("DrawRawr isn't a module, silly.")

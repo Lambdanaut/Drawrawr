@@ -37,7 +37,7 @@
             <div id="options-tab">
               <u style="cursor:pointer;">Options</u>
               <div class="roundBox">
-                <a href="/art/submit">Submit Art</a><br>
+                <a href="/art/do/submit">Submit Art</a><br>
                 <a href="/journals/view">Journals</a><br>
                 <a href="/users/settings">Settings</a><br>
                 <a id="logout-button">Logout</a>
@@ -73,7 +73,7 @@
           <button class='button'>Log In</button>
         </aside>
       {% endif %}
-      <a href="/"><div id="header-image"><img src="/static/images/newyearheader.png" alt="Header"></div></a>
+      <a href="/"><div id="header-image"><img src="/static/images/regheader.png" alt="Header"></div></a>
     </div>
     <aside id="notice"></aside>
     <aside id="modal"><div class="container"></div></aside>
@@ -87,7 +87,10 @@
     {% block content %}{% endblock %}
   </div>
   <footer id="footer">
-    <span style="float:right;">copyright &copy; DrawRawr, 2010-<span id="copyright-date"></span></span>
+    <span style="float:right;">
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="Creative Commons License" style="border-width:0;float:right; margin-left: 10px;" src="http://i.creativecommons.org/l/by-nc-sa/3.0/80x15.png"></a>
+      &copy;2010-<span id="copyright-date"></span> DrawRawr. Some rights reserved
+    </span>
     <a href="/meta/terms-of-service">Terms of Service</a> ·
     <a href="/meta/about">About</a> ·
     <a href="">DrawRawr API</a> ·

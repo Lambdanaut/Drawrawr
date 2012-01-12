@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block title %}{{ art["title"] }} by {{ art["author"] }}{% endblock %}
+{% block head %}
+{% endblock %}
+{% block content %}
+  <section class="container" style="text-align:center;">
+    <img src="/art/uploads/{{ art["_id"] }}.{{ art["filetype"] }}" alt=''>
+  </section>
+{% endblock %}

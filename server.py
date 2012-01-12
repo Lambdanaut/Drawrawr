@@ -1,15 +1,16 @@
 from flask import *
 
-import os, shutil, sys, random, logging, datetime
+import os, shutil, sys, random, logging, datetime, base64
 
-from modules.database import Database
+from system.database import Database
 from werkzeug import secure_filename
 from PIL import Image
 
-import system.usercode as usercode
 import system.config as config
-import system.util as util
 import system.cryptography
+import system.setup as setup
+import system.usercode as usercode
+import system.util as util
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
@@ -17,6 +18,13 @@ app.secret_key = os.urandom(24)
 db = Database(config.dbHost,config.dbPort)
 
 if config.logging: logging.basicConfig(filename='logs/DR.log',level=logging.DEBUG)
+
+def main():
+  # First Start Setup
+  setup.main()
+
+  # Run Server
+  app.run(host='0.0.0.0',debug=True)
 
 @app.before_request
 def beforeRequest():
@@ -35,17 +43,16 @@ def index():
 
 @app.route('/<username>')
 def userpage(username):
-  user = db.db.users.find_one({'lowername' : username.lower() })
-  if user != None:
+  user = db.getUser(username)
+  if user:
     return render_template("user.html", user=user)
-  else:
-    abort(404)
+  else: abort(404)
 
 @app.route('/users/login', methods=['POST'])
 def login():
   if request.method == 'POST':
     userResult = db.db.users.find_one({'lowername' : request.form['username'].lower() })
-    if userResult != None:
+    if userResult:
       if system.cryptography.encryptPassword(request.form['password'], True) == userResult['password']: 
         session['username']=userResult['username']
         session['password']=userResult['password']
@@ -74,7 +81,9 @@ def signup():
   if not db.userExists(request.form['username']) and len(request.form['username']) > 0 and request.form['password1'] == request.form['password2'] and request.form['tosAgree'] == 'true':
     hashed = system.cryptography.encryptPassword(request.form['password1'], True)
     shutil.copy("static/images/newbyicon.png", "uploads/icons/" + request.form['username'].lower() + ".png")
+    key = db.nextKey("users")
     db.db.users.insert({
+      "_id"         : key,
       "username"    : request.form['username'],
       "lowername"   : request.form['username'].lower(),
       "password"    : hashed, 
@@ -108,24 +117,28 @@ def signup():
 def glue():
   if request.method == 'GET':
     if 'username' in session:
-      if g.loggedInUser != None:
+      if g.loggedInUser:
         return str(g.loggedInUser["glued"])
       else: return "1"
     else: return "1"
   elif request.method == 'POST':
-    if g.loggedInUser != None:
+    if g.loggedInUser:
       db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"glued": request.form['glued']}})
       return "1"
     else: return "0"
 
+@app.route('/users/welcome', methods=['GET'])
+def welcome():
+  return render_template("welcome.html")
+
 @app.route('/users/settings', methods=['GET','POST'])
 def settings():
   if request.method == 'GET':
-    if g.loggedInUser != None:
+    if g.loggedInUser:
       return render_template("settings.html")
     else: abort(401)
   elif request.method == 'POST':
-    if g.loggedInUser != None:
+    if g.loggedInUser:
       # User Icon
       icon = request.files['iconUpload']
       if icon and util.allowedFile(icon.filename,config.iconExtensions):
@@ -172,12 +185,44 @@ def about():
 def iconFiles(filename):
     return send_from_directory(config.iconsDir,filename)
 
-@app.route('/art/submit', methods=['GET','POST'])
-def submitArt():
-  return render_template("submit.html")
+@app.route('/art/<art>', methods=['GET'])
+def viewArt(art):
+  try: 
+    art = int(art)
+    artLookup = db.db.art.find_one({'_id' : art})
+  except ValueError: abort(404)
+  if not artLookup: abort(404)
+  else: return render_template("art.html", art=artLookup)
 
-@app.route('/art/<filename>')
-def artFiles(filename):
+@app.route('/art/do/submit', methods=['GET','POST'])
+def submitArt():
+  if request.method == 'GET':
+    if g.loggedInUser:
+      return render_template("submit.html")
+    else: abort(401)
+  else:
+    if g.loggedInUser:
+      # Image
+      if request.form["artType"] == "image":
+        fileType = util.fileType(request.files['upload'].filename)
+	key = db.nextKey("art")
+        db.db.art.insert({
+          "_id"         : key,
+          "title"       : request.form["title"],
+          "description" : request.form["description"],
+          "author"      : g.loggedInUser["username"],
+          "authorID"    : g.loggedInUser["_id"],
+          "filetype"    : fileType,
+          "type"        : "image"
+        })
+        image = request.files['upload']
+        fileLocation = os.path.join(config.artDir + str(key) + "." + fileType)
+        image.save(fileLocation)
+      return "1"
+    else: abort(401)
+
+@app.route('/art/uploads/<filename>')
+def artFile(filename):
   return send_from_directory(config.artDir,filename)
 
 @app.route('/util/parseUsercode/<text>')

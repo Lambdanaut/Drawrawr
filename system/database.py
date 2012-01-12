@@ -1,4 +1,4 @@
-import sys, pymongo
+import sys, pymongo, pymongo.objectid
 
 # To execute a general query: 
 # db.db.CollectionName.QueryType(QUERY)
@@ -19,6 +19,17 @@ class Database:
     if user == None:
       return False
     else: return True
-  def getUser(self,session):
-    if "username" in session:
-      return self.db.users.find_one({"lowername":session["username"].lower()})
+  def getUser(self,username):
+    return self.db.users.find_one({"lowername": username.lower()})
+  def mkUserID(self,passedID):
+    try: newID = pymongo.objectid.ObjectId(passedID)
+    except: return None
+    return newID
+  def getKey(self,collection):
+    key = self.db.seq.find_one({"_id" : collection})
+    if key:
+      return key["next"]
+    else: return key
+  def nextKey(self,collection):
+    self.db.seq.update({"_id": collection}, {"$inc" : {"next" : 1 } })
+    return self.getKey(collection)

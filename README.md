@@ -26,30 +26,18 @@ Dependancies
 * web.py
 * Python Imaging Library
 * markdown
+* Werkzeug
 
 ### Network dependancies
-* [ArtServer](https://github.com/DrawRawr/ArtServer) (*optional*)
 * memcache (*optional*)
-* MySQL
+* MongoDB
 
 
 License
 -------
-
-At the current stage of development, DrawRawr lacks a proper software license. 
-Because of this, it is advised against using cloned repositories of DrawRawr code in production environments.
-
-The software license is subject to change.
-
-**Please note that we hold no responsibility for how you utilize this code in your
-infastructure. We advise against using unlicensed code for the remainder of this "limbo".
-Upon finding a proper license, DrawRawr will become feasible to use under the license
-agreement and guidelines.**
-
-Thank you.
+[Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported](http://creativecommons.org/licenses/by-nc-sa/3.0/legalcode)
 
 
 Links
 -----
-
 * [DrawRawr.com](http://www.drawrawr.com/) - A Social Website for Artists... with awesome people.
