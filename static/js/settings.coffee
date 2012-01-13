@@ -23,7 +23,7 @@ inSet =
 	friends      : 'b',
 	nearby       : 'b',
 	awards       : 'b',
-	tip jar      : 'b',
+	tips         : 'b',
 	profile      : 'c',
 	gallery      : 'c',
 	favorites    : 'c',

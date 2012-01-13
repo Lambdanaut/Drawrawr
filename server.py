@@ -216,8 +216,10 @@ def submitArt():
           "type"        : "image"
         })
         image = request.files['upload']
-        fileLocation = os.path.join(config.artDir + str(key) + "." + fileType)
-        image.save(fileLocation)
+        fileLocation = os.path.join(config.artDir, str(key) + "." + fileType)
+        try: image.save(fileLocation)
+        except: 
+          if config.logging: logging.warning("Error: Couldn't save user \"" + g.loggedInUser['username'] + "\"'s art upload to the server. The art _id key was #" + str(key) + ". " )
       return "1"
     else: abort(401)
 
