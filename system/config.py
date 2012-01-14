@@ -14,5 +14,6 @@ iconSize = (75,75)
 uploadsDir      = "uploads"
 iconsDir        = os.path.join(uploadsDir, "icons")
 artDir          = os.path.join(uploadsDir, "art")
+thumbDir        = os.path.join(uploadsDir, "thumbs")
 imageExtensions = set(['png', 'jpg', 'jpeg', 'gif', 'tif', 'svg'])
 iconExtensions  = imageExtensions

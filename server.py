@@ -16,6 +16,12 @@ app = Flask(__name__)
 app.secret_key = os.urandom(24)
 app.jinja_env.trim_blocks = True
 
+# Add Config
+app.config["uploadsDir"] = config.uploadsDir
+app.config["iconsDir"] = config.iconsDir
+app.config["artDir"] = config.artDir
+app.config["thumbDir"] = config.thumbDir
+
 db = Database(config.dbHost,config.dbPort)
 
 if config.logging: logging.basicConfig(filename='logs/DR.log',level=logging.DEBUG)
@@ -46,7 +52,12 @@ def index():
 def userpage(username):
   user = db.getUser(username)
   if user:
-    return render_template("user.html", user=user)
+    # Gallery Module
+    if user["layout"]["gallery"] != "h":
+      gallery = db.db.art.find({"authorID": user["_id"]})
+      if gallery.count() == 0: gallery = None
+    else: gallery = None
+    return render_template("user.html", user=user, userGallery=gallery)
   else: abort(404)
 
 @app.route('/users/login', methods=['POST'])
@@ -143,11 +154,11 @@ def settings():
       # User Icon
       icon = request.files['iconUpload']
       if icon and util.allowedFile(icon.filename,config.iconExtensions):
-        try: os.remove(config.iconsDir + g.loggedInUser['lowername'] + "." + g.loggedInUser["icon"])
+        try: os.remove(os.path.join(app.config["iconsDir"], g.loggedInUser['lowername'] + "." + g.loggedInUser["icon"]))
         except: 
           if config.logging: logging.warning("Error: Couldn't remove user \"" + g.loggedInUser['username']+ "\"'s old icon while attempting to upload a new icon. ")
         fileName = g.loggedInUser['lowername'] + "." + util.fileType(icon.filename)
-        fileLocation = os.path.join(config.iconsDir, fileName)
+        fileLocation = os.path.join(app.config["iconsDir"], fileName)
         db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"icon": util.fileType(fileName) }})
         icon.save(fileLocation)
         image = Image.open(fileLocation)
@@ -187,7 +198,7 @@ def about():
 
 @app.route('/icons/<filename>')
 def iconFiles(filename):
-    return send_from_directory(config.iconsDir,filename)
+    return send_from_directory(app.config["iconsDir"],filename)
 
 @app.route('/art/<int:art>', methods=['GET'])
 def viewArt(art):
@@ -219,7 +230,7 @@ def submitArt():
           "type"        : "image"
         })
         image = request.files['upload']
-        fileLocation = os.path.join(config.artDir, str(key) + "." + fileType)
+        fileLocation = os.path.join(app.config["artDir"], str(key) + "." + fileType)
         try: image.save(fileLocation)
         except: 
           if config.logging: logging.warning("Error: Couldn't save user \"" + g.loggedInUser['username'] + "\"'s art upload to the server. The art _id key was #" + str(key) + ". " )
@@ -228,7 +239,7 @@ def submitArt():
 
 @app.route('/art/uploads/<filename>')
 def artFile(filename):
-  return send_from_directory(config.artDir,filename)
+  return send_from_directory(app.config["artDir"],filename)
 
 @app.route('/util/parseUsercode/<text>')
 def parseUsercode(text):

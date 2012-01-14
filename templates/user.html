@@ -22,6 +22,14 @@
 	margin-top: -5px;
 	margin-left: 5px;
 }
+.moduleTitle
+{
+	display: block;
+	text-align: left;
+	padding-bottom: 2px;
+	margin-bottom: 2px;
+	border-bottom: dashed 1px;
+}
 .tabButton
 {
 	float: right;
@@ -68,22 +76,22 @@
 {% endmacro %}
 
 {% macro gallery() %}
-  <section class="container">
-    <h1>Gallery</h1>
-    <p>Gallery Goes Here</p>
+  <section class="container" style="text-align:center;">
+    <span class="moduleTitle">Gallery</span>
+    {{ drawGallery(userGallery) }}
   </section>
 {% endmacro %}
 
 {% macro watches() %}
   <section class="container">
-    <h1>Watches</h1>
+    <span class="moduleTitle">Watches</span>
     <p>Watches Go Here</p>
   </section>
 {% endmacro %}
 
 {% macro comments() %}
   <section class="container">
-    <h1>Comments</h1>
+    <span class="moduleTitle">Comments</span>
     <p>Comments Go Here</p>
   </section>
 {% endmacro %}

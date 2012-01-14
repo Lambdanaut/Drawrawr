@@ -1,5 +1,5 @@
 {# Takes an integer and returns the corresponding month #}
-{% macro monthName(m) %}{% if m == 1 %}January{% elif m == 2 %}February{% elif m == 3 %}March{% elif m == 4 %}April{% elif m == 5 %}May{% elif m == 6 %}June{% elif m == 7 %}July{% elif m == 8 %}August{% elif m == 9 %}September{% elif m == 10 %}October{% elif m == 11 %}November{% elif m == 12 %}December{% endif %}{% endmacro %}
+{% macro monthName(m) %}{% if m == 1 %}January{% elif m == 2 %}February{% elif m == 3 %}March{% elif m == 4 %}April{% elif m == 5 %}May{% elif m == 6 %}June{% elif m == 7 %}July{% elif m == 8 %}August{% elif m == 9 %}September{% elif m == 10 %}October{% elif m == 11 %}November{% else %}December{% endif %}{% endmacro %}
 {# Writes out three select boxes with names "changeYear", "changeMonth", and "changeDay" #}
 {% macro dateSelects() %}
 <select name=changeMonth>
@@ -30,5 +30,15 @@
 {# Sets the css to fit a theme #}
 {% macro applyTheme(theme) %}
 <link rel="stylesheet" href="/static/css/userpages/{{ theme }}.css">
+{% endmacro %}
+{# Take a list of arts from the database and shows them in gallery format on the page #}
+{% macro drawGallery(gallery) %}
+{% if gallery %}
+  {% for art in gallery %}
+    <img src="{{ config["thumbDir"] }}" alt="{{ art["title"] }}" title="{{ art["title"] }} by {{ art["author"] }}">
+  {% endfor %}
+{% else %}
+  No art has been submitted yet! 
+{% endif %}
 {% endmacro %}
 {% block layout %}{% endblock %}

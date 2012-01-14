@@ -16,16 +16,6 @@ parser = OptionParser()
 parser.add_option("-q", "--quiet", action="store_false", dest="verbose", 
                   default=True, help="Silence all output from DrawRawr")
 
-# Loading engines
-engines = {}
-enginesDirectory = os.listdir(os.path.join(sys.path[0], 'system', 'engines'))
-
-for engine in enginesDirectory:
-  engineParts = os.path.splitext(engine)
-  
-  if engineParts[1] is '.py' and engineParts[0] is not '__init__':
-    engines[engineParts[0]] = __import__("system.engines." + engineParts[0])
-
 # Run Server
 if __name__ == "__main__": server.main()
 else: print("DrawRawr isn't a module, silly.")
