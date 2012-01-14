@@ -1,11 +1,12 @@
 {% extends "layout.html" %}
 {% block title %}Settings{% endblock %}
 {% block head %}
-<script src="/static/js/jquery-ui-1.8.16.custom.min.js"></script>
+<script src="/static/js/jquery-ui-1.8.17.custom.min.js"></script>
 <script src="/static/js/tabs.js"></script>
 <script src="/static/js/settings.js"></script>
 <link rel="stylesheet" href="/static/css/tabs.css" media="screen">
 <link rel="stylesheet" href="/static/css/draggable.css" media="screen">
+<link rel="stylesheet" href="" media="screen" id="colorThemeStyle">
 <style media="screen" type="text/css">
 h3
 {
@@ -72,9 +73,13 @@ h3
 {
         float: left;
         display: inline;
-        color: #bbbbbb;
+        color: #cccccc;
         background-color: #637e63;
         width: 20%;
+}
+#profileHidden .draggable:hover
+{
+	background-color: #70CD71;
 }
 </style>
 {% endblock %}
@@ -95,15 +100,15 @@ h3
           <input type="file" name="iconUpload" id="iconUpload"><br style="clear: both;"><br>
           <h3>Change your Password: </h3>
           Current Password: <br>
-          <input type="password" name="changePassCurrent"><br>
+          <input type="password" name="changePassCurrent" class="textInput"><br>
           New Password: <br>
-          <input type="password" name="changePassNew1"><br>
+          <input type="password" name="changePassNew1" class="textInput"><br>
           New Password(Repeat): <br>
-          <input type="password" name="changePassNew2"><br>
+          <input type="password" name="changePassNew2" class="textInput"><br>
         </div>
         <div class="middleCol">
           <h3>Gender: </h3>
-          <select name="changeGender" id="changeGender" >
+          <select name="changeGender" id="changeGender">
             <option value="h"{% if loggedInUser['gender'] == 'h' %} id='defaultGender'{% endif %}>Hide Gender</option>
             <option value="m"{% if loggedInUser['gender'] == 'm' %} id='defaultGender'{% endif %}>Male</option>
             <option value="f"{% if loggedInUser['gender'] == 'f' %} id='defaultGender'{% endif %}>Female</option>
@@ -116,7 +121,7 @@ h3
       </div>
       <div id="tab-profile">
         <h3>Profile Text: </h3>
-        <textarea name="changeProfile" style="width: 100%; height: 125px;">{{ loggedInUser["profile"] }}</textarea>
+        <textarea name="changeProfile" style="width: 100%; height: 125px;" class="textInput">{{ loggedInUser["profile"] }}</textarea>
       </div>
       <div id="tab-layout"> 
         <p>
@@ -129,6 +134,27 @@ h3
                 <li>Mouse over the sections to see where they can be placed.</li>
                 <li>Click the "?" button on a section to learn more about it!</li>
               </ul>
+            </div>
+            <div class='layoutSection'>
+              <h2>Color Theme: </h2>
+              <span id="defaultTheme" data-theme="{{ loggedInUser["theme"] }}" ></span>
+              <select name="changeColorTheme" id="changeColorTheme">
+                <option value="default">Default</option>
+                <option value="winterWhite">Winter White</option>
+                <option value="pinkBerry">Pink Berry</option>
+                <option value="cherryRed">Cherry Red</option>
+                <option value="orangeCream">Orange Cream</option>
+                <option value="bananaYellow">Banana Yellow</option>
+                <option value="limeGreen">Lime Green</option>
+                <option value="forestGreen">Forest Green</option>
+                <option value="turquoise">Turquoise</option>
+                <option value="skyBlue">Sky Blue</option>
+                <option value="oceanBlue">Ocean Blue</option>
+                <option value="purpleGrape">Purple Grape</option>
+                <option value="royalPurple">Royal Purple</option>
+                <option value="pitchBlack">Pitch Black</option>
+                <option value="rainbowrific">Rainbowrific</option>
+              </select>
             </div>
           </div>
           <div id="contentMimic" class='roundBox'>
@@ -156,10 +182,9 @@ h3
               </div>
             </div>
           </div>
-        </p>
         <div style="clear: both;"></div>
       </div>
     </section>
-    <div style="text-align:center;"><input type="submit" value="Update Profile" class="button"></div>
+    <div style="text-align:center;"><input type="submit" value="Update Settings" class="button"></div>
   </form>
 {% endblock %}

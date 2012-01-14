@@ -1,0 +1,40 @@
+body
+{
+	background-image: url("/static/images/userpage/darkpurplebg.png");
+}
+
+#navigation
+{
+	background-color: #2D1644;
+	color: #FFFFFF;
+}
+
+#navigation li
+{
+	border-left: solid 2px #400080;
+}
+
+#navigation li:hover
+{
+	background-color: #B975FF;
+}
+
+#navigation .final
+{
+	border-right: solid 2px #400080;
+}
+#footer
+{
+	color: #2D1644;
+}
+#footer a
+{
+	color: #2D1644;
+}
+
+#content
+{
+	background-color: #7C3DBD;
+	color: #2D1644;
+}
+

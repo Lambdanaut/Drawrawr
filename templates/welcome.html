@@ -4,5 +4,33 @@
 {% endblock %}
 {% block content %}
   <section class="container">
+    <img src= "/static/images/drpartygreen.png" alt="GREENY" style="float: right;">
+    <img src= "/static/images/drpartybrown.png" alt="BROWNIE" style="float: left;">
+    <div style="text-align:center;float: center;">
+      <h2 style="font-size:50px;margin-top:0px;margin-bottom:0px;">Welcome to Drawrawr!</h2>
+      <h3>Now that you're a member, you can get started using your Account!</h3>
+
+      <a href="/{{ g.loggedInUser["username"] }}">-Check out your Drawrawr Userpage!-<a> 
+      <br>
+      <br>
+      <a href="/users/settings">-Choose your Account settings-<a>
+      <br>
+      <br>
+      <a href="/users/settings">-Change your Profile Information-<a>
+      <br>
+      <br>
+      <a href="/users/settings">-Customize your Userpage Layout-<a>
+      <br>
+      <br>
+      <a href="/art/do/submit">-Submit your first Artwork-<a>
+      <br>
+      <br>
+      <a href="/journal/view">-Write your first Journal-<a>
+      <br>
+      <br>
+      <a href="/">-Or just start Browsing and Meeting Artists!-<a>
+      <br>
+      <br>
+    </div>
   </section>
 {% endblock %}

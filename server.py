@@ -14,6 +14,7 @@ import system.util as util
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
+app.jinja_env.trim_blocks = True
 
 db = Database(config.dbHost,config.dbPort)
 
@@ -167,6 +168,9 @@ def settings():
       # Profile
       if request.form["changeProfile"] != g.loggedInUser["profile"]:
         db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"profile": request.form["changeProfile"], "codeProfile": usercode.parse(request.form["changeProfile"]) } })
+      # Color Theme
+      if request.form["changeColorTheme"] != g.loggedInUser["theme"]:
+        db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"theme": request.form["changeColorTheme"]} })
 
       return "1"
     else: abort(401)
@@ -185,10 +189,9 @@ def about():
 def iconFiles(filename):
     return send_from_directory(config.iconsDir,filename)
 
-@app.route('/art/<art>', methods=['GET'])
+@app.route('/art/<int:art>', methods=['GET'])
 def viewArt(art):
   try: 
-    art = int(art)
     artLookup = db.db.art.find_one({'_id' : art})
   except ValueError: abort(404)
   if not artLookup: abort(404)

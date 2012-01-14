@@ -1,0 +1,35 @@
+body
+{
+	background-image: url("/static/images/userpage/greenbg.png");
+}
+
+#navigation
+{
+	background-color: #0E3907;
+	color: #FFFFFF;
+}
+
+#navigation li
+{
+	border-left: solid 2px #20A636;
+}
+
+#navigation .final
+{
+	border-right: solid 2px #20A636;
+}
+#footer
+{
+	color: #0E3907;
+}
+#footer a
+{
+	color: #0E3907;
+}
+
+#content
+{
+	background-color: #3FDA6D;
+	color: #0E3907;
+}
+

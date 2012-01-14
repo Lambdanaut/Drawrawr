@@ -40,7 +40,13 @@ allowedIn = () ->
 
 $(document).ready ->
 	/* Gender */
-	$("#changeGender").val($("#defaultGender").val())	
+	$("#changeGender").val($("#defaultGender").val())
+
+	/* Color Theme */
+	$("#changeColorTheme").change ->
+		$("#colorThemeStyle").attr("href","/static/css/userpages/" + $(this).val() + ".css")
+	$("#changeColorTheme").val($("#defaultTheme").attr("data-theme"))
+	$("#changeColorTheme").trigger("change")
 
 	/* Userpage Layout */	
 	$("#profileTop, #profileLeftCol, #profileRightCol, #profileBottom, #profileHidden").sortable(

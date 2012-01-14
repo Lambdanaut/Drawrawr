@@ -1,0 +1,40 @@
+body
+{
+	background-image: url("/static/images/userpage/yellowbg.png");
+}
+
+#navigation
+{
+	background-color: #7B5005;
+	color: #FFFFFF;
+}
+
+#navigation li
+{
+	border-left: solid 2px #FCFF09;
+}
+
+#navigation li:hover
+{
+	background-color: #BE7C08;
+}
+
+#navigation .final
+{
+	border-right: solid 2px #FCFF09;
+}
+#footer
+{
+	color: #7B5005;
+}
+#footer a
+{
+	color: #7B5005;
+}
+
+#content
+{
+	background-color: #FEFFB1;
+	color: #7B5005;
+}
+
