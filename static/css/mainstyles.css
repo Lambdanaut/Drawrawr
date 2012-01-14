@@ -10,6 +10,7 @@ body
 h6 
 {
 	margin-bottom: 1px;
+	margin-top: 7px;
 	font-size: 10px;
 }
 a
@@ -173,7 +174,10 @@ a img{border: 0px;}
 	border-style: none;
 }
 .button {color: #556B2f;}
-.textInput {border: 1px #513727 solid;}
+.textInput 
+{
+	border: 1px #513727 solid;
+}
 .close
 {
 	background-image: url(/static/images/XUnclick.png);

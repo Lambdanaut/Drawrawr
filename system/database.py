@@ -1,4 +1,5 @@
 import sys, pymongo, pymongo.objectid
+import betaGenerator
 
 # To execute a general query: 
 # db.db.CollectionName.QueryType(QUERY)
@@ -15,16 +16,12 @@ class Database:
       return False
     else: return True
   def userExists(self,username):
-    user = self.db.users.find_one({"lowername":username.lower()})
+    user = self.db.users.find_one({"lowername": username.lower()})
     if user == None:
       return False
     else: return True
   def getUser(self,username):
     return self.db.users.find_one({"lowername": username.lower()})
-  def mkUserID(self,passedID):
-    try: newID = pymongo.objectid.ObjectId(passedID)
-    except: return None
-    return newID
   def getKey(self,collection):
     key = self.db.seq.find_one({"_id" : collection})
     if key:
@@ -33,3 +30,14 @@ class Database:
   def nextKey(self,collection):
     self.db.seq.update({"_id": collection}, {"$inc" : {"next" : 1 } })
     return self.getKey(collection)
+  def generateBetaPass(self,length=8,ownerName=None):
+    password = betaGenerator.generatePassword(length)
+    if not self.db.betaPass.find_one({"password": password}):
+      self.db.betaPass.insert({"owner": ownerName, "password": password})
+      return password
+    else: self.generateBetaPass(length,ownerName)
+  def checkBetaPass(self, password):
+    if self.db.betaPass.find_one({"password": password.lower()}):
+      self.db.betaPass.remove({"password": password.lower()})
+      return True
+    else: return False

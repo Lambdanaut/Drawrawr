@@ -6,6 +6,10 @@
   <section class="container" style="text-align:center;">
     <img src='/static/images/' alt='401 DrawRawrs'>
     <h1>401 - Unauthorized</h1>
-    <p>You must be logged in to view this page! </p>
+    {% if g.loggedInUser %}
+      <p>You don't have permission to view this page! </p>
+    {% else %}
+      <p>Your must be logged in to view this page! </p>
+    {% endif %}
   </section>
 {% endblock %}

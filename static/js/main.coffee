@@ -103,7 +103,7 @@ $(document).ready ->
 				data: $("#modal form").serialize(),
 				success: (data) =>
 					if data == "1"
-						location.reload()
+						window.location.assign "/users/welcome"
 
 	/* Login */
 	$("#login-button").click () =>

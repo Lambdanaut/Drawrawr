@@ -90,7 +90,7 @@ def logout():
 
 @app.route('/users/signup', methods=['GET', 'POST'])
 def signup():
-  if not db.userExists(request.form['username']) and len(request.form['username']) > 0 and request.form['password1'] == request.form['password2'] and request.form['tosAgree'] == 'true':
+  if not db.userExists(request.form['username']) and len(request.form['username']) > 0 and request.form['password1'] == request.form['password2'] and db.checkBetaPass(request.form["betaCode"]) and request.form['tosAgree'] == 'true':
     hashed = system.cryptography.encryptPassword(request.form['password1'], True)
     shutil.copy("static/images/newbyicon.png", "uploads/icons/" + request.form['username'].lower() + ".png")
     key = db.nextKey("users")
@@ -109,6 +109,14 @@ def signup():
         "gallery"  : "l",
         "watches"  : "r",
         "comments" : "b"
+      },
+      "permissions" : {
+        "deleteComments"   : False,
+        "deleteArt"        : False,
+        "banUsers"         : False,
+        "makeProps"        : False,
+        "vote"             : False,
+        "generateBetaPass" : False
       },
       "theme"       : "default",
       "profile"     : "",
@@ -160,7 +168,7 @@ def settings():
         fileName = g.loggedInUser['lowername'] + "." + util.fileType(icon.filename)
         fileLocation = os.path.join(app.config["iconsDir"], fileName)
         db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"icon": util.fileType(fileName) }})
-        icon.save(fileLocation)
+        iicon.save(fileLocation)
         image = Image.open(fileLocation)
         resized = image.resize(config.iconSize)
         try: resized.save(fileLocation)
@@ -245,10 +253,17 @@ def artFile(filename):
 def parseUsercode(text):
   return usercode.parse(text)
 
+@app.route('/admin/generateBetaPass',methods=['GET'])
+def generateBetaPass():
+  if g.loggedInUser:
+    if g.loggedInUser["permissions"]["generateBetaPass"]:
+      return db.generateBetaPass(ownerName=g.loggedInUser["username"])
+    else: abort(401)
+  else: abort(401)
+
 @app.errorhandler(404)
 def page_not_found(e):
   rando = random.randint(0,5)
-  print rando
   if   rando == 0:
     randimg = "scary404.png"
   elif rando == 1:

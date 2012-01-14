@@ -55,11 +55,12 @@
         <aside id='register-form' style='display:none;'>
           <form>
             <h6>USERNAME:</h6> <input type='text' class='textInput' name='username'>
-            <div style='height:0px; width:0px; position:relative; top:30px; left:-311px;"'><img src='/static/images/leftRegisterMascot.png' alt='Green Mascot'></div>
-            <div style='height:0px; width:0px; position:relative; top:-5px; left:105px;"'><img src='/static/images/rightRegisterMascot.png' alt='Brown Mascot'></div>
+            <div style='height:0px; width:0px; position:relative; top:30px; left:-311px;'><img src='/static/images/leftRegisterMascot.png' alt='Green Mascot'></div>
+            <div style='height:0px; width:0px; position:relative; top:-5px; left:105px;'><img src='/static/images/rightRegisterMascot.png' alt='Brown Mascot'></div>
             <h6>EMAIL: (<i>optional</i>)</h6> <input type = 'text' class='textInput' name = 'email'>
             <h6>PASSWORD:</h6> <input type='password' class='textInput' name='password1'>
             <h6>VERIFY PASSWORD:</h6> <input type='password' class='textInput' name='password2'> <br>
+            <h6>BETA CODE:</h6> <input type='text' class='textInput' name='betaCode'> <br>
             <input type='checkbox' name='tosAgree' value='true'><span style="font-size:12px;">You Agree to Our <a href="/meta/terms-of-service">Terms of Service</a></span><br>
           </form>
           <button class='button'>Register</button><br>
@@ -87,10 +88,10 @@
     {% block content %}{% endblock %}
   </div>
   <footer id="footer">
-    <span style="float:right;">
+    <div style="float:right;">
       <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="Creative Commons License" style="border-width:0;float:right; margin-left: 10px;" src="http://i.creativecommons.org/l/by-nc-sa/3.0/80x15.png"></a>
       &copy;2010-<span id="copyright-date"></span> DrawRawr. Some rights reserved
-    </span>
+    </div>
     <a href="/meta/terms-of-service">Terms of Service</a> ·
     <a href="/meta/about">About</a> ·
     <a href="">DrawRawr API</a> ·
