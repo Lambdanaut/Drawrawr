@@ -168,10 +168,10 @@ def settings():
         fileName = g.loggedInUser['lowername'] + "." + util.fileType(icon.filename)
         fileLocation = os.path.join(app.config["iconsDir"], fileName)
         db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"icon": util.fileType(fileName) }})
-        iicon.save(fileLocation)
+        icon.save(fileLocation)
         image = Image.open(fileLocation)
-        resized = image.resize(config.iconSize)
-        try: resized.save(fileLocation)
+        resized = image.resize(config.iconSize, Image.ANTIALIAS)
+        try: resized.save(fileLocation, quality=100)
         except: 
           if config.logging: logging.warning("Error: Couldn't save user \"" + g.loggedInUser['username'] + "\"'s new icon while attempting to upload a new icon. ")
       # Password
@@ -239,7 +239,7 @@ def submitArt():
         })
         image = request.files['upload']
         fileLocation = os.path.join(app.config["artDir"], str(key) + "." + fileType)
-        try: image.save(fileLocation)
+        try: image.save(fileLocation,quality=100)
         except: 
           if config.logging: logging.warning("Error: Couldn't save user \"" + g.loggedInUser['username'] + "\"'s art upload to the server. The art _id key was #" + str(key) + ". " )
       return "1"

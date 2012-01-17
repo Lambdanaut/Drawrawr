@@ -1,0 +1,70 @@
+.thumbContainer
+{
+	position: relative;
+	float: left;
+	margin: 5px;
+	border: solid 1px;
+	width: 135px;
+	height: 110px;
+	overflow:hidden;
+	text-decoration: none;
+	background-color: inherit;
+	box-shadow: 3px 3px 5px #888;
+}
+.thumbContainer .thumbCover
+{
+	z-index: 100;
+	position: absolute;
+	text-align: center;
+	font-size: 16px;
+	bottom: -100%;
+	left: 0px;
+	width: 100%;
+	height: auto;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	user-select: none;
+	background-color: inherit;
+	opacity: 1;
+	-webkit-transition: all 0.25s ease-in-out;
+	-moz-transition: all 0.25s ease-in-out;
+	-o-transition: all 0.25s ease-in-out;
+	-ms-transition: all 0.25s ease-in-out;
+	transition: all 0.25s ease-in-out;
+}
+.thumbContainer:hover .thumbCover
+{
+	position: absolute;
+	bottom: 0px;
+	opacity: 0.7;
+}
+.thumbContainer .galleryThumb
+{
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 135px;
+	height: 110px;
+	-webkit-transition: all 0.4s ease-out;
+	-moz-transition: all 0.4s ease-in-out;
+	-o-transition: all 0.4s ease-in-out;
+	-ms-transition: all 0.4s ease-in-out;
+	transition: all 0.4s ease-out;
+}
+.thumbContainer:hover .galleryThumb
+{
+	width: 175px;
+	height: 143px;
+	left: -20.25px;
+	top: -16.5px;
+}
+.thumbLink
+{
+	position:absolute; 
+	width:100%;
+	height:100%;
+	top:0px;
+	left: 0px;
+	z-index: 100
+}

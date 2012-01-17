@@ -1,12 +1,12 @@
-# __DrawRawr__ - A Social Website for Artists
+# __Drawrawr__ - A Social Website for Artists
 
 Quick start
 -----------
 
 This simple **3-step** process instantly gets you started with DrawRawr.
 
-1. `git clone git://github.com/DrawRawr/DrawRawr.git`
-2. `cd DrawRawr/ && chmod +x ./drawrawr`
+1. `git clone git://github.com/Lambdanaut/Drawrawr.git`
+2. `cd Drawrawr/ && chmod +x ./drawrawr`
 3. ... *and finally:* `python2 main.py`
 
 Congrats, you now have your very own DrawRawr clone working on `localhost` with the port `5000`!   
@@ -26,6 +26,7 @@ Dependancies
 * Python Imaging Library
 * markdown
 * Werkzeug
+* python-recaptcha-client
 
 ### Network dependancies
 * memcache (*optional*)
@@ -39,4 +40,4 @@ License
 
 Links
 -----
-* [DrawRawr.com](http://www.drawrawr.com/) - A Social Website for Artists... with awesome people.
+* [Drawrawr.com](http://www.drawrawr.com/) - A Social Website for Artists... with awesome people.

@@ -38,7 +38,15 @@
     <img src="{{ config["thumbDir"] }}" alt="{{ art["title"] }}" title="{{ art["title"] }} by {{ art["author"] }}">
   {% endfor %}
 {% else %}
-  No art has been submitted yet! 
+  {% for i in range(0,10) %}
+      <div class="thumbContainer" title="Separated by Another World by Lambdanaut">
+        <div class="thumbCover">Separated by Another World</div>
+        <a href="/"><span class="thumbLink" href="/"></span></a>
+        <img src="/static/images/test.png" class="galleryThumb" alt="Separated by Another World">
+        </a>
+      </div>
+    </a>
+  {% endfor %}
 {% endif %}
 {% endmacro %}
 {% block layout %}{% endblock %}

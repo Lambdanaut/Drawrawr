@@ -1,7 +1,9 @@
 {% extends "layout.html" %}
 {% block title %} {{ user["username"] }} @ DrawRawr  {% endblock %}
 {% block head %}
+<link rel="stylesheet" href="/static/css/gallery.css" media="screen">
 <script src="/static/js/userpage.js"></script>
+
 <style media="screen" type="text/css">
 .fullRow
 {
@@ -43,7 +45,8 @@
 }
 .tabButton:hover
 {
-	background-color: #DAEFDA;
+	background-color: #EEEEEE;
+
 }
 </style>
 
@@ -76,8 +79,9 @@
 {% endmacro %}
 
 {% macro gallery() %}
-  <section class="container" style="text-align:center;">
+  <section class="container" style="overflow: hidden;">
     <span class="moduleTitle">Gallery</span>
+    <span style="clear:both;"></span>
     {{ drawGallery(userGallery) }}
   </section>
 {% endmacro %}
