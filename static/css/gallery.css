@@ -6,7 +6,7 @@
 	border: solid 1px;
 	width: 135px;
 	height: 110px;
-	overflow:hidden;
+	overflow: hidden;
 	text-decoration: none;
 	background-color: inherit;
 	box-shadow: 3px 3px 5px #888;
@@ -16,17 +16,19 @@
 	z-index: 100;
 	position: absolute;
 	text-align: center;
-	font-size: 16px;
-	bottom: -100%;
+	font-size: 14px;
+	font-weight: bold;
+	bottom: -50%;
 	left: 0px;
 	width: 100%;
 	height: auto;
+	padding: 2px;
 	-moz-user-select: none;
 	-khtml-user-select: none;
 	-webkit-user-select: none;
 	user-select: none;
 	background-color: inherit;
-	opacity: 1;
+	opacity: 0;
 	-webkit-transition: all 0.25s ease-in-out;
 	-moz-transition: all 0.25s ease-in-out;
 	-o-transition: all 0.25s ease-in-out;
@@ -61,10 +63,10 @@
 }
 .thumbLink
 {
-	position:absolute; 
-	width:100%;
-	height:100%;
-	top:0px;
+	position: absolute; 
+	width: 100%;
+	height: 100%;
+	top: 0px;
 	left: 0px;
 	z-index: 100
 }

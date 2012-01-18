@@ -85,20 +85,20 @@
     return Notice;
   })();
   Modal = (function() {
-    function Modal(title, content) {
-      this.title = title;
-      this.content = content;
-      $("#modal div").html("<span class='close'></span><h4>" + this.title + "</h4><p>" + this.content + "</p>");
+    function Modal(modalDiv) {
+      this.modalDiv = modalDiv;
       $("#modal .close").click(this.die);
       this.show();
     }
     Modal.prototype.show = function() {
       this.visible = true;
-      return $("#modal").css("visibility", "visible");
+      $(this.modalDiv).css("display", "block");
+      return $("#modal").css("display", "block");
     };
     Modal.prototype.die = function() {
       this.visible = false;
-      return $("#modal").css("visibility", "hidden");
+      $("#modal aside").css("display", "none");
+      return $("#modal").css("display", "none");
     };
     return Modal;
   })();
@@ -112,40 +112,19 @@
       header.switchGlue();
     }
     /* Registration */;
+    Recaptcha.create($("#registerCaptcha").attr("data-publicKey"), "registerCaptcha", {
+      theme: 'custom',
+      custom_theme_widget: 'recaptcha_widget',
+      callback: Recaptcha.focus_response_field
+    });
     $("#register-button").click(__bind(function() {
       var signupModal;
-      signupModal = new Modal("CREATE A NEW ACCOUNT", $("#register-form").html());
-      return $("#modal button").click(__bind(function() {
-        return $.ajax({
-          url: "/users/signup",
-          type: "POST",
-          data: $("#modal form").serialize(),
-          success: __bind(function(data) {
-            if (data === "1") {
-              return window.location.assign("/users/welcome");
-            }
-          }, this)
-        });
-      }, this));
+      return signupModal = new Modal("#register-form");
     }, this));
     /* Login */;
     $("#login-button").click(__bind(function() {
       var loginModal;
-      loginModal = new Modal("LOGIN", $("#login-form").html());
-      return $("#modal button").click(__bind(function() {
-        return $.ajax({
-          url: "/users/login",
-          type: "POST",
-          data: $("#modal form").serialize(),
-          success: __bind(function(data) {
-            if (data === "1") {
-              return location.reload();
-            } else {
-              return new Notice("Incorrect Login Combo", "The username and password didn't match any in our records. Try again! ");
-            }
-          }, this)
-        });
-      }, this));
+      return loginModal = new Modal("#login-form");
     }, this));
     /* Logout */;
     return $("#logout-button").click(__bind(function() {

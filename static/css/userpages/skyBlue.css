@@ -5,7 +5,7 @@ body
 
 #navigation
 {
-	background-color: #01676D;
+	background-color: #0CAAFC;
 	color: #FFFFFF;
 }
 
@@ -16,7 +16,7 @@ body
 
 #navigation li:hover
 {
-	background-color: #02CBD8;
+	background-color: #98DBFE;
 }
 
 #navigation .final
@@ -35,6 +35,5 @@ body
 #content
 {
 	background-color: #8EF8FE;
-	color: #01676D;
+	color: #0CAAFC;
 }
-

@@ -5,31 +5,35 @@ body
 
 #navigation
 {
-	background-color: #0E3907;
+	background-color: #042800;
 	color: #FFFFFF;
 }
 
 #navigation li
 {
-	border-left: solid 2px #20A636;
+	border-left: solid 2px #085A00;
+}
+
+#navigation li:hover
+{
+	background-color: #085A00;
 }
 
 #navigation .final
 {
-	border-right: solid 2px #20A636;
+	border-right: solid 2px #085A00;
 }
 #footer
 {
-	color: #0E3907;
+	color: #042800;
 }
 #footer a
 {
-	color: #0E3907;
+	color: #042800;
 }
 
 #content
 {
-	background-color: #3FDA6D;
-	color: #0E3907;
+	background-color: #0D7F01;
+	color: #042800;
 }
-

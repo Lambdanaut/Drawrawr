@@ -70,18 +70,21 @@ class Notice
 			$("#notice").hide()
 
 class Modal
-	constructor: (@title,@content) ->
-		$("#modal div").html "<span class='close'></span><h4>" + @title + "</h4><p>" + @content + "</p>"
-
+	constructor: (@modalDiv) ->
 		$("#modal .close").click @die
-
+		
 		@show()
+
 	show: () ->
 		@visible=true
-		$("#modal").css("visibility","visible")
+		$(@modalDiv).css("display","block")
+		$("#modal").css("display","block")
+
 	die: () ->
 		@visible=false
-		$("#modal").css("visibility","hidden")
+		$("#modal aside").css("display","none")
+		$("#modal").css("display","none")
+
 $(document).ready ->
 	/* Keeps the copyright up to date on the current year */
 	date = new Date()
@@ -92,33 +95,14 @@ $(document).ready ->
 	if $("#glued").attr("data-glued") == "0"
 		header.switchGlue()
 
-	/* Registration */
+	/* Registration */		
+	Recaptcha.create $("#registerCaptcha").attr("data-publicKey"), "registerCaptcha", theme : 'custom', custom_theme_widget: 'recaptcha_widget', callback: Recaptcha.focus_response_field
 	$("#register-button").click () =>
-		signupModal = new Modal "CREATE A NEW ACCOUNT", $("#register-form").html()
-		
-		$("#modal button").click () =>
-			$.ajax 
-				url:  "/users/signup",
-				type: "POST",
-				data: $("#modal form").serialize(),
-				success: (data) =>
-					if data == "1"
-						window.location.assign "/users/welcome"
+		signupModal = new Modal "#register-form"
 
 	/* Login */
 	$("#login-button").click () =>
-		loginModal = new Modal "LOGIN", $("#login-form").html()
-
-		$("#modal button").click () =>
-			$.ajax
-				url:  "/users/login",
-				type: "POST",
-				data: $("#modal form").serialize(),
-				success: (data) =>
-					if data == "1"
-						location.reload()
-					else
-						new Notice "Incorrect Login Combo", "The username and password didn't match any in our records. Try again! "
+		loginModal = new Modal "#login-form"
 
 	/* Logout */
 	$("#logout-button").click () =>

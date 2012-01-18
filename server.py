@@ -2,16 +2,18 @@ from flask import *
 
 import os, shutil, sys, random, logging, datetime, base64
 
+from PIL import Image
 from system.database import Database
 from werkzeug import secure_filename
-from PIL import Image
 
+import system.captcha as captcha
 import system.config as config
 import system.cryptography
 import system.setup as setup
 import system.usercode as usercode
 import system.util as util
 
+# Create Application
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 app.jinja_env.trim_blocks = True
@@ -21,6 +23,8 @@ app.config["uploadsDir"] = config.uploadsDir
 app.config["iconsDir"] = config.iconsDir
 app.config["artDir"] = config.artDir
 app.config["thumbDir"] = config.thumbDir
+app.config["captchaSecretKey"] = config.captchaSecretKey
+app.config["captchaPublicKey"] = config.captchaPublicKey
 
 db = Database(config.dbHost,config.dbPort)
 
@@ -89,48 +93,58 @@ def logout():
   else: return "0"
 
 @app.route('/users/signup', methods=['GET', 'POST'])
-def signup():
-  if not db.userExists(request.form['username']) and len(request.form['username']) > 0 and request.form['password1'] == request.form['password2'] and db.checkBetaPass(request.form["betaCode"]) and request.form['tosAgree'] == 'true':
-    hashed = system.cryptography.encryptPassword(request.form['password1'], True)
-    shutil.copy("static/images/newbyicon.png", "uploads/icons/" + request.form['username'].lower() + ".png")
-    key = db.nextKey("users")
-    db.db.users.insert({
-      "_id"         : key,
-      "username"    : request.form['username'],
-      "lowername"   : request.form['username'].lower(),
-      "password"    : hashed, 
-      "email"       : request.form['email'],
-      "ip"          : [request.remote_addr],
-      "dob"         : None,
-      "dateJoined"  : datetime.datetime.today(),
-      "layout"      : {
-        # t == top; l == left; r == right; b == bottom; h == hidden
-        "profile"  : "t",
-        "gallery"  : "l",
-        "watches"  : "r",
-        "comments" : "b"
-      },
-      "permissions" : {
-        "deleteComments"   : False,
-        "deleteArt"        : False,
-        "banUsers"         : False,
-        "makeProps"        : False,
-        "vote"             : False,
-        "generateBetaPass" : False
-      },
-      "theme"       : "default",
-      "profile"     : "",
-      "codeProfile" : "",
-      "bground"     : None,
-      "icon"        : "png",
-      "glued"      : 1,
-      # m == Male; f == Female; h == Hide Gender
-      "gender"     : "h"
-    }) 
-    session['username'] = request.form['username']
-    session['password'] = hashed
-    session.permanent = True
-    return "1" #SUCCESS
+def signup(): 
+  print request.form['username']
+  print request.form['password1']
+  print request.form['password2']
+  print request.form['betaCode']
+  print request.form['recaptcha_response_field']
+  print request.form['recaptcha_challenge_field']
+  if not db.userExists(request.form['username']) and len(request.form['username']) > 0 and request.form['password1'] == request.form['password2'] and  request.form['tosAgree'] == 'true':
+    if captcha.check(request.form['recaptcha_challenge_field'], request.form['recaptcha_response_field'],config.captchaSecretKey,request.remote_addr):
+      if db.checkBetaPass(request.form["betaCode"]):
+        hashed = system.cryptography.encryptPassword(request.form['password1'], True)
+        shutil.copy("static/images/newbyicon.png", "uploads/icons/" + request.form['username'].lower() + ".png")
+        key = db.nextKey("users")
+        db.db.users.insert({
+          "_id"         : key,
+          "username"    : request.form['username'],
+          "lowername"   : request.form['username'].lower(),
+          "password"    : hashed, 
+          "email"       : None, #request.form['email'],
+          "ip"          : [request.remote_addr],
+          "dob"         : None,
+          "dateJoined"  : datetime.datetime.today(),
+          "layout"      : {
+            # t == top; l == left; r == right; b == bottom; h == hidden
+            "profile"  : "t",
+            "gallery"  : "l",
+            "watches"  : "r",
+            "comments" : "b"
+          },
+          "permissions" : {
+            "deleteComments"   : False,
+            "deleteArt"        : False,
+            "banUsers"         : False,
+            "makeProps"        : False,
+            "vote"             : False,
+            "generateBetaPass" : False
+          },
+          "theme"       : "default",
+          "profile"     : "",
+          "codeProfile" : "",
+          "bground"     : None,
+          "icon"        : "png",
+          "glued"      : 1,
+          # m == Male; f == Female; h == Hide Gender
+          "gender"     : "h"
+        }) 
+        session['username'] = request.form['username']
+        session['password'] = hashed
+        session.permanent = True
+        return "1" #SUCCESS
+      else: return "2" #ERROR, Beta Code Fail
+    else: return "3" #ERROR, Captcha Fail
   else: return "0" #ERROR, User doesn't exist or username is too small
 
 @app.route('/users/glue', methods=['GET','POST'])

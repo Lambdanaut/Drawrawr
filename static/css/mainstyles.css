@@ -13,6 +13,11 @@ h6
 	margin-top: 7px;
 	font-size: 10px;
 }
+.marginless
+{
+	margin-top: 1px;
+	margin-bottom: 1px;
+}
 a
 {
 	color: #556B2F;
@@ -86,7 +91,7 @@ a img{border: 0px;}
 }
 #modal 
 {
-	visibility: hidden;
+	display: none;
 	position: fixed;
 	left: 0px;
 	top: 0px;
@@ -97,12 +102,18 @@ a img{border: 0px;}
 	background-color: #000000;
 	background:url(/static/images/modalpixelbackground.png);
 }
-#modal div {
-	width: 300px;
-	margin: 2% auto;
+#modal .inner {
+	display: none;
 	text-align: center;
+	width: 350px;
+	margin: 2% auto;	
 }
-#notice #close:hover {background-color:#F5F5DC; }
+#modal .mascot {
+	position: relative;
+	width: 0px;
+	height: 0px;
+	margin: 2% auto;
+}
 
 #navigation
 {
@@ -195,15 +206,6 @@ a img{border: 0px;}
 	border: 1px #513727 solid;
 	width: 160px;
 }
-.textInputNoRecoil:focus
-{
-	width: 200px;
-	-webkit-transition: all 1s ease-in-out;
-	-moz-transition: all 1s ease-in-out;
-	-o-transition: all 1s ease-in-out;
-	-ms-transition: all 1s ease-in-out;
-	transition: all 1s ease-in-out;
-}
 .textArea
 {
 	height: 60px;
@@ -219,13 +221,14 @@ a img{border: 0px;}
 }
 .close
 {
+	float: right;
 	background-image: url(/static/images/XUnclick.png);
+	background-repeat: none;
+	background-color: #F5F5DC;
 	width: 16px;
 	height: 16px;
-	float: right;
 	cursor: pointer;
 }
 .close:hover { 
 	background-image: url(/static/images/XHover.png);
 }
-.close:hover {background-color:#F5F5DC; }
