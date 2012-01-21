@@ -6,7 +6,11 @@ class Tabs
 				@selectTab $(self).attr "id"
 
 		if firstTab == undefined
-			@currentTab = $("#tabs ul li:first-child").attr "id"
+			anchor =  window.location.hash.replace("#", "")
+			if anchor != ""
+				@currentTab = anchor
+			else 
+				@currentTab = $("#tabs ul li:first-child").attr "id"
 		else
 			@currentTab = firstTab
 

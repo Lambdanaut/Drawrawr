@@ -29,13 +29,9 @@ class Header
 		/* New Header Style. This stetches all the was across the page */
 		headerCSS = 
 			"position":"absolute",
-			"top":"5px","left":"0px","right":"0px",
 			"margin":"auto"
-		navCSS =
-			"margin":"83px 15px 4px 15px"
 
 		$("#header").css headerCSS
-		$("#navigation").css navCSS
 
 		$("#set-header").html "↓"
 
@@ -44,13 +40,9 @@ class Header
 		@glued=false
 		headerCSS = 
 			"position":"fixed",
-			"top":"5px","left":"0px","right":"0px",
 			"margin":"auto"
-		navCSS =
-			"margin":"83px 15px 4px 15px"
 
 		$("#header").css headerCSS
-		$("#navigation").css navCSS
 
 		/* Old Header Style fix. Only required for old header */
 		/* $("#header").removeClass("roundBox") */
@@ -99,10 +91,34 @@ $(document).ready ->
 	Recaptcha.create $("#registerCaptcha").attr("data-publicKey"), "registerCaptcha", theme : 'custom', custom_theme_widget: 'recaptcha_widget', callback: Recaptcha.focus_response_field
 	$("#register-button").click () =>
 		signupModal = new Modal "#register-form"
+		$('form:not(.filter) :input:visible:first').focus()
+
+	$("#register-form form").submit () =>
+		form = $("#register-form form").serialize()
+		$.ajax
+			url:  "/users/signup",
+			type: "POST",
+			data: form,
+			success: (data) =>
+				if data == "1"
+					window.location = "/users/welcome"
+		false
 
 	/* Login */
 	$("#login-button").click () =>
 		loginModal = new Modal "#login-form"
+		$('form:not(.filter) :input:visible:first').focus()
+		
+	$("#login-form form").submit () =>
+		form = $("#login-form form").serialize()
+		$.ajax
+			url:  "/users/login",
+			type: "POST",
+			data: form,
+			success: (data) =>
+				if data == "1"
+					location.reload true
+		false
 
 	/* Logout */
 	$("#logout-button").click () =>

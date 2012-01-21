@@ -55,7 +55,7 @@
         <aside id="modal">
           <aside id='register-form' class='container inner'>
             <span class="close"></span>
-            <form method="post" action="/users/signup">
+            <form>
               <h4>CREATE A NEW ACCOUNT</h4>
               <h6>USERNAME:</h6> <input type='text' class='textInputNoRecoil' name='username'>
               <!-- <h6>EMAIL: (<i>optional</i>)</h6> <input type = 'text' class='textInputNoRecoil' name = 'email'> -->
@@ -66,45 +66,45 @@
                 <div id="recaptcha_image" style="margin-left: auto; margin-right: auto; margin-top: 5px;"></div>
                 <div class="recaptcha_only_if_incorrect_sol" style="color:red">Incorrect please try again</div>
 
-                <span class="recaptcha_only_if_image"><h6 class="marginless">Enter the words above:</h6></span>
-                <span class="recaptcha_only_if_audio"><h6 class="marginless">Enter the numbers you hear:</h6></span>
+                <h6 class="marginless"><span class="recaptcha_only_if_image">Enter the words above:</span></h6>
+                <h6 class="marginless"><span class="recaptcha_only_if_audio">Enter the numbers you hear:</span></h6>
 
                 <input type="text" id="recaptcha_response_field" name="recaptcha_response_field" class='textInputNoRecoil'>
 
-                <div><a href="javascript:Recaptcha.reload()"><h6 class="marginless">Get another CAPTCHA</h6></a></div>
-                <div class="recaptcha_only_if_image"><a href="javascript:Recaptcha.switch_type('audio')"><h6 class="marginless">Get an audio CAPTCHA</h6></a></div>
-                <div class="recaptcha_only_if_audio"><a href="javascript:Recaptcha.switch_type('image')"><h6 class-"marginless">Get an image CAPTCHA</h6></a></div>
+                <div><h6 class="marginless"><a href="javascript:Recaptcha.reload()">Get another CAPTCHA</a></h6></div>
+                <div class="recaptcha_only_if_image"><h6 class="marginless"><a href="javascript:Recaptcha.switch_type('audio')">Get an audio CAPTCHA</a></h6></div>
+                <div class="recaptcha_only_if_audio"><h6 class="marginless"><a href="javascript:Recaptcha.switch_type('image')">Get an image CAPTCHA</a></h6></div>
 
                 <div><a href="javascript:Recaptcha.showhelp()"><h6 class="marginless">Help</h6></a></div>
               </div>
               <input type='checkbox' name='tosAgree' value='true'><span style="font-size:12px;">You Agree to Our <a href="/meta/terms-of-service">Terms of Service</a></span><br>
               <div style='bottom: 165px; left:-336px;' class='mascot'><img src='/static/images/leftRegisterMascot.png' alt='Green Mascot'></div>
               <div style='bottom: 200px; left:135px;' class='mascot'><img src='/static/images/rightRegisterMascot.png' alt='Brown Mascot'></div>
-              <input type='submit' class='button' value='Register'>
+              <input type='submit' id="register-submit" class='button' value='Register'>
             </form>
           </aside>
           <aside id='login-form' class='container inner'>
             <span class="close"></span>
-            <form method="post" action="/users/login">
+            <form>
               <h4>Log In</h4>
               <h6>USERNAME:</h6> <input type='text' class='textInputNoRecoil' name='username'> <br>
               <h6>PASSWORD:</h6> <input type='password' class='textInputNoRecoil' name='password'> <br><br>
               <input type='checkbox' name='rememberMe' value='True'>Remember Me<br>
-              <input type='submit' class='button' value='Log In'>
+              <input type='submit' id="login-submit" class='button' value='Log In'>
             </form>
           </aside>
         </aside>
       {% endif %}
       <a href="/"><div id="header-image"><img src="/static/images/regheader.png" alt="Header"></div></a>
-    </div>
-    <aside id="notice"></aside>
-    <nav id="navigation" class="roundBox">
+    <nav id="navigation">
       <ul>
-        <li><a href="/"><img src='/static/images/tinyCLUBS.png' alt="News">News</a></li><li><a href="#"><img src='/static/images/tinySEARCH.png' alt="Search">Search</a></li><li><a href="#"><img src='/static/images/tinyDRAWRBOARD.png' alt="DrawrBoard">Draw</a></li><li><a href="#"><img src='/static/images/tinyCHAT.png' alt="Chat">Chat</a></li><li class='final'><a href="#"><img src='/static/images/tinyDONATE.png' alt="Donate">Donate</a></li>
+        <li><a href="/">News</a></li><li><a href="#">Search</a></li><li><a href="#">Draw</a></li><li><a href="#">Chat</a></li><li><a href="/meta/donate">Donate</a></li>
       </ul>
     </nav>
+    </div>
+    <aside id="notice"></aside>
   </header>
-  <div id="content" class="roundBox">
+  <div id="content">
     {% block content %}{% endblock %}
   </div>
   <footer id="footer">

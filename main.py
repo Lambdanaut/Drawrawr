@@ -6,7 +6,7 @@
 # ------------ A social website for artists ------------
 
 __version__ = '2.0'
-__author__  = 'DrawRawr'
+__author__  = 'Drawrawr Team'
 
 import server as server
 import os,sys

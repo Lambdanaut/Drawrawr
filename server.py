@@ -94,12 +94,6 @@ def logout():
 
 @app.route('/users/signup', methods=['GET', 'POST'])
 def signup(): 
-  print request.form['username']
-  print request.form['password1']
-  print request.form['password2']
-  print request.form['betaCode']
-  print request.form['recaptcha_response_field']
-  print request.form['recaptcha_challenge_field']
   if not db.userExists(request.form['username']) and len(request.form['username']) > 0 and request.form['password1'] == request.form['password2'] and  request.form['tosAgree'] == 'true':
     if captcha.check(request.form['recaptcha_challenge_field'], request.form['recaptcha_response_field'],config.captchaSecretKey,request.remote_addr):
       if db.checkBetaPass(request.form["betaCode"]):
@@ -133,6 +127,7 @@ def signup():
           "theme"       : "default",
           "profile"     : "",
           "codeProfile" : "",
+          "betaKey"     : key,
           "bground"     : None,
           "icon"        : "png",
           "glued"      : 1,
@@ -217,6 +212,10 @@ def policy():
 @app.route('/meta/about', methods=['GET'])
 def about():
   return render_template("about.html")
+
+@app.route('/meta/donate', methods=['GET'])
+def donate():
+  return render_template("donate.html")
 
 @app.route('/icons/<filename>')
 def iconFiles(filename):

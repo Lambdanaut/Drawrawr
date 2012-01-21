@@ -26,7 +26,7 @@
     };
     /* Glue the header to the top of the page */;
     Header.prototype.glue = function() {
-      var headerCSS, navCSS;
+      var headerCSS;
       this.glued = true;
       /* Old Header Style. This doesn't stretch across the page */;
       /* headerCSS = "position":"relative","top":"auto","left":"auto","right":"auto","margin":"5px 15px 4px 15px" */;
@@ -35,34 +35,20 @@
       /* New Header Style. This stetches all the was across the page */;
       headerCSS = {
         "position": "absolute",
-        "top": "5px",
-        "left": "0px",
-        "right": "0px",
         "margin": "auto"
       };
-      navCSS = {
-        "margin": "83px 15px 4px 15px"
-      };
       $("#header").css(headerCSS);
-      $("#navigation").css(navCSS);
       return $("#set-header").html("↓");
     };
     /* Unglue the header from the top of the page */;
     Header.prototype.unglue = function() {
-      var headerCSS, navCSS;
+      var headerCSS;
       this.glued = false;
       headerCSS = {
         "position": "fixed",
-        "top": "5px",
-        "left": "0px",
-        "right": "0px",
         "margin": "auto"
       };
-      navCSS = {
-        "margin": "83px 15px 4px 15px"
-      };
       $("#header").css(headerCSS);
-      $("#navigation").css(navCSS);
       /* Old Header Style fix. Only required for old header */;
       /* $("#header").removeClass("roundBox") */;
       return $("#set-header").html("↑");
@@ -119,12 +105,44 @@
     });
     $("#register-button").click(__bind(function() {
       var signupModal;
-      return signupModal = new Modal("#register-form");
+      signupModal = new Modal("#register-form");
+      return $('form:not(.filter) :input:visible:first').focus();
+    }, this));
+    $("#register-form form").submit(__bind(function() {
+      var form;
+      form = $("#register-form form").serialize();
+      $.ajax({
+        url: "/users/signup",
+        type: "POST",
+        data: form,
+        success: __bind(function(data) {
+          if (data === "1") {
+            return window.location = "/users/welcome";
+          }
+        }, this)
+      });
+      return false;
     }, this));
     /* Login */;
     $("#login-button").click(__bind(function() {
       var loginModal;
-      return loginModal = new Modal("#login-form");
+      loginModal = new Modal("#login-form");
+      return $('form:not(.filter) :input:visible:first').focus();
+    }, this));
+    $("#login-form form").submit(__bind(function() {
+      var form;
+      form = $("#login-form form").serialize();
+      $.ajax({
+        url: "/users/login",
+        type: "POST",
+        data: form,
+        success: __bind(function(data) {
+          if (data === "1") {
+            return location.reload(true);
+          }
+        }, this)
+      });
+      return false;
     }, this));
     /* Logout */;
     return $("#logout-button").click(__bind(function() {

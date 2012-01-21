@@ -6,7 +6,7 @@
 <script src="/static/js/settings.js"></script>
 <link rel="stylesheet" href="/static/css/tabs.css" media="screen">
 <link rel="stylesheet" href="/static/css/draggable.css" media="screen">
-<link rel="stylesheet" href="" media="screen" id="colorThemeStyle">
+<link rel="stylesheet" href="/" media="screen" id="colorThemeStyle">
 <style media="screen" type="text/css">
 h3
 {
@@ -86,9 +86,9 @@ h3
 {% block content %}
   <div id="tabs">
     <ul>
-      <li id="general">General Settings</li>
-      <li id="profile">My Profile</li>
-      <li id="layout">Page Layout</li>
+      <li id="general"><a href="#general">General Settings</a></li>
+      <li id="profile"><a href="#profile">My Profile</a></li>
+      <li id="layout"><a href="#layout">Page Layout</a></li>
     </ul>
   </div>
   <form enctype="multipart/form-data" method="POST" action="/users/settings">
