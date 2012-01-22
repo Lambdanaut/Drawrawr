@@ -21,7 +21,7 @@ Dependancies
 * OpenSSL (*see __Python dependancies__*)
 
 ### Python dependancies
-* web.py
+* Flask Web Framework
 * Python Imaging Library
 * markdown
 * Werkzeug
