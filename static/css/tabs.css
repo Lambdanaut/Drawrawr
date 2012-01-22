@@ -17,6 +17,10 @@
         -moz-border-radius-topright: 4px;
         -webkit-border-radius: 4px 4px 0px 0px;
         border-radius: 4px 4px 0px 0px;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	user-select: none;
 }
 #tabs li a
 {
@@ -25,9 +29,11 @@
 #tabs li:hover {
 	background-color: #AACC99;
 }
+#tabs .tab-selected a {
+	color: inherit;
+}
 #tabs .tab-selected {
 	position: relative;
-	color: inherit;
 	top: 1px;
 	background: #FFFFFF;
 }
