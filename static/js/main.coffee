@@ -28,8 +28,7 @@ class Header
 
 		/* New Header Style. This stetches all the was across the page */
 		headerCSS = 
-			"position":"absolute",
-			"margin":"auto"
+			"position":"absolute"
 
 		$("#header").css headerCSS
 
@@ -39,8 +38,7 @@ class Header
 	unglue: () -> 
 		@glued=false
 		headerCSS = 
-			"position":"fixed",
-			"margin":"auto"
+			"position":"fixed"
 
 		$("#header").css headerCSS
 
