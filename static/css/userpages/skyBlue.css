@@ -1,0 +1,39 @@
+body
+{
+	background-image: url("/static/images/userpage/cyanbg.png");
+}
+
+#navigation
+{
+	background-color: #0CAAFC;
+	color: #FFFFFF;
+}
+
+#navigation li
+{
+	border-left: solid 2px #2EF2FE;
+}
+
+#navigation li:hover
+{
+	background-color: #98DBFE;
+}
+
+#navigation .final
+{
+	border-right: solid 2px #2EF2FE;
+}
+#footer
+{
+	color: #01676D;
+}
+#footer a
+{
+	color: #01676D;
+}
+
+#content
+{
+	background-color: #8EF8FE;
+	color: #0CAAFC;
+}

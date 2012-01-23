@@ -1,0 +1,40 @@
+body
+{
+	background-image: url("/static/images/userpage/rainbowbg.png");
+}
+
+#navigation
+{
+	background-color: #FD534F;
+	color: #FFFFFF;
+}
+
+#navigation li
+{
+	border-left: solid 2px #FFC0C0;
+}
+
+#navigation li:hover
+{
+	background-color: #40FF40;
+}
+
+#navigation .final
+{
+	border-right: solid 2px #FFC0C0;
+}
+#footer
+{
+	color: #FFFFFF;
+}
+#footer a
+{
+	color: #FFFFFF;
+}
+
+#content
+{
+	background-color: #FFEA5F;
+	color: #4040FF;
+}
+
