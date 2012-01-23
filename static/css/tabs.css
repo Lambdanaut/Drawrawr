@@ -25,6 +25,7 @@
 #tabs li a
 {
 	text-decoration: none;
+	color: #DDDDDD;
 }
 #tabs li:hover {
 	background-color: #AACC99;
