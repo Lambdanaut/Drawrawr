@@ -30,17 +30,6 @@ a:hover {color: #228B22;}
 a:active {color: #00FF00;}
 a img{border: 0px;}
 
-#content a
-{
-	color: #556B2F;
-	text-decoration: underline;
-	cursor: pointer;
-}
-#content a:visited {color: #556B2F;}
-#content a:hover {color: #228B22;}
-#content a:active {color: #00FF00;}
-#content a img{border: 0px;}
-
 #header 
 {
 	background-color: #ffffff;
