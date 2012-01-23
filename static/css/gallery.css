@@ -1,3 +1,7 @@
+.gallery
+{
+	overflow: hidden;
+}
 .thumbContainer
 {
 	position: relative;
@@ -9,6 +13,8 @@
 	overflow: hidden;
 	text-decoration: none;
 	background-color: inherit;
+	 -moz-box-shadow: 3px 3px 5px #888;
+	 -webkit-box-shadow: 3px 3px 5px #888;
 	box-shadow: 3px 3px 5px #888;
 }
 .thumbContainer .thumbCover

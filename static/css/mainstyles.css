@@ -126,8 +126,8 @@ a img{border: 0px;}
 	text-align: left;
 	width: 100%;
 	color: #ffffff;
-	-moz-box-shadow: 0px 2px 5px #777777, inset -1px -1px #495c49;
-	-webkit-box-shadow: 0px 2px 5px #777777, inset -1px -1px #495c49;
+	-moz-box-shadow: 0px 2px 5px #777777, inset -1px -1px #495c49,inset 1px 1px #92a992;
+	-webkit-box-shadow: 0px 2px 5px #777777, inset -1px -1px #495c49,inset 1px 1px #92a992;
 	box-shadow: 0px 2px 5px #777777, inset -1px -1px #495c49,inset 1px 1px #92a992;
 }
 #navigation a 
