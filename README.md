@@ -3,11 +3,10 @@
 Quick start
 -----------
 
-This simple **3-step** process instantly gets you started with DrawRawr.
+This simple **2-step** process instantly gets you started with DrawRawr.
 
 1. `git clone git://github.com/Lambdanaut/Drawrawr.git`
-2. `cd Drawrawr/ && chmod +x ./drawrawr`
-3. ... *and finally:* `python2 main.py`
+2. ... *and finally:* `python2 main.py`
 
 Congrats, you now have your very own DrawRawr clone working on `localhost` with the port `5000`!   
 
@@ -22,7 +21,7 @@ Dependancies
 * OpenSSL (*see __Python dependancies__*)
 
 ### Python dependancies
-* web.py
+* Flask Web Framework
 * Python Imaging Library
 * markdown
 * Werkzeug
