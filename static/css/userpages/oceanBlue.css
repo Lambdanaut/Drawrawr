@@ -1,0 +1,40 @@
+body
+{
+	background-image: url("/static/images/userpage/bluebg.png");
+}
+
+#navigation
+{
+	background-color: #000082;
+	color: #FFFFFF;
+}
+
+#navigation li
+{
+	border-left: solid 2px #4040FF;
+}
+
+#navigation li:hover
+{
+	background-color: #4949FF;
+}
+
+#navigation .final
+{
+	border-right: solid 2px #4040FF;
+}
+#footer
+{
+	color: #000082;
+}
+#footer a
+{
+	color: #000082;
+}
+
+#content
+{
+	background-color: #053AE5;
+	color: #000082;
+}
+
