@@ -1,0 +1,40 @@
+body
+{
+	background-image: url("/static/images/userpage/turquoisebg.png");
+}
+
+#navigation
+{
+	background-color: #016D52;
+	color: #FFFFFF;
+}
+
+#navigation li
+{
+	border-left: solid 2px #00D89E;
+}
+
+#navigation li:hover
+{
+	background-color: #02E4AC;
+}
+
+#navigation .final
+{
+	border-right: solid 2px #00D89E;
+}
+#footer
+{
+	color: #016D52;
+}
+#footer a
+{
+	color: #016D52;
+}
+
+#content
+{
+	background-color: #2AFEC9;
+	color: #016D52;
+}
+
