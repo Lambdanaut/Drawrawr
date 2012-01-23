@@ -274,6 +274,19 @@ def generateBetaPass():
     else: abort(401)
   else: abort(401)
 
+@app.route('/api/updateCount',methods=['GET'])
+def updateCount():
+  try:
+    username = request.args.get('username')
+    password = request.args.get('password')
+  except KeyError:
+    return "Error: Invalid request"
+  if username and password:
+    if db.userPassCheck(username,password):
+      pass
+    else: return "Error: Invalid Username/Password combo"
+  else: return "Error: Invalid request"
+
 @app.errorhandler(404)
 def page_not_found(e):
   rando = random.randint(0,5)
