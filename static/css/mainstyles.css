@@ -126,6 +126,10 @@ a img{border: 0px;}
 	text-align: left;
 	width: 100%;
 	color: #ffffff;
+	/* The first shadow is the shadow under the entire nav bar */
+	/* The second shadow is the Dark shadow on the bottom of the entire bar */
+	/* The third shadow is the Gloss on the top of the entire bar */
+	/* Shadows are separated by commas */
 	-moz-box-shadow: 0px 2px 5px #777777, inset -1px -1px #495c49,inset 1px 1px #92a992;
 	-webkit-box-shadow: 0px 2px 5px #777777, inset -1px -1px #495c49,inset 1px 1px #92a992;
 	box-shadow: 0px 2px 5px #777777, inset -1px -1px #495c49,inset 1px 1px #92a992;
@@ -152,6 +156,8 @@ a img{border: 0px;}
 	-o-transition: all 0.2s ease-in-out;
 	-ms-transition: all 0.2s ease-in-out;
 	transition: all 0.2s ease-in-out;
+	/* The first shadow is the gloss on every button */
+	/* The first shadow is the dark shadow on every button */
 	-moz-box-shadow: inset 1px 1px #92a992, inset -1px -1px #495c49;
 	-webkit-box-shadow: inset 1px 1px #92a992, inset -1px -1px #495c49;
 	box-shadow: inset 1px 1px #92a992, inset -1px -1px #495c49;
@@ -159,9 +165,18 @@ a img{border: 0px;}
 #navigation li:hover 
 {
 	background-color: #95ac95;
+	/* The first shadow is the hover gloss on every button */
+	/* The second shadow is the hover dark shadow on every button */
 	-moz-box-shadow: inset 1px 1px #c8d5c8, inset -1px -1px #637e63;
 	-webkit-box-shadow: inset 1px 1px #c8d5c8, inset -1px -1px #637e63;
 	box-shadow: inset 1px 1px #c8d5c8, inset -1px -1px #637e63;
+}
+#navigation ul:last-child
+{
+	/* The final gloss on the last navigation button */
+	-moz-box-shadow: 1px 0px #92a992;
+	-webkit-box-shadow: 1px 0px #92a992;
+	box-shadow: 1px 0px #92a992;
 }
 #navigation img {vertical-align: bottom;}
 
@@ -171,7 +186,7 @@ a img{border: 0px;}
 	padding: 10px;
 	padding-top: 25px;
 	height: 1%;
-	overflow: hidden;	
+	overflow: hidden;
 	border-bottom: 1px solid #000000;
 	-moz-border-radius-topleft: 0px;
 	-moz-border-radius-topright: 0px;

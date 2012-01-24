@@ -5,24 +5,35 @@ body
 
 #navigation
 {
-	background-color: #7B5005;
+	background-color: #C0891E;
 	color: #FFFFFF;
+       -moz-box-shadow: #777777, inset -1px -1px #896115, inset 1px 1px #ECCA88;
+       -webkit-box-shadow: #777777, inset -1px -1px #896115, inset 1px 1px #ECCA88;
+       box-shadow: 0px 2px 5px #777777, inset -1px -1px #896115, inset 1px 1px #ECCA88;
 }
 
 #navigation li
 {
-	border-left: solid 2px #FCFF09;
+       -moz-box-shadow: inset 1px 1px #ECCA88, inset -1px -1px #896115;
+       -webkit-box-shadow: inset 1px 1px #ECCA88, inset -1px -1px #896115;
+       box-shadow: inset 1px 1px #ECCA88, inset -1px -1px #896115;
 }
 
 #navigation li:hover
 {
 	background-color: #BE7C08;
+       -moz-box-shadow: inset 1px 1px #c8d5c8, inset -1px -1px #637e63;
+       -webkit-box-shadow: inset 1px 1px #c8d5c8, inset -1px -1px #637e63;
+       box-shadow: inset 1px 1px #c8d5c8, inset -1px -1px #637e63;
 }
 
-#navigation .final
+#navigation ul:last-child
 {
-	border-right: solid 2px #FCFF09;
+        -moz-box-shadow: 1px 0px #ECCA88;
+        -webkit-box-shadow: 1px 0px #ECCA88;
+        box-shadow: 1px 0px #ECCA88;
 }
+
 #footer
 {
 	color: #7B5005;
