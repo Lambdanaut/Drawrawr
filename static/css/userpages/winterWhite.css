@@ -4,20 +4,33 @@ body
 }
 #navigation
 {
-	background-color: #DBDBDB;
-	color: #FFFFFF;
+	background-color: #FFFFFF;
+	color: #A6A5A9;
+       -moz-box-shadow: #777777, inset -1px -1px #808080, inset 1px 1px #FFFFFF;
+       -webkit-box-shadow: #777777, inset -1px -1px #808080, inset 1px 1px #FFFFFF;
+       box-shadow: 0px 2px 5px #777777, inset -1px -1px #808080, inset 1px 1px #FFFFFF;
 }
+
 #navigation li
 {
-	border-left: solid 2px #FFFFFF;
+       -moz-box-shadow: inset 1px 1px #FFFFFF, inset -1px -1px #808080;
+       -webkit-box-shadow: inset 1px 1px #FFFFFF, inset -1px -1px #808080;
+       box-shadow: inset 1px 1px #FFFFFF, inset -1px -1px #808080;
 }
+
 #navigation li:hover
 {
 	background-color: #E8E8E8;
+       -moz-box-shadow: inset 1px 1px #FFFFFF, inset -1px -1px #808080;
+       -webkit-box-shadow: inset 1px 1px #FFFFFF, inset -1px -1px #808080;
+       box-shadow: inset 1px 1px #FFFFFF, inset -1px -1px #808080;
 }
-#navigation .final
+
+#navigation ul:last-child
 {
-	border-right: solid 2px #FFFFFF;
+        -moz-box-shadow: 1px 0px #FFFFFF;
+        -webkit-box-shadow: 1px 0px #FFFFFF;
+        box-shadow: 1px 0px #FFFFFF;
 }
 #footer
 {
@@ -29,6 +42,6 @@ body
 }
 #content
 {
-	background-color: #DBDBDB;
+	background-color: #F2F2F2;
 	color: #A6A5A9;
 }

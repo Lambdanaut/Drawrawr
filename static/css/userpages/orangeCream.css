@@ -5,24 +5,35 @@ body
 
 #navigation
 {
-	background-color: #BE4D02;
+	background-color: #E65D02;
 	color: #FFFFFF;
+       -moz-box-shadow: #813401, inset -1px -1px #B74A01, inset 1px 1px #FD8331;
+       -webkit-box-shadow: #813401, inset -1px -1px #B74A01, inset 1px 1px #FD8331;
+       box-shadow: 0px 2px 5px #813401, inset -1px -1px #B74A01, inset 1px 1px #FD8331;
 }
 
 #navigation li
 {
-	border-left: solid 2px #F86402;
+       -moz-box-shadow: inset 1px 1px #FD8331, inset -1px -1px #B74A01;
+       -webkit-box-shadow: inset 1px 1px #FD8331, inset -1px -1px #B74A01;
+       box-shadow: inset 1px 1px #FD8331, inset -1px -1px #B74A01;
 }
 
 #navigation li:hover
 {
-	background-color: #F66402;
+	background-color: #FD8331;
+       -moz-box-shadow: inset 1px 1px #FEA86E, inset -1px -1px #E65D02;
+       -webkit-box-shadow: inset 1px 1px #FEA86E, inset -1px -1px #E65D02;
+       box-shadow: inset 1px 1px #FEA86E, inset -1px -1px #E65D02;
 }
 
-#navigation .final
+#navigation ul:last-child
 {
-	border-right: solid 2px #F86402;
+        -moz-box-shadow: 1px 0px #FD8331;
+        -webkit-box-shadow: 1px 0px #FD8331;
+        box-shadow: 1px 0px #FD8331;
 }
+
 #footer
 {
 	color: #793101;
@@ -35,6 +46,6 @@ body
 #content
 {
 	background-color: #FFAB47;
-	color: #BE4D02;
+	color: #E65D02;
 }
 
