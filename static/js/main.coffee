@@ -1,4 +1,4 @@
-class Header
+class @Header
 	constructor: (@glued) ->
 		@switchGlue()
 
@@ -47,7 +47,7 @@ class Header
 
 		$("#set-header").html "↑"
 
-class Notice
+class @Notice
 	constructor: (@title,@content) ->
 		$("#notice").slideDown "slow"
 		
@@ -59,7 +59,7 @@ class Notice
 		$("#notice").slideUp "fast", () =>
 			$("#notice").hide()
 
-class Modal
+class @Modal
 	constructor: (@modalDiv) ->
 		$("#modal .close").click @die
 		
@@ -84,6 +84,10 @@ $(document).ready ->
 	header = new Header false
 	if $("#glued").attr("data-glued") == "0"
 		header.switchGlue()
+
+	/* Flashed Messages */
+	$("#flashed li").each ->
+		new Notice "MESSAGE" ,$(this).text()
 
 	/* Registration */		
 	Recaptcha.create $("#registerCaptcha").attr("data-publicKey"), "registerCaptcha", theme : 'custom', custom_theme_widget: 'recaptcha_widget', callback: Recaptcha.focus_response_field
@@ -116,6 +120,8 @@ $(document).ready ->
 			success: (data) =>
 				if data == "1"
 					location.reload true
+				if data == "0"
+					new Notice "Woops!", "Incorrect Username/Password combination. Remember that your password is case sensative! "
 		false
 
 	/* Logout */

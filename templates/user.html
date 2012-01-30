@@ -62,8 +62,8 @@
       <img src='/icons/{{ user["lowername"] }}.{{ user["icon"] }}' alt="{{ user["username"] }}'s Icon" class="userIcon">
     </a>
   </div>
-  <div style="float:left;">
-    <h3 style="margin-top:0px; display: inline;">{{ user['username'] }}</h3> 
+  <div style="">
+    <h3 style="display: inline;margin-top:0px;">{{ user['username'] }}</h3> 
     {% if user["gender"] == "m"   %} <img src='/static/images/male.png' alt='Male'>
     {% elif user["gender"] == "f" %} <img src='/static/images/female.png' alt='Female'> 
     {% endif %}
@@ -72,7 +72,7 @@
 	Birthday: {{ monthName(user["dob"].month) }} {{ user["dob"].day }}, {{ user["dob"].year }}
       </span>
     {% endif %}
-    {{ user["codeProfile"] | safe }}
+    <div style=" margin-left: 80px;">{{ user["codeProfile"] | safe }}</div>
   </div>
   <div style="clear: both;"></div>
   </section>
@@ -108,6 +108,10 @@
 {% endmacro %}
 
 {% block content %}
+  <div style="float: left;">
+    <div class="container tabButton"><img src="/static/images/tinyCHAT.png" alt="Drawrboard icon" style="vertical-align:bottom;"> View Journals</div>
+    <div class="container tabButton"><img src="/static/images/tinyDRAWRBOARD.png" alt="Drawrboard icon" style="vertical-align:bottom;"> View Gallery</div>
+  </div>
 <div id="topArea">
   <div class="container tabButton"> + watch </div>
   <div class="container tabButton"> ~ message </div>

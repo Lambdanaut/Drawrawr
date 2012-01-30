@@ -4,7 +4,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="description" content="DrawRawr is a social utility that allows artists to collaborate, communicate, and show off their galleries online. ">
-  <meta name="author" content="Personette Labs">
+  <meta name="author" content="Josh Thomas and Catherine Kern">
+  <meta name="keywords" content="free community conventions comics art comic artists commission video games artwork game review josh audio animation flash music cullinary craft crafts cat anime social creative paint paintings gallery">
 
   <title>{% block title %}{% endblock %}</title>
   
@@ -21,10 +22,23 @@
   {% if config["captchaPublicKey"] and config["captchaSecretKey"] %}
   <script type="text/javascript" src="http://www.google.com/recaptcha/api/js/recaptcha_ajax.js"></script>
   {% endif %}
+  {% if showAds %}
+  <script type="text/javascript" src="/static/js/bottomAd.js"></script>
+  {% endif %}
   {% block head %}{% endblock %}
 
 </head>
 <body>
+  <noscript class="container"><b>Warning:</b> You are browsing with Javascript disabled. Drawrawr requires Javascript to function correctly. Please either enable it, or upgrade your browser.</noscript>
+    {% with messages = get_flashed_messages() -%}
+      {% if messages %}
+        <ul id = "flashed">
+        {% for message in messages %} 
+          <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {%- endwith -%}
   <header>
     <div id="header">
       <span id="glued" data-glued="{{ loggedInUser["glued"] }}"></span>
@@ -95,10 +109,10 @@
           </aside>
         </aside>
       {% endif %}
-      <a href="/"><div id="header-image"><img src="/static/images/regheader.png" alt="Header"></div></a>
+      <a href="/"><div id="header-image"><img src="/static/images/newyearheader.png" alt="Header"></div></a>
     <nav id="navigation">
       <ul>
-        <li><a href="/">News</a></li><li><a href="#">Search</a></li><li><a href="#">Draw</a></li><li><a href="#">Chat</a></li><li><a href="/meta/donate">Donate</a></li>
+        <li><a href="/">News</a></li><li><a href="#">Search</a></li><li><a href="/">Clubs</a></li><li><a href="/">Shops</a></li><li><a href="/">Roleplay</a></li><li><a href="#">Draw</a></li><li><a href="#">Chat</a></li><li><a href="/">DRadio</a></li><li><a href="/meta/donate">Donate</a></li>
       </ul>
     </nav>
     </div>
@@ -116,6 +130,7 @@
     <a href="/meta/about">About</a> ·
     <a href="">DrawRawr API</a> ·
     <a href="">Something Else</a> 
+    {% if showAds %}<div id="pw_adbox_55977_5_0"></div>{% endif %}
   </footer>
 </body>
 </html>

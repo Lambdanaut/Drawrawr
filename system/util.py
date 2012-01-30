@@ -4,3 +4,11 @@ def allowedFile(filename,extensions):
 
 def fileType(filename):
   return filename.rsplit('.', 1)[1]
+
+def printList(l):
+  newL = ""
+  while not len(l) == 0:
+    newL += l.pop()
+    if len(l) > 0:
+      newL += ", "
+  return newL

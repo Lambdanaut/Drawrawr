@@ -23,8 +23,12 @@ app.config["uploadsDir"] = config.uploadsDir
 app.config["iconsDir"] = config.iconsDir
 app.config["artDir"] = config.artDir
 app.config["thumbDir"] = config.thumbDir
+app.config["imageExtensions"] = config.imageExtensions
+app.config["iconExtensions"] = config.iconExtensions
 app.config["captchaSecretKey"] = config.captchaSecretKey
 app.config["captchaPublicKey"] = config.captchaPublicKey
+app.config['MAX_CONTENT_LENGTH'] = config.maxFileSize
+app.config["fileTypeError"] = config.fileTypeError
 
 db = Database(config.dbHost,config.dbPort)
 
@@ -46,7 +50,9 @@ def beforeRequest():
 
 @app.context_processor
 def injectUser():
-  return dict (loggedInUser = g.loggedInUser)
+  if g.loggedInUser: showAds = g.loggedInUser["showAds"]
+  else:              showAds = True
+  return dict (loggedInUser = g.loggedInUser, showAds = showAds)
 
 @app.route('/')
 def index():
@@ -56,12 +62,14 @@ def index():
 def userpage(username):
   user = db.getUser(username)
   if user:
+    # Increment Page Views
+    db.db.users.update({"lowername": user['lowername']}, {"$inc": {"pageViews": 1} })
     # Gallery Module
     if user["layout"]["gallery"] != "h":
       gallery = db.db.art.find({"authorID": user["_id"]})
       if gallery.count() == 0: gallery = None
     else: gallery = None
-    return render_template("user.html", user=user, userGallery=gallery)
+    return render_template("user.html", user=user, userGallery=gallery, showAds=False)
   else: abort(404)
 
 @app.route('/users/login', methods=['POST'])
@@ -109,6 +117,7 @@ def signup():
           "ip"          : [request.remote_addr],
           "dob"         : None,
           "dateJoined"  : datetime.datetime.today(),
+          "showAds"     : True,
           "layout"      : {
             # t == top; l == left; r == right; b == bottom; h == hidden
             "profile"  : "t",
@@ -127,7 +136,8 @@ def signup():
           "theme"       : "default",
           "profile"     : "",
           "codeProfile" : "",
-          "betaKey"     : key,
+          "betaKey"     : request.form["betaCode"],
+          "pageViews"   : 0,
           "bground"     : None,
           "icon"        : "png",
           "glued"      : 1,
@@ -168,21 +178,30 @@ def settings():
     else: abort(401)
   elif request.method == 'POST':
     if g.loggedInUser:
+      # User Messages
+      messages = []
       # User Icon
       icon = request.files['iconUpload']
-      if icon and util.allowedFile(icon.filename,config.iconExtensions):
-        try: os.remove(os.path.join(app.config["iconsDir"], g.loggedInUser['lowername'] + "." + g.loggedInUser["icon"]))
-        except: 
-          if config.logging: logging.warning("Error: Couldn't remove user \"" + g.loggedInUser['username']+ "\"'s old icon while attempting to upload a new icon. ")
-        fileName = g.loggedInUser['lowername'] + "." + util.fileType(icon.filename)
-        fileLocation = os.path.join(app.config["iconsDir"], fileName)
-        db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"icon": util.fileType(fileName) }})
-        icon.save(fileLocation)
-        image = Image.open(fileLocation)
-        resized = image.resize(config.iconSize, Image.ANTIALIAS)
-        try: resized.save(fileLocation, quality=100)
-        except: 
-          if config.logging: logging.warning("Error: Couldn't save user \"" + g.loggedInUser['username'] + "\"'s new icon while attempting to upload a new icon. ")
+      if icon:
+        if not icon.content_length <= config.maxIconSize:
+          flash(app.config["fileSizeError"] + "Your icon must be at most \"" + config.maxIconSizeText + "\". ")
+        else:
+          if not util.allowedFile(icon.filename,config.iconExtensions):
+            flash(app.config["fileTypeError"] + "The allowed extensions are \"" + util.printList(config.iconExtensions) + "\"")
+          else: 
+            try: os.remove(os.path.join(app.config["iconsDir"], g.loggedInUser['lowername'] + "." + g.loggedInUser["icon"]))
+            except: 
+              if config.logging: logging.warning("Error: Couldn't remove user \"" + g.loggedInUser['username']+ "\"'s old icon while attempting to upload a new icon. ")
+            fileName = g.loggedInUser['lowername'] + "." + util.fileType(icon.filename)
+            fileLocation = os.path.join(app.config["iconsDir"], fileName)
+            db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"icon": util.fileType(fileName) }})
+            icon.save(fileLocation)
+            image = Image.open(fileLocation)
+            resized = image.resize(config.iconSize, Image.ANTIALIAS)
+            try: resized.save(fileLocation, quality=100)
+            except: 
+              if config.logging: logging.warning("Error: Couldn't save user \"" + g.loggedInUser['username'] + "\"'s new icon while attempting to upload a new icon. ")
+            messages.append("User Icon")
       # Password
       if request.form["changePassCurrent"] and request.form["changePassNew1"] and request.form["changePassNew2"]:
         if system.cryptography.encryptPassword(request.form["changePassCurrent"], True) == g.loggedInUser['password']:
@@ -190,17 +209,20 @@ def settings():
             hashed = system.cryptography.encryptPassword(request.form['changePassNew1'], True)
             db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"password": hashed}})
             session['password']=hashed
+            messages.append("Password")
       # Gender
       if request.form["changeGender"] != g.loggedInUser["gender"]:
         db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"gender": request.form["changeGender"] }})
+        messages.append("Gender")
       # Profile
       if request.form["changeProfile"] != g.loggedInUser["profile"]:
         db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"profile": request.form["changeProfile"], "codeProfile": usercode.parse(request.form["changeProfile"]) } })
+        messages.append("Profile")
       # Color Theme
       if request.form["changeColorTheme"] != g.loggedInUser["theme"]:
         db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"theme": request.form["changeColorTheme"]} })
-
-      return "1"
+        messages.append("Color Theme")
+      return render_template("settingsSuccess.html",messages=messages, len=len)
     else: abort(401)
 
 @app.route('/meta/terms-of-service', methods=['GET'])
@@ -219,7 +241,9 @@ def donate():
 
 @app.route('/icons/<filename>')
 def iconFiles(filename):
-    return send_from_directory(app.config["iconsDir"],filename)
+    try: icon = send_from_directory(app.config["iconsDir"],filename)
+    except: abort(404)
+    return icon
 
 @app.route('/art/<int:art>', methods=['GET'])
 def viewArt(art):
@@ -237,24 +261,31 @@ def submitArt():
     else: abort(401)
   else:
     if g.loggedInUser:
+      messages = []
       # Image
       if request.form["artType"] == "image":
-        fileType = util.fileType(request.files['upload'].filename)
-	key = db.nextKey("art")
-        db.db.art.insert({
-          "_id"         : key,
-          "title"       : request.form["title"],
-          "description" : request.form["description"],
-          "author"      : g.loggedInUser["username"],
-          "authorID"    : g.loggedInUser["_id"],
-          "filetype"    : fileType,
-          "type"        : "image"
-        })
         image = request.files['upload']
-        fileLocation = os.path.join(app.config["artDir"], str(key) + "." + fileType)
-        try: image.save(fileLocation,quality=100)
-        except: 
-          if config.logging: logging.warning("Error: Couldn't save user \"" + g.loggedInUser['username'] + "\"'s art upload to the server. The art _id key was #" + str(key) + ". " )
+        if not image.content_length <= config.maxImageSize:
+          flash(app.config["fileSizeError"] + "Your image must be at most \"" + config.maxImageSizeText + "\". ")
+        else:
+          if not util.allowedFile(image.filename,config.imageExtensions):
+            messages.append(app.config["fileTypeError"])
+          else:
+            fileType = util.fileType(request.files['upload'].filename)
+	    key = db.nextKey("art")
+            db.db.art.insert({
+              "_id"         : key,
+              "title"       : request.form["title"],
+              "description" : request.form["description"],
+              "author"      : g.loggedInUser["username"],
+              "authorID"    : g.loggedInUser["_id"],
+              "filetype"    : fileType,
+              "type"        : "image"
+            })
+            fileLocation = os.path.join(app.config["artDir"], str(key) + "." + fileType)
+            try: image.save(fileLocation,quality=100)
+            except: 
+              if config.logging: logging.warning("Error: Couldn't save user \"" + g.loggedInUser['username'] + "\"'s art upload to the server. The art _id key was #" + str(key) + ". " )
       return "1"
     else: abort(401)
 

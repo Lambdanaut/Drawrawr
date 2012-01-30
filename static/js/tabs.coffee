@@ -6,7 +6,7 @@ class Tabs
 				@selectTab $(self).attr "id"
 
 		if firstTab == undefined
-			anchor =  window.location.hash.replace("#", "")
+			anchor = window.location.hash.replace("#-", "")
 			if anchor != ""
 				@currentTab = anchor
 			else 
