@@ -7,26 +7,38 @@ body
 {
 	background-color: #3E1E02;
 	color: #FFFFFF;
+       -moz-box-shadow: #57371B, inset -1px -1px #1F0F01, inset 1px 1px #805128;
+       -webkit-box-shadow: #57371B, inset -1px -1px #1F0F01, inset 1px 1px #805128;
+       box-shadow: 0px 2px 5px #57371B, inset -1px -1px #1F0F01, inset 1px 1px #805128;
 }
 
 #navigation li
 {
-	border-left: solid 2px #693411;
+       -moz-box-shadow: inset 1px 1px #805128, inset -1px -1px #1F0F01;
+       -webkit-box-shadow: inset 1px 1px #805128, inset -1px -1px #1F0F01;
+       box-shadow: inset 1px 1px #805128, inset -1px -1px #1F0F01;
 }
 
 #navigation li:hover
 {
-	background-color: #97602F;
+	background-color: #805128;
+       -moz-box-shadow: inset 1px 1px #A36833, inset -1px -1px #55361B;
+       -webkit-box-shadow: inset 1px 1px #A36833, inset -1px -1px #55361B;
+       box-shadow: inset 1px 1px #A36833, inset -1px -1px #55361B;
 }
 
-#navigation .final
+#navigation ul:last-child
 {
-	border-right: solid 2px #693411;
+        -moz-box-shadow: 1px 0px #805128;
+        -webkit-box-shadow: 1px 0px #805128;
+        box-shadow: 1px 0px #805128;
 }
+
 #footer
 {
 	color: #3E1E02;
 }
+
 #footer a
 {
 	color: #3E1E02;

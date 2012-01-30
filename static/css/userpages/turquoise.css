@@ -7,22 +7,33 @@ body
 {
 	background-color: #016D52;
 	color: #FFFFFF;
+       -moz-box-shadow: #000000, inset -1px -1px #013D2E, inset 1px 1px #029E78;
+       -webkit-box-shadow: #000000, inset -1px -1px #013D2E, inset 1px 1px #029E78;
+       box-shadow: 0px 2px 5px #000000, inset -1px -1px #013D2E, inset 1px 1px #029E78;
 }
 
 #navigation li
 {
-	border-left: solid 2px #00D89E;
+       -moz-box-shadow: inset 1px 1px #029E78, inset -1px -1px #013D2E;
+       -webkit-box-shadow: inset 1px 1px #029E78, inset -1px -1px #013D2E;
+       box-shadow: inset 1px 1px #029E78, inset -1px -1px #013D2E;
 }
 
 #navigation li:hover
 {
-	background-color: #02E4AC;
+	background-color: #029E78;
+       -moz-box-shadow: inset 1px 1px #02CE9B, inset -1px -1px #027E60;
+       -webkit-box-shadow: inset 1px 1px #02CE9B, inset -1px -1px #027E60;
+       box-shadow: inset 1px 1px #02CE9B, inset -1px -1px #027E60;
 }
 
-#navigation .final
+#navigation ul:last-child
 {
-	border-right: solid 2px #00D89E;
+        -moz-box-shadow: 1px 0px #029E78;
+        -webkit-box-shadow: 1px 0px #029E78;
+        box-shadow: 1px 0px #029E78;
 }
+
 #footer
 {
 	color: #016D52;

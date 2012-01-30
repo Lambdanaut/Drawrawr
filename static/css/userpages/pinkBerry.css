@@ -5,24 +5,35 @@ body
 
 #navigation
 {
-	background-color: #D5554B;
+	background-color: #FF7575;
 	color: #FFFFFF;
+       -moz-box-shadow: #813401, inset -1px -1px #FF2D2D, inset 1px 1px #FF9F9F;
+       -webkit-box-shadow: #813401, inset -1px -1px #FF2D2D, inset 1px 1px #FF9F9F;
+       box-shadow: 0px 2px 5px #813401, inset -1px -1px #FF2D2D, inset 1px 1px #FF9F9F;
 }
 
 #navigation li
 {
-	border-left: solid 2px #FF8080;
+       -moz-box-shadow: inset 1px 1px #FF9F9F, inset -1px -1px #FF2D2D;
+       -webkit-box-shadow: inset 1px 1px #FF9F9F, inset -1px -1px #FF2D2D;
+       box-shadow: inset 1px 1px #FF9F9F, inset -1px -1px #FF2D2D;
 }
 
 #navigation li:hover
 {
-	background-color: #F39595;
+	background-color: #FF9F9F;
+       -moz-box-shadow: inset 1px 1px #FFC7C7, inset -1px -1px #FF7575;
+       -webkit-box-shadow: inset 1px 1px #FFC7C7, inset -1px -1px #FF7575;
+       box-shadow: inset 1px 1px #FFC7C7, inset -1px -1px #FF7575;
 }
 
-#navigation .final
+#navigation ul:last-child
 {
-	border-right: solid 2px #FF8080;
+        -moz-box-shadow: 1px 0px #FF9F9F;
+        -webkit-box-shadow: 1px 0px #FF9F9F;
+        box-shadow: 1px 0px #FF9F9F;
 }
+
 #footer
 {
 	color: #D5554B;
@@ -35,5 +46,5 @@ body
 #content
 {
 	background-color: #FFC0C0;
-	color: #D5554B;
+	color: #FF4040;
 }
