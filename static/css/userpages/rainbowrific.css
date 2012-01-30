@@ -7,22 +7,33 @@ body
 {
 	background-color: #FD534F;
 	color: #FFFFFF;
+       -moz-box-shadow: #DF82FE, inset -1px -1px #FD342F, inset 1px 1px #FD7C79;
+       -webkit-box-shadow: #DF82FE, inset -1px -1px #FD342F, inset 1px 1px #FD7C79;
+       box-shadow: 0px 2px 5px #DF82FE, inset -1px -1px #FD342F, inset 1px 1px #FD7C79;
 }
 
 #navigation li
 {
-	border-left: solid 2px #FFC0C0;
+       -moz-box-shadow: inset 1px 1px #FD7C79, inset -1px -1px #FD342F;
+       -webkit-box-shadow: inset 1px 1px #FD7C79, inset -1px -1px #FD342F;
+       box-shadow: inset 1px 1px #FD7C79, inset -1px -1px #FD342F;
 }
 
 #navigation li:hover
 {
-	background-color: #40FF40;
+	background-color: #61FA52;
+       -moz-box-shadow: inset 1px 1px #A8FCA0, inset -1px -1px #1AD806;
+       -webkit-box-shadow: inset 1px 1px #A8FCA0, inset -1px -1px #1AD806;
+       box-shadow: inset 1px 1px #A8FCA0, inset -1px -1px #1AD806;
 }
 
-#navigation .final
+#navigation ul:last-child
 {
-	border-right: solid 2px #FFC0C0;
+        -moz-box-shadow: 1px 0px #FD7C79;
+        -webkit-box-shadow: 1px 0px #FD7C79;
+        box-shadow: 1px 0px #FD7C79;
 }
+
 #footer
 {
 	color: #FFFFFF;
@@ -34,6 +45,7 @@ body
 
 #content
 {
+       background-image: url("/static/images/userpage/rainbowbg.png");
 	background-color: #FFEA5F;
 	color: #4040FF;
 }

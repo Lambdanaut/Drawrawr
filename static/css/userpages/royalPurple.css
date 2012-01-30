@@ -5,24 +5,35 @@ body
 
 #navigation
 {
-	background-color: #2D1644;
+	background-color: #602F93;
 	color: #FFFFFF;
+       -moz-box-shadow: #320165, inset -1px -1px #452268, inset 1px 1px #763AB4;
+       -webkit-box-shadow: #320165, inset -1px -1px #452268, inset 1px 1px #763AB4;
+       box-shadow: 0px 2px 5px #320165, inset -1px -1px #452268, inset 1px 1px #763AB4;
 }
 
 #navigation li
 {
-	border-left: solid 2px #400080;
+       -moz-box-shadow: inset 1px 1px #763AB4, inset -1px -1px #452268;
+       -webkit-box-shadow: inset 1px 1px #763AB4, inset -1px -1px #452268;
+       box-shadow: inset 1px 1px #763AB4, inset -1px -1px #452268;
 }
 
 #navigation li:hover
 {
-	background-color: #B975FF;
+	background-color: #763AB4;
+       -moz-box-shadow: inset 1px 1px #9763CD, inset -1px -1px #602F93;
+       -webkit-box-shadow: inset 1px 1px #9763CD, inset -1px -1px #602F93;
+       box-shadow: inset 1px 1px #9763CD, inset -1px -1px #602F93;
 }
 
-#navigation .final
+#navigation ul:last-child
 {
-	border-right: solid 2px #400080;
+        -moz-box-shadow: 1px 0px #763AB4;
+        -webkit-box-shadow: 1px 0px #763AB4;
+        box-shadow: 1px 0px #763AB4;
 }
+
 #footer
 {
 	color: #2D1644;
