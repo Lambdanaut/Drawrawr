@@ -2,7 +2,7 @@
 {% block title %} {{ user["username"] }} @ DrawRawr  {% endblock %}
 {% block head %}
 <link rel="stylesheet" href="/static/css/gallery.css" media="screen">
-<script src="/static/js/userpage.js"></script>
+<script src="/static/js/user.js"></script>
 
 <style media="screen" type="text/css">
 .fullRow
@@ -59,7 +59,7 @@
   <section class="container">
   <div style="float:left;height:100%;margin-right:5px;">
     <a href='/{{ user['username'] }}'>
-      <img src='/icons/{{ user["lowername"] }}.{{ user["icon"] }}' alt="{{ user["username"] }}'s Icon" class="userIcon">
+      <img src='/icons/{{ user["lowername"] }}' alt="{{ user["username"] }}'s Icon" class="userIcon">
     </a>
   </div>
   <div style="">
@@ -87,9 +87,9 @@
 {% endmacro %}
 
 {% macro watches() %}
-  <section class="container">
+  <section class="container gallery" style="height: 260px;">
     <span class="moduleTitle">Watches</span>
-    <p>Watches Go Here</p>
+    
   </section>
 {% endmacro %}
 
@@ -108,14 +108,17 @@
 {% endmacro %}
 
 {% block content %}
-  <div style="float: left;">
-    <div class="container tabButton"><img src="/static/images/tinyCHAT.png" alt="Drawrboard icon" style="vertical-align:bottom;"> View Journals</div>
-    <div class="container tabButton"><img src="/static/images/tinyDRAWRBOARD.png" alt="Drawrboard icon" style="vertical-align:bottom;"> View Gallery</div>
-  </div>
-<div id="topArea">
-  <div class="container tabButton"> + watch </div>
-  <div class="container tabButton"> ~ message </div>
+<span id="username" data-name="{{ user["username"] }}"></span>
+<div style="float: left;">
+  <div class="container tabButton"><img src="/static/images/tinyCHAT.png" alt="Drawrboard icon" style="vertical-align:bottom;"> View Journals</div>
+  <div class="container tabButton"><img src="/static/images/tinyDRAWRBOARD.png" alt="Drawrboard icon" style="vertical-align:bottom;"> View Gallery</div>
 </div>
+{% if g.loggedInUser and g.loggedInUser["_id"] != user["_id"] %}
+<div id="topArea">
+  <div class="container tabButton" id="watchUserButton" data-state="{{ inList(loggedInUser["username"], user["watchers"]) }}"> + watch </div>
+  <div class="container tabButton" id="messageUserButton"> ~ message </div>
+</div>
+{% endif %}
 <div id="top" class="fullRow">
   {{ row("t") }}
 </div>

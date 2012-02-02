@@ -12,3 +12,9 @@ def printList(l):
     if len(l) > 0:
       newL += ", "
   return newL
+
+def inList(v,l):
+  for item in l:
+    if v == item:
+      return True
+  return False

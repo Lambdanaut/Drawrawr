@@ -49,4 +49,22 @@
   {% endfor %}
 {% endif %}
 {% endmacro %}
+{# Take a list of usernames and shows their clickable avatars one after another #}
+{% macro drawUsers(users) %}
+{% if users %}
+  {% for user in users %}
+    <img src="/icons/" alt="{{ art["title"] }}" title="{{ art["title"] }} by {{ art["author"] }}">
+  {% endfor %}
+{% else %}
+  {% for i in range(0,20) %}
+      <div class="thumbContainer" title="Separated by Another World by Lambdanaut">
+        <div class="thumbCover">Stagman</div>
+        <a href="/"><span class="thumbLink" href="/"></span></a>
+        <img src="/static/images/test.png" class="galleryThumb" alt="Separated by Another World">
+        </a>
+      </div>
+    </a>
+  {% endfor %}
+{% endif %}
+{% endmacro %}
 {% block layout %}{% endblock %}

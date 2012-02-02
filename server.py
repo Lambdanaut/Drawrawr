@@ -69,7 +69,7 @@ def userpage(username):
       gallery = db.db.art.find({"authorID": user["_id"]})
       if gallery.count() == 0: gallery = None
     else: gallery = None
-    return render_template("user.html", user=user, userGallery=gallery, showAds=False)
+    return render_template("user.html", user=user, userGallery=gallery, inList=util.inList, showAds=False)
   else: abort(404)
 
 @app.route('/users/login', methods=['POST'])
@@ -116,6 +116,7 @@ def signup():
           "email"       : None, #request.form['email'],
           "ip"          : [request.remote_addr],
           "dob"         : None,
+          "betaKey"     : request.form["betaCode"],
           "dateJoined"  : datetime.datetime.today(),
           "showAds"     : True,
           "layout"      : {
@@ -136,13 +137,13 @@ def signup():
           "theme"       : "default",
           "profile"     : "",
           "codeProfile" : "",
-          "betaKey"     : request.form["betaCode"],
           "pageViews"   : 0,
+          "watchers"    : [],
           "bground"     : None,
           "icon"        : "png",
-          "glued"      : 1,
+          "glued"       : 1,
           # m == Male; f == Female; h == Hide Gender
-          "gender"     : "h"
+          "gender"      : "h"
         }) 
         session['username'] = request.form['username']
         session['password'] = hashed
@@ -165,6 +166,26 @@ def glue():
       db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"glued": request.form['glued']}})
       return "1"
     else: return "0"
+
+@app.route('/users/watch', methods=['GET','POST'])
+def watch():
+  if request.method == 'GET':
+    # This needs to return a list of watchers or something
+    return "0"
+  elif request.method == 'POST':
+    if g.loggedInUser:
+      watchedUser = request.form["watchedUser"]
+      if g.loggedInUser["lowername"] != watchedUser.lower():
+        watchedUserResult = db.db.users.find_one({"lowername" : watchedUser.lower()})
+        watchers = watchedUserResult["watchers"]
+        try: watchers.remove(g.loggedInUser["username"])
+        except ValueError: watchers.insert(0, g.loggedInUser["username"])
+        db.db.users.update({"lowername" : watchedUser.lower()},{"$set" : {"watchers" : watchers}})
+        return "1"
+      else:
+        if config.logging: logging.warning("Error: User \"" + watchedUser + "\" tried to watch themself. The procedure failed, but it's a bit weird that they should even be able to do this. Keep a watch out for them. ")
+        return "0"
+    else: abort(401)
 
 @app.route('/users/welcome', methods=['GET'])
 def welcome():
