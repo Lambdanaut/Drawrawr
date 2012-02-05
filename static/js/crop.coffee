@@ -1,16 +1,23 @@
-showPreview = (coords) ->
-	rx = 100 / coords.w
-	ry = 100 / coords.h
+thumbWidth  = 135 
+thumbHeight = 110
 
-	$('#preview').css({
-		width: Math.round(rx * 500) + 'px',
-		height: Math.round(ry * 370) + 'px',
+showPreview = (coords) ->
+	rx = thumbWidth  / coords.w
+	ry = thumbHeight / coords.h
+	$('#preview').css
+		width: Math.round(rx * imageWidth ) + 'px',
+		height: Math.round(ry * imageHeight ) + 'px',
 		marginLeft: '-' + Math.round(rx * coords.x) + 'px',
 		marginTop: '-' + Math.round(ry * coords.y) + 'px'
-	});
 
 $(document).ready ->
-	$('#art').Jcrop
-		onChange: showPreview,
-		onSelect: showPreview,
-		aspectRatio: 1.2272727
+	$('#art').load ->
+		window.imageWidth  = $("#art").width()
+		window.imageHeight = $("#art").height()
+		$('#art').Jcrop
+			aspectRatio: thumbWidth/thumbHeight,
+			onChange: showPreview,
+			onSelect: showPreview
+		showPreview(w:imageWidth,h:imageHeight)
+
+

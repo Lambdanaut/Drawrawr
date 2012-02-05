@@ -7,21 +7,52 @@
 <link rel="stylesheet" href="/static/css/jquery.Jcrop.css" type="text/css">
 <link rel="stylesheet" href="/static/css/gallery.css" media="screen" type="text/css">
 <style>
-#art {
-	max-width: 100%;
-	max-height: 1000px;
-}
 #previewContainer {
 	overflow: hidden;
+	margin-left: auto; margin-right: auto;
 	width: 135px;
 	height: 110px;
+	border: solid 1px;
+	 -moz-box-shadow: 3px 3px 5px #888;
+	 -webkit-box-shadow: 3px 3px 5px #888;
+	box-shadow: 3px 3px 5px #888
+}
+#leftCol
+{
+	width: 20%;
+}
+#rightCol
+{
+	float: right;
+	width: 80%;
 }
 </style>
 {% endblock %}
 {% block content %}
   <section class="container" style="text-align:center;">
-    <h1>Crop</h1>
-    <img src="/art/uploads/{{ art["_id"] }}.{{ art["filetype"] }}" id="art">
-    <div id="previewContainer"><img src="/art/uploads/{{ art["_id"] }}.{{ art["filetype"] }}" id="preview" class="thumbContainer"></div>
+    <h1>Crop Artwork</h1>
+    <p>Click and drag out the area that you would like to appear as the thumbnail for your artwork. </p>
   </section>
+  <div id = "rightCol">
+    <section class="container" style="overflow: auto;">
+      <img src="/art/uploads/{{ art["_id"] }}.{{ art["filetype"] }}" id="art">
+    </section>
+  </div>
+  <div id = "leftCol">
+    <section class="container" style="text-align:center;">
+      <h1>Preview</h1>
+      <div id="previewContainer">
+        <img src="/art/uploads/{{ art["_id"] }}.{{ art["filetype"] }}" id="preview" class="galleryThumb">
+      </div>
+    </section>
+    <section class="container" style="text-align:center;">
+      <form>
+        <input type="hidden" id="x" name="x">
+        <input type="hidden" id="y" name="y">
+        <input type="hidden" id="w" name="w">
+        <input type="hidden" id="h" name="h">
+        <input type="submit" value="Submit Thumbnail" class="button">
+      </form>
+    </section>
+  </div>
 {% endblock %}

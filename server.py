@@ -323,11 +323,16 @@ def submitArt():
 
 @app.route('/art/do/crop/<int:art>', methods=['GET','POST'])
 def crop(art):
-  try: 
-    artLookup = db.db.art.find_one({'_id' : art})
-  except ValueError: abort(404)
-  if not artLookup: abort(404)
-  return render_template("crop.html",art=artLookup)
+  if g.loggedInUser:
+    if request.method == 'GET':
+      try: 
+        artLookup = db.db.art.find_one({'_id' : art})
+      except ValueError: abort(404)
+      if not artLookup: abort(404)
+      return render_template("crop.html",art=artLookup)
+    else:
+      
+  else: abort(401)
 
 @app.route('/art/uploads/<filename>')
 def artFile(filename):
