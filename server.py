@@ -15,10 +15,14 @@ import system.util as util
 
 # Create Application
 app = Flask(__name__)
-app.secret_key = os.urandom(24)
 app.jinja_env.trim_blocks = True
 
+# Secret Key
+if config.randomSecretKey: app.secret_key = os.urandom(24)
+else                     : app.secret_key = "0"
+
 # Add Config
+app.config["betaKey"] = config.betaKey
 app.config["uploadsDir"] = config.uploadsDir
 app.config["iconsDir"] = config.iconsDir
 app.config["artDir"] = config.artDir
@@ -56,6 +60,7 @@ def injectUser():
 
 @app.route('/')
 def index():
+  print "asdf"
   return render_template("index.html")
 
 @app.route('/<username>')
@@ -102,56 +107,59 @@ def logout():
 
 @app.route('/users/signup', methods=['GET', 'POST'])
 def signup(): 
-  if not db.userExists(request.form['username']) and len(request.form['username']) > 0 and request.form['password1'] == request.form['password2'] and  request.form['tosAgree'] == 'true':
-    if captcha.check(request.form['recaptcha_challenge_field'], request.form['recaptcha_response_field'],config.captchaSecretKey,request.remote_addr):
-      if db.checkBetaPass(request.form["betaCode"]):
-        hashed = system.cryptography.encryptPassword(request.form['password1'], True)
-        shutil.copy("static/images/newbyicon.png", "uploads/icons/" + request.form['username'].lower() + ".png")
-        key = db.nextKey("users")
-        db.db.users.insert({
-          "_id"         : key,
-          "username"    : request.form['username'],
-          "lowername"   : request.form['username'].lower(),
-          "password"    : hashed, 
-          "email"       : None, #request.form['email'],
-          "ip"          : [request.remote_addr],
-          "dob"         : None,
-          "betaKey"     : request.form["betaCode"],
-          "dateJoined"  : datetime.datetime.today(),
-          "showAds"     : True,
-          "layout"      : {
-            # t == top; l == left; r == right; b == bottom; h == hidden
-            "profile"  : "t",
-            "gallery"  : "l",
-            "watches"  : "r",
-            "comments" : "b"
-          },
-          "permissions" : {
-            "deleteComments"   : False,
-            "deleteArt"        : False,
-            "banUsers"         : False,
-            "makeProps"        : False,
-            "vote"             : False,
-            "generateBetaPass" : False
-          },
-          "theme"       : "default",
-          "profile"     : "",
-          "codeProfile" : "",
-          "pageViews"   : 0,
-          "watchers"    : [],
-          "bground"     : None,
-          "icon"        : "png",
-          "glued"       : 1,
-          # m == Male; f == Female; h == Hide Gender
-          "gender"      : "h"
-        }) 
-        session['username'] = request.form['username']
-        session['password'] = hashed
-        session.permanent = True
-        return "1" #SUCCESS
-      else: return "2" #ERROR, Beta Code Fail
-    else: return "3" #ERROR, Captcha Fail
-  else: return "0" #ERROR, User doesn't exist or username is too small
+  if db.userExists(request.form['username']) or len(request.form['username']) == 0 or request.form['password1'] != request.form['password2'] or request.form['tosAgree'] != 'true':
+    return "0" #ERROR, User doesn't exist or username is too small
+  if captcha.check(request.form['recaptcha_challenge_field'], request.form['recaptcha_response_field'],config.captchaSecretKey,request.remote_addr):
+    return "2" #ERROR, Captcha Fail
+  if config.betaKey:
+    betaKey = db.checkBetaPass(request.form["betaCode"])
+    if not betaKey:
+      return "3" #ERROR, Beta Code Fail
+  else: betaKey = None
+  hashed = system.cryptography.encryptPassword(request.form['password1'], True)
+  shutil.copy("static/images/newbyicon.png", config.iconsDir + request.form['username'].lower() + ".png")
+  key = db.nextKey("users")
+  db.db.users.insert({
+    "_id"         : key,
+    "username"    : request.form['username'],
+    "lowername"   : request.form['username'].lower(),
+    "password"    : hashed, 
+    "email"       : None, #request.form['email'],
+    "ip"          : [request.remote_addr],
+    "dob"         : None,
+    "betaKey"     : betaKey,
+    "dateJoined"  : datetime.datetime.today(),
+    "showAds"     : True,
+    "layout"      : {
+      # t == top; l == left; r == right; b == bottom; h == hidden
+      "profile"  : "t",
+      "gallery"  : "l",
+      "watches"  : "r",
+      "comments" : "b"
+    },
+    "permissions" : {
+      "deleteComments"   : False,
+      "deleteArt"        : False,
+      "banUsers"         : False,
+      "makeProps"        : False,
+      "vote"             : False,
+      "generateBetaPass" : False
+    },
+    "theme"       : "default",
+    "profile"     : "",
+    "codeProfile" : "",
+    "pageViews"   : 0,
+    "watchers"    : [],
+    "bground"     : None,
+    "icon"        : "png",
+    "glued"       : 1,
+    # m == Male; f == Female; h == Hide Gender
+    "gender"      : "h"
+  }) 
+  session['username'] = request.form['username']
+  session['password'] = hashed
+  session.permanent = True
+  return "1" #SUCCESS
 
 @app.route('/users/glue', methods=['GET','POST'])
 def glue():
@@ -183,7 +191,7 @@ def watch():
         db.db.users.update({"lowername" : watchedUser.lower()},{"$set" : {"watchers" : watchers}})
         return "1"
       else:
-        if config.logging: logging.warning("Error: User \"" + watchedUser + "\" tried to watch themself. The procedure failed, but it's a bit weird that they should even be able to do this. Keep a watch out for them. ")
+        if config.logging: logging.warning("User \"" + watchedUser + "\" tried to watch themself. The procedure failed, but it's a bit weird that they should even be able to do this. Keep a watch out for them. ")
         return "0"
     else: abort(401)
 
@@ -212,7 +220,7 @@ def settings():
           else: 
             try: os.remove(os.path.join(app.config["iconsDir"], g.loggedInUser['lowername'] + "." + g.loggedInUser["icon"]))
             except: 
-              if config.logging: logging.warning("Error: Couldn't remove user \"" + g.loggedInUser['username']+ "\"'s old icon while attempting to upload a new icon. ")
+              if config.logging: logging.warning("Couldn't remove user \"" + g.loggedInUser['username']+ "\"'s old icon while attempting to upload a new icon. ")
             fileName = g.loggedInUser['lowername'] + "." + util.fileType(icon.filename)
             fileLocation = os.path.join(app.config["iconsDir"], fileName)
             db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"icon": util.fileType(fileName) }})
@@ -221,7 +229,7 @@ def settings():
             resized = image.resize(config.iconSize, Image.ANTIALIAS)
             try: resized.save(fileLocation, quality=100)
             except: 
-              if config.logging: logging.warning("Error: Couldn't save user \"" + g.loggedInUser['username'] + "\"'s new icon while attempting to upload a new icon. ")
+              if config.logging: logging.warning("Couldn't save user \"" + g.loggedInUser['username'] + "\"'s new icon while attempting to upload a new icon. ")
             messages.append("User Icon")
       # Password
       if request.form["changePassCurrent"] and request.form["changePassNew1"] and request.form["changePassNew2"]:
@@ -272,7 +280,9 @@ def viewArt(art):
     artLookup = db.db.art.find_one({'_id' : art})
   except ValueError: abort(404)
   if not artLookup: abort(404)
-  else: return render_template("art.html", art=artLookup)
+  else:
+    authorLookup = db.db.users.find_one({'_id' : artLookup["authorID"]})
+    return render_template("art.html", art=artLookup, author=authorLookup)
 
 @app.route('/art/do/submit', methods=['GET','POST'])
 def submitArt():
@@ -281,34 +291,43 @@ def submitArt():
       return render_template("submit.html")
     else: abort(401)
   else:
-    if g.loggedInUser:
-      messages = []
-      # Image
-      if request.form["artType"] == "image":
-        image = request.files['upload']
-        if not image.content_length <= config.maxImageSize:
-          flash(app.config["fileSizeError"] + "Your image must be at most \"" + config.maxImageSizeText + "\". ")
+    if not g.loggedInUser:
+      abort(401)
+    messages = []
+    # Image
+    if request.form["artType"] == "image":
+      image = request.files['upload']
+      if not image.content_length <= config.maxImageSize:
+        flash(app.config["fileSizeError"] + "Your image must be at most \"" + config.maxImageSizeText + "\". ")
+      else:
+        if not util.allowedFile(image.filename,config.imageExtensions):
+          messages.append(app.config["fileTypeError"])
         else:
-          if not util.allowedFile(image.filename,config.imageExtensions):
-            messages.append(app.config["fileTypeError"])
-          else:
-            fileType = util.fileType(request.files['upload'].filename)
-	    key = db.nextKey("art")
-            db.db.art.insert({
-              "_id"         : key,
-              "title"       : request.form["title"],
-              "description" : request.form["description"],
-              "author"      : g.loggedInUser["username"],
-              "authorID"    : g.loggedInUser["_id"],
-              "filetype"    : fileType,
-              "type"        : "image"
-            })
-            fileLocation = os.path.join(app.config["artDir"], str(key) + "." + fileType)
-            try: image.save(fileLocation,quality=100)
-            except: 
-              if config.logging: logging.warning("Error: Couldn't save user \"" + g.loggedInUser['username'] + "\"'s art upload to the server. The art _id key was #" + str(key) + ". " )
-      return "1"
-    else: abort(401)
+          fileType = util.fileType(request.files['upload'].filename)
+	  key = db.nextKey("art")
+          db.db.art.insert({
+            "_id"         : key,
+            "title"       : request.form["title"],
+            "description" : request.form["description"],
+            "author"      : g.loggedInUser["username"],
+            "authorID"    : g.loggedInUser["_id"],
+            "filetype"    : fileType,
+            "type"        : "image"
+          })
+          fileLocation = os.path.join(config.artDir, str(key) + "." + fileType)
+          try: image.save(fileLocation)
+          except: 
+            if config.logging: logging.warning("Couldn't save user \"" + g.loggedInUser['username'] + "\"'s art upload to the server at location \"" + fileLocation + "\". The art _id key was #" + str(key) + ". " )
+          return redirect(os.path.join("/art/", str(key)))
+    return render_template("submit.html")
+
+@app.route('/art/do/crop/<int:art>', methods=['GET','POST'])
+def crop(art):
+  try: 
+    artLookup = db.db.art.find_one({'_id' : art})
+  except ValueError: abort(404)
+  if not artLookup: abort(404)
+  return render_template("crop.html",art=artLookup)
 
 @app.route('/art/uploads/<filename>')
 def artFile(filename):

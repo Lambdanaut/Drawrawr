@@ -59,7 +59,7 @@
             </div>
           </div>
           <a href = "/{{ loggedInUser["username"] }}">
-            <img src='/icons/{{ loggedInUser["lowername"] }}' class='tinyIcon'  style='margin-right: 5px;' alt='User Icon'>
+            <img src='/icons/{{ loggedInUser["lowername"] }}.{{ loggedInUser["icon"] }}' class='tinyIcon'  style='margin-right: 5px;' alt='User Icon'>
           </a>
         </aside>
       {% else %}
@@ -75,7 +75,9 @@
               <!-- <h6>EMAIL: (<i>optional</i>)</h6> <input type = 'text' class='textInputNoRecoil' name = 'email'> -->
               <h6>PASSWORD:</h6> <input type='password' class='textInputNoRecoil' name='password1'>
               <h6>VERIFY PASSWORD:</h6> <input type='password' class='textInputNoRecoil' name='password2'> <br>
+              {% if config["betaKey"] %}
               <h6>BETA CODE:</h6> <input type='text' class='textInputNoRecoil' name='betaCode'> <br>
+              {% endif %}
               <div id="registerCaptcha" data-publicKey="{{ config["captchaPublicKey"] }}">
                 <div id="recaptcha_image" style="margin-left: auto; margin-right: auto; margin-top: 5px;"></div>
                 <div class="recaptcha_only_if_incorrect_sol" style="color:red">Incorrect please try again</div>

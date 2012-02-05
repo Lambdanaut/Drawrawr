@@ -6,4 +6,13 @@
   <section class="container" style="text-align:center;">
     <img src="/art/uploads/{{ art["_id"] }}.{{ art["filetype"] }}" alt=''>
   </section>
+  <section class="container" style="text-align:center; margin-left: 20%; margin-right: 20%;">
+    <div style="float:left;height:100%;margin-right:5px;">
+    <a href='/{{ art["author"] }}'>
+      <img src="/icons/{{ author["username"].lower() }}.{{ author["icon"] }}'s Icon" class="userIcon" style="float: left;">
+       <h3 style="float:left;height: 100%;margin-right:30px;">{{ art["title"] }}</h3>
+    </a>
+  </div>
+  </section>
+
 {% endblock %}

@@ -10,13 +10,16 @@ $(document).ready ->
 
 	/* Watch button functionality */
 	$("#watchUserButton").click ->
-		if $("#watchUserButton").attr("data-state") == "True"
-			$("#watchUserButton").attr("data-state","False")
-			$("#watchUserButton").text(watchText)
-		else
-			$("#watchUserButton").attr("data-state","True")
-			$("#watchUserButton").text(unwatchText)
 		$.ajax
 			url:  "/users/watch",
 			type: "POST",
 			data: "watchedUser=" + $("#username").attr("data-name"),
+			beforeSend: -> 
+				$("#watchUserButton").text(" - Loading - ")
+			complete: (msg) ->
+				if $("#watchUserButton").attr("data-state") == "True"
+					$("#watchUserButton").attr("data-state","False")
+					$("#watchUserButton").text(watchText)
+				else
+					$("#watchUserButton").attr("data-state","True")
+					$("#watchUserButton").text(unwatchText)

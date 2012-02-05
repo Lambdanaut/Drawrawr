@@ -96,7 +96,7 @@ h3
       <div id="tab-general"> 
         <div class="leftCol">
           <h3>Upload a New Icon: </h3>
-          <img src = '/icons/{{ loggedInUser["lowername"] }}' style='float:left;' class='userIcon' alt='Current User Icon'>
+          <img src = '/icons/{{ loggedInUser["lowername"] }}.{{ loggedInUser["icon"] }}' style='float:left;' class='userIcon' alt='Current User Icon'>
           <input type="file" name="iconUpload" id="iconUpload"><br style="clear: both;"><br>
           <h3>Change your Password: </h3>
           Current Password: <br>

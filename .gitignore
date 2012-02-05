@@ -1,7 +1,6 @@
 *.swp
 *.swn
 *.swo
-*.js
 *.pyc
 static/artwork/
 sessions/

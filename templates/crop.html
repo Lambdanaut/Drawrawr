@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block title %} Cropping "{{ art["title"] }}" {% endblock %}
+{% block head %}
+<script src="/static/js/jquery.min.js"></script>
+<script src="/static/js/jquery.Jcrop.min.js"></script>
+<script src="/static/js/crop.js"></script>
+<link rel="stylesheet" href="/static/css/jquery.Jcrop.css" type="text/css">
+<link rel="stylesheet" href="/static/css/gallery.css" media="screen" type="text/css">
+<style>
+#art {
+	max-width: 100%;
+	max-height: 1000px;
+}
+#previewContainer {
+	overflow: hidden;
+	width: 135px;
+	height: 110px;
+}
+</style>
+{% endblock %}
+{% block content %}
+  <section class="container" style="text-align:center;">
+    <h1>Crop</h1>
+    <img src="/art/uploads/{{ art["_id"] }}.{{ art["filetype"] }}" id="art">
+    <div id="previewContainer"><img src="/art/uploads/{{ art["_id"] }}.{{ art["filetype"] }}" id="preview" class="thumbContainer"></div>
+  </section>
+{% endblock %}

@@ -2,6 +2,8 @@ import os
 
 #Production
 logging = False
+betaKey = False
+randomSecretKey = False
 
 #Database
 dbHost = "localhost"
