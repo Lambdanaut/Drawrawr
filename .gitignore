@@ -3,6 +3,7 @@
 *.swo
 *.pyc
 static/artwork/
+static/js/*.js
 sessions/
 uploads/
 system/captchaKey.py
