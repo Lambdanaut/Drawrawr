@@ -10,7 +10,7 @@ dbHost = "localhost"
 dbPort = 27017
 
 #Users
-iconSize = (75,75)
+iconSize = 75,75
 
 #Uploads
 uploadsDir      = "uploads"
@@ -20,6 +20,10 @@ thumbDir        = os.path.join(uploadsDir, "thumbs")
 
 imageExtensions = set(['png', 'jpg', 'jpeg', 'gif', 'tif', 'svg'])
 iconExtensions  = imageExtensions
+
+thumbnailDimensions = 135,110
+thumbnailFormat     = "JPEG"
+thumbnailExtension  = ".thumbnail.jpg"
 
 maxFileSize      = 20 * 1024**2
 maxFileSizeText  = "Twenty Megabytes"

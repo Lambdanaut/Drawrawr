@@ -31,40 +31,30 @@
 {% macro applyTheme(theme) %}
 <link rel="stylesheet" href="/static/css/userpages/{{ theme }}.css">
 {% endmacro %}
+{# Prints out a user's icon #}
+{% macro userIcon(user) %}
+<a href="/{{ user }}"><img src="/icons/{{ user.lower() }}" alt="{{ user }}'s icon" class="userIcon" style="float: left;margin: 2px;" title="{{ user }}"></a>
+{% endmacro %}
 {# Take a list of arts from the database and shows them in gallery format on the page #}
 {% macro drawGallery(gallery) %}
 {% if gallery %}
   {% for art in gallery %}
-    <img src="{{ config["thumbDir"] }}" alt="{{ art["title"] }}" title="{{ art["title"] }} by {{ art["author"] }}">
+    <div class="thumbContainer" title="{{ art["title"] }} by {{ art["author"] }}">
+      <div class="thumbCover">{{ art["title"] }}</div>
+      <a href="/art/{{ art["_id"] }}"><span class="thumbLink"></span></a>
+      <img src="/art/uploads/thumbs/{{ art["_id"] }}{{ config["thumbnailExtension"] }}" alt="{{ art["title"] }}">
+    </div>
   {% endfor %}
 {% else %}
-  {% for i in range(0,20) %}
-      <div class="thumbContainer" title="Separated by Another World by Lambdanaut">
-        <div class="thumbCover">Stagman</div>
-        <a href="/"><span class="thumbLink" href="/"></span></a>
-        <img src="/static/images/test.png" class="galleryThumb" alt="Separated by Another World">
-        </a>
-      </div>
-    </a>
-  {% endfor %}
+<br><br><p>There isn't any art to display just yet. </p>
 {% endif %}
 {% endmacro %}
 {# Take a list of usernames and shows their clickable avatars one after another #}
 {% macro drawUsers(users) %}
 {% if users %}
-  {% for user in users %}
-    <img src="/icons/" alt="{{ art["title"] }}" title="{{ art["title"] }} by {{ art["author"] }}">
-  {% endfor %}
+{% for user in users %}{{ userIcon(user) }}{% endfor %}
 {% else %}
-  {% for i in range(0,20) %}
-      <div class="thumbContainer" title="Separated by Another World by Lambdanaut">
-        <div class="thumbCover">Stagman</div>
-        <a href="/"><span class="thumbLink" href="/"></span></a>
-        <img src="/static/images/test.png" class="galleryThumb" alt="Separated by Another World">
-        </a>
-      </div>
-    </a>
-  {% endfor %}
+<p>There aren't any users to display yet. </p>
 {% endif %}
 {% endmacro %}
 {% block layout %}{% endblock %}

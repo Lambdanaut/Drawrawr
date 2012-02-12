@@ -10,6 +10,7 @@ class Database:
   def __init__ (self,host,port):
     self.con = pymongo.Connection(host, port)
     self.db  = self.con.DR
+
   def userPassCheck(self,username,password):
     user = self.db.users.find_one({'lowername' : username.lower(),'password' : password})
     if user == None:

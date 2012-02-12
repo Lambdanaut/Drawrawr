@@ -1,6 +1,7 @@
 .gallery
 {
 	overflow: hidden;
+	text-align: center;
 }
 .thumbContainer
 {
@@ -35,11 +36,11 @@
 	user-select: none;
 	background-color: inherit;
 	opacity: 0;
-	-webkit-transition: all 0.25s ease-in-out;
-	-moz-transition: all 0.25s ease-in-out;
-	-o-transition: all 0.25s ease-in-out;
-	-ms-transition: all 0.25s ease-in-out;
-	transition: all 0.25s ease-in-out;
+	-webkit-transition: all 0.2s ease-in-out;
+	-moz-transition: all 0.2s ease-in-out;
+	-o-transition: all 0.2s ease-in-out;
+	-ms-transition: all 0.2s ease-in-out;
+	transition: all 0.2s ease-in-out;
 }
 .thumbContainer:hover .thumbCover
 {
@@ -47,7 +48,7 @@
 	bottom: 0px;
 	opacity: 0.7;
 }
-.thumbContainer .galleryThumb
+.thumbContainer img
 {
 	position: absolute;
 	left: 0px;
@@ -60,7 +61,7 @@
 	-ms-transition: all 0.4s ease-in-out;
 	transition: all 0.4s ease-out;
 }
-.thumbContainer:hover .galleryThumb
+.thumbContainer:hover img
 {
 	width: 175px;
 	height: 143px;

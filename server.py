@@ -29,6 +29,7 @@ app.config["artDir"] = config.artDir
 app.config["thumbDir"] = config.thumbDir
 app.config["imageExtensions"] = config.imageExtensions
 app.config["iconExtensions"] = config.iconExtensions
+app.config["thumbnailExtension"] = config.thumbnailExtension
 app.config["captchaSecretKey"] = config.captchaSecretKey
 app.config["captchaPublicKey"] = config.captchaPublicKey
 app.config['MAX_CONTENT_LENGTH'] = config.maxFileSize
@@ -117,7 +118,7 @@ def signup():
       return "3" #ERROR, Beta Code Fail
   else: betaKey = None
   hashed = system.cryptography.encryptPassword(request.form['password1'], True)
-  shutil.copy("static/images/newbyicon.png", config.iconsDir + request.form['username'].lower() + ".png")
+  shutil.copy("static/images/newbyicon.png", os.path.join(config.iconsDir, request.form['username'].lower() + ".png"))
   key = db.nextKey("users")
   db.db.users.insert({
     "_id"         : key,
@@ -143,7 +144,8 @@ def signup():
       "banUsers"         : False,
       "makeProps"        : False,
       "vote"             : False,
-      "generateBetaPass" : False
+      "generateBetaPass" : False,
+      "cropArt"          : False
     },
     "theme"       : "default",
     "profile"     : "",
@@ -268,12 +270,6 @@ def about():
 def donate():
   return render_template("donate.html")
 
-@app.route('/icons/<filename>')
-def iconFiles(filename):
-    try: icon = send_from_directory(app.config["iconsDir"],filename)
-    except: abort(404)
-    return icon
-
 @app.route('/art/<int:art>', methods=['GET'])
 def viewArt(art):
   try: 
@@ -304,7 +300,7 @@ def submitArt():
           messages.append(app.config["fileTypeError"])
         else:
           fileType = util.fileType(request.files['upload'].filename)
-	  key = db.nextKey("art")
+          key = db.nextKey("art")
           db.db.art.insert({
             "_id"         : key,
             "title"       : request.form["title"],
@@ -318,25 +314,60 @@ def submitArt():
           try: image.save(fileLocation)
           except: 
             if config.logging: logging.warning("Couldn't save user \"" + g.loggedInUser['username'] + "\"'s art upload to the server at location \"" + fileLocation + "\". The art _id key was #" + str(key) + ". " )
-          return redirect(os.path.join("/art/", str(key)))
-    return render_template("submit.html")
+          return redirect(url_for('crop',art=key))
+
+@app.route('/art/do/autocrop/<int:art>',methods=['POST'])
+def autocrop(art):
+  if g.loggedInUser:
+    artLookup = db.db.art.find_one({'_id' : art})
+    if not artLookup: abort(404)
+    if not g.loggedInUser["_id"] == artLookup["authorID"] and not g.loggedInUser["permissions"]["cropArt"]: abort(401)
+    imageLocation = os.path.join(config.artDir, str(artLookup["_id"]) + "." + artLookup["filetype"] )
+    image = Image.open(imageLocation)
+    cropped = image.resize(config.thumbnailDimensions,Image.ANTIALIAS)
+    croppedLocation = os.path.join(config.thumbDir, str(artLookup["_id"]) + config.thumbnailExtension)
+    cropped.save( croppedLocation, config.thumbnailFormat, quality=100)
+    return "1"
+  else: abort(401)
 
 @app.route('/art/do/crop/<int:art>', methods=['GET','POST'])
 def crop(art):
   if g.loggedInUser:
+    artLookup = db.db.art.find_one({'_id' : art})
+    if not artLookup: abort(404)
+    if not g.loggedInUser["_id"] == artLookup["authorID"] and not g.loggedInUser["permissions"]["cropArt"]: abort(401)
     if request.method == 'GET':
-      try: 
-        artLookup = db.db.art.find_one({'_id' : art})
-      except ValueError: abort(404)
       if not artLookup: abort(404)
       return render_template("crop.html",art=artLookup)
-    else:
-      
+    else: 
+      imageLocation = os.path.join(config.artDir, str(artLookup["_id"]) + "." + artLookup["filetype"] )
+      image = Image.open(imageLocation)
+      cropArea = int(request.form["x"]),int(request.form["y"]),int(request.form["x"]) + int(request.form["w"]), int(request.form["y"]) + int(request.form["h"])
+      cropped = image.crop(cropArea).resize(config.thumbnailDimensions,Image.ANTIALIAS)
+      croppedLocation = os.path.join(config.thumbDir, str(artLookup["_id"]) + config.thumbnailExtension)
+      cropped.save( croppedLocation, config.thumbnailFormat, quality=100)
+      return redirect(url_for('viewArt',art=art))
   else: abort(401)
 
 @app.route('/art/uploads/<filename>')
 def artFile(filename):
-  return send_from_directory(app.config["artDir"],filename)
+  return send_from_directory(config.artDir,filename)
+
+@app.route('/art/uploads/thumbs/<filename>')
+def thumbFile(filename):
+  return send_from_directory(config.thumbDir,filename)
+
+@app.route('/icons/<filename>')
+def iconFiles(filename):
+  filename = filename.lower()
+  icon = None
+  for f in os.listdir(config.iconsDir):
+    (name,ext) = f.split(".")
+    if name == filename: 
+      try: icon = send_from_directory(config.iconsDir,f)
+      except: abort(404)
+  if icon: return icon
+  else: abort(404)
 
 @app.route('/util/parseUsercode/<text>')
 def parseUsercode(text):

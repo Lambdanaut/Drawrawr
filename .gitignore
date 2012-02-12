@@ -2,8 +2,9 @@
 *.swn
 *.swo
 *.pyc
-static/artwork/
 static/js/*.js
 sessions/
-uploads/
+uploads/icons/*
+uploads/art/*
+uploads/thumbs/*
 system/captchaKey.py
