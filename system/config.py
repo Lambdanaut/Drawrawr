@@ -42,6 +42,5 @@ try:
   captchaPublicKey = captchaKey.public
   captchaSecretKey = captchaKey.secret
 except ImportError: 
-  captchaSecretKey = captchaKey.secret
   captchaPublicKey = None
   captchaSecretKey = None
