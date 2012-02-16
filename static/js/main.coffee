@@ -17,16 +17,10 @@ class @Header
 			type: "POST",
 			data: "glued=" + (@glued + 0)
 
-	/* Glue the header to the top of the page */
+	### Glue the header to the top of the page ###
 	glue: () -> 
 		@glued=true
 		
-		/* Old Header Style. This doesn't stretch across the page */
-		/* headerCSS = "position":"relative","top":"auto","left":"auto","right":"auto","margin":"5px 15px 4px 15px" */
-		/* navCSS ="margin":"0px 15px 4px 15px" */
-		/* $("#header").addClass("roundBox") */
-
-		/* New Header Style. This stetches all the was across the page */
 		headerCSS = 
 			"position":"absolute"
 
@@ -34,16 +28,13 @@ class @Header
 
 		$("#set-header").html "↓"
 
-	/* Unglue the header from the top of the page */
+	### Unglue the header from the top of the page ###
 	unglue: () -> 
 		@glued=false
 		headerCSS = 
 			"position":"fixed"
 
 		$("#header").css headerCSS
-
-		/* Old Header Style fix. Only required for old header */
-		/* $("#header").removeClass("roundBox") */
 
 		$("#set-header").html "↑"
 
@@ -76,20 +67,20 @@ class @Modal
 		$("#modal").css("display","none")
 
 $(document).ready ->
-	/* Keeps the copyright up to date on the current year */
+	### Keeps the copyright up to date on the current year ###
 	date = new Date()
 	$("#copyright-date").html date.getFullYear()
 
-	/* Set up the header */
+	### Set up the header ###
 	header = new Header false
 	if $("#glued").attr("data-glued") == "0"
 		header.switchGlue()
 
-	/* Flashed Messages */
+	### Flashed Messages ###
 	$("#flashed li").each ->
 		new Notice "MESSAGE" ,$(this).text()
 
-	/* Registration */		
+	### Registration ###		
 	Recaptcha.create $("#registerCaptcha").attr("data-publicKey"), "registerCaptcha", theme : 'custom', custom_theme_widget: 'recaptcha_widget', callback: Recaptcha.focus_response_field
 	$("#register-button").click () =>
 		signupModal = new Modal "#register-form"
@@ -106,7 +97,7 @@ $(document).ready ->
 					window.location = "/users/welcome"
 		false
 
-	/* Login */
+	### Login ###
 	$("#login-button").click () =>
 		loginModal = new Modal "#login-form"
 		$('form:not(.filter) :input:visible:first').focus()
@@ -124,7 +115,7 @@ $(document).ready ->
 					new Notice "Woops!", "Incorrect Username/Password combination. Remember that your password is case sensative! "
 		false
 
-	/* Logout */
+	### Logout ###
 	$("#logout-button").click () =>
 		$.ajax
 			url:  "/users/logout",

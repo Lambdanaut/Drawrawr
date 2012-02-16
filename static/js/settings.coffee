@@ -1,12 +1,12 @@
-/* What items belong to what sets */
-/* setA :: T L B */
-/* 	profile */
-/* setB :: T L B H */
-/* 	gallery */
-/*	comments */
-/* setC :: R H */
-/* 	watches */
-/* 	friends */
+### What items belong to what sets ###
+### setA :: T L B ###
+### 	profile ###
+### setB :: T L B H ###
+### 	gallery ###
+###	comments ###
+### setC :: R H ###
+### 	watches ###
+### 	friends ###
 sets =
 	a : ['t','l','r','b','h'],
 	b : ['r','h'],
@@ -39,16 +39,16 @@ allowedIn = () ->
 	
 
 $(document).ready ->
-	/* Gender */
+	### Gender ###
 	$("#changeGender").val($("#defaultGender").val())
 
-	/* Color Theme */
+	### Color Theme ###
 	$("#changeColorTheme").change ->
 		$("#colorThemeStyle").attr("href","/static/css/userpages/" + $(this).val() + ".css")
 	$("#changeColorTheme").val($("#defaultTheme").attr("data-theme"))
 	$("#changeColorTheme").trigger("change")
 
-	/* Userpage Layout */	
+	### Userpage Layout ###	
 	$("#profileTop, #profileLeftCol, #profileRightCol, #profileBottom, #profileHidden").sortable(
 		connectWith: ".dragBox"
 	).disableSelection()
