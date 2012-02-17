@@ -1,6 +1,6 @@
-Flask==0.8
-Jinja2==2.6
-PIL==1.1.7
+Flask>=0.8
+Jinja2>=2.6
+PIL>=1.1
 Pyrex>=0.9
 Werkzeug>=0.8
 distribute>=0.6
