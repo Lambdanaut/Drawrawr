@@ -285,6 +285,14 @@ noscript
 {
 	height: 200px;
 }
+.moduleTitle                                                        
+{
+	display: block;
+	text-align: left;
+	padding-bottom: 2px;
+	margin-bottom: 2px;
+	border-bottom: dashed 1px;
+}
 .close
 {
 	float: right;

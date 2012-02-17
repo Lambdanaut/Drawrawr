@@ -1,7 +1,12 @@
 import os
 
+#Server
+host = '0.0.0.0'
+port = 5000
+
 #Production
 logging = False
+debug = True
 betaKey = False
 randomSecretKey = False
 

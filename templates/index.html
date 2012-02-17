@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 {% block title %} DrawRawr Home Page{% endblock %}
 {% block head %}
+<link rel="stylesheet" href="/static/css/gallery.css" media="screen">
 <style media="screen" type="text/css">
 #rightCol
 {
@@ -15,13 +16,12 @@
 {% endblock %}
 {% block content %}
 <div id="rightCol">
-  <section class="container">
-    <h1>POPULAR ART</h1>
-      <p>HERE GOES THE BEST ARTS</p>
+  <section class="container gallery">
+    <h3 class="moduleTitle">POPULAR ART</h3>
   </section>
-  <section class="container">
-    <h1>RECENT ART</h1>
-    <p>HERE GOES THE NEW ART</p>
+  <section class="container gallery" style="max-height:500px;">
+    <h3 class="moduleTitle">RECENT ART</h3>
+    {{ drawGallery(recentArt) }}
   </section>
   <section class="container">
     <h1>FEATURED ART</h1>

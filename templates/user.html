@@ -24,14 +24,6 @@
 	margin-top: -5px;
 	margin-left: 5px;
 }
-.moduleTitle
-{
-	display: block;
-	text-align: left;
-	padding-bottom: 2px;
-	margin-bottom: 2px;
-	border-bottom: dashed 1px;
-}
 .tabButton
 {
 	float: right;
@@ -87,7 +79,7 @@
 {% macro watches() %}
   <section class="container gallery" style="max-height: 260px;">
     <span class="moduleTitle">Watchers</span>
-    {{ drawUsers( user["watchers"] ) }}
+    {{ drawUsers( user["watchers"][:25] ) }}
   </section>
 {% endmacro %}
 

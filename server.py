@@ -44,7 +44,7 @@ def main():
   setup.main()
 
   # Run Server
-  app.run(host='0.0.0.0',debug=True)
+  app.run(host=config.host,port=config.port,debug=config.debug)
 
 @app.before_request
 def beforeRequest():
@@ -61,8 +61,8 @@ def injectUser():
 
 @app.route('/')
 def index():
-  print "asdf"
-  return render_template("index.html")
+  recentArt = db.db.art.find().limit(30).sort("_id",-1)
+  return render_template("index.html",recentArt=recentArt)
 
 @app.route('/<username>')
 def userpage(username):
@@ -72,7 +72,7 @@ def userpage(username):
     db.db.users.update({"lowername": user['lowername']}, {"$inc": {"pageViews": 1} })
     # Gallery Module
     if user["layout"]["gallery"] != "h":
-      gallery = db.db.art.find({"authorID": user["_id"]})
+      gallery = db.db.art.find({"authorID": user["_id"]}).limit(15).sort("_id",-1)
       if gallery.count() == 0: gallery = None
     else: gallery = None
     return render_template("user.html", user=user, userGallery=gallery, inList=util.inList, showAds=False)
@@ -314,6 +314,7 @@ def submitArt():
           try: image.save(fileLocation)
           except: 
             if config.logging: logging.warning("Couldn't save user \"" + g.loggedInUser['username'] + "\"'s art upload to the server at location \"" + fileLocation + "\". The art _id key was #" + str(key) + ". " )
+          autocrop(key)
           return redirect(url_for('crop',art=key))
 
 @app.route('/art/do/autocrop/<int:art>',methods=['POST'])
