@@ -19,6 +19,11 @@
 {
 	width: 70%;
 }
+#userNavArea a
+{
+	color: inherit;
+	text-decoration: none;
+}
 #topArea
 {
 	margin-top: -5px;
@@ -99,9 +104,9 @@
 
 {% block content %}
 <span id="username" data-name="{{ user["username"] }}"></span>
-<div style="float: left;">
-  <div class="container tabButton"><img src="/static/images/tinyCHAT.png" alt="Drawrboard icon" style="vertical-align:bottom;"> View Journals</div>
-  <div class="container tabButton"><img src="/static/images/tinyDRAWRBOARD.png" alt="Drawrboard icon" style="vertical-align:bottom;"> View Gallery</div>
+<div style="float: left;" id="userNavArea">
+  <a href="" class="container tabButton"><img src="/static/images/tinyCHAT.png" alt="Drawrboard icon" style="vertical-align:bottom;"> View Journals</a>
+  <a href="/art/gallery/{{user["username"] }}" class="container tabButton"><img src="/static/images/tinyDRAWRBOARD.png" alt="Drawrboard icon" style="vertical-align:bottom;"> View Gallery</a>
 </div>
 {% if g.loggedInUser and g.loggedInUser["_id"] != user["_id"] %}
 <div id="topArea">

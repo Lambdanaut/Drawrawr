@@ -41,8 +41,11 @@
   {% for art in gallery %}
     <div class="thumbContainer" title="{{ art["title"] }} by {{ art["author"] }}">
       <div class="thumbCover">{{ art["title"] }}</div>
+      {% if art["type"] != "image" %}
+      <img src="/static/images/{{ art["type"] }}overlay.png" class="typeOverlay">
+      {% endif %}
       <a href="/art/{{ art["_id"] }}"><span class="thumbLink"></span></a>
-      <img src="/art/uploads/thumbs/{{ art["_id"] }}{{ config["thumbnailExtension"] }}" alt="{{ art["title"] }}">
+      <img src="/art/uploads/thumbs/{{ art["_id"] }}{{ config["thumbnailExtension"] }}" alt="{{ art["title"] }}" class="artworkImage">
     </div>
   {% endfor %}
 {% else %}

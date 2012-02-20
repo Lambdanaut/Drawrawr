@@ -13,7 +13,7 @@
 	height: 110px;
 	overflow: hidden;
 	text-decoration: none;
-	background-color: inherit;
+	background-color: white;
 	 -moz-box-shadow: 3px 3px 5px #888;
 	 -webkit-box-shadow: 3px 3px 5px #888;
 	box-shadow: 3px 3px 5px #888;
@@ -48,7 +48,7 @@
 	bottom: 0px;
 	opacity: 0.7;
 }
-.thumbContainer img
+.thumbContainer .artworkImage
 {
 	position: absolute;
 	left: 0px;
@@ -61,19 +61,26 @@
 	-ms-transition: all 0.4s ease-in-out;
 	transition: all 0.4s ease-out;
 }
-.thumbContainer:hover img
+.thumbContainer:hover .artworkImage
 {
 	width: 175px;
 	height: 143px;
 	left: -20.25px;
 	top: -16.5px;
 }
-.thumbLink
+.thumbContainer .thumbLink
 {
 	position: absolute; 
 	width: 100%;
 	height: 100%;
 	top: 0px;
 	left: 0px;
-	z-index: 100
+	z-index: 110;
+}
+.thumbContainer .typeOverlay
+{
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	z-index: 101;
 }

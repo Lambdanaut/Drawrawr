@@ -144,7 +144,7 @@ def signup():
       "banUsers"         : False,
       "makeProps"        : False,
       "vote"             : False,
-      "generateBetaPass" : False,
+      "generateBetaPass" : True,
       "cropArt"          : False
     },
     "theme"       : "default",
@@ -280,6 +280,29 @@ def viewArt(art):
     authorLookup = db.db.users.find_one({'_id' : artLookup["authorID"]})
     return render_template("art.html", art=artLookup, author=authorLookup)
 
+@app.route('/art/gallery/<username>/', defaults={'folder': "all"})
+@app.route('/art/gallery/<username>/<folder>', methods=['GET'])
+def viewGallery(username,folder):
+  authorLookup = db.db.users.find_one({'lowername' : username.lower()})
+  if not authorLookup: abort(404)
+  else:
+    sort  = "d"
+    order = "d"
+    if "sort" in request.args:
+      sort = request.args["sort"]
+    if "order" in request.args:
+      order = request.args["order"]
+    if order == "d": useOrder = -1
+    else:            useOrder = 1
+    if folder=="all":
+      artLookup = db.db.art.find({'author' : authorLookup["username"]}).limit( config.displayedWorksPerPage ).sort("_id",useOrder)
+    elif folder=="mature":
+      artLookup = db.db.art.find({'author' : authorLookup["username"], 'mature' : True}).limit( config.displayedWorksPerPage ).sort("_id",useOrder)
+    else:
+      artLookup = db.db.art.find({'author' : authorLookup["username"], 'folder' : folder}).limit( config.displayedWorksPerPage ).sort("_id",useOrder)
+    if artLookup.count() == 0: artLookup = None
+    return render_template("gallery.html", art=artLookup, author=authorLookup, sort=sort, order=order)
+
 @app.route('/art/do/submit', methods=['GET','POST'])
 def submitArt():
   if request.method == 'GET':
@@ -307,6 +330,9 @@ def submitArt():
             "description" : request.form["description"],
             "author"      : g.loggedInUser["username"],
             "authorID"    : g.loggedInUser["_id"],
+            "mature"      : False,
+            "folder"      : "complete",
+            "date"        : datetime.datetime.today(),
             "filetype"    : fileType,
             "type"        : "image"
           })

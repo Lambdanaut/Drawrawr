@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+{% block title %}{{ author["username"] }}'s Gallery{% endblock %}
+{% block head %}
+<script src="/static/js/gallery.js"></script>
+<link rel="stylesheet" href="/static/css/gallery.css" media="screen">
+<style>
+.folders div
+{
+	text-align: left;
+	border: 1px #513727 solid;
+	background-color: #93AE83;
+	padding: 2px 5px 2px 5px;
+	margin-bottom: 2px;
+	color: white;
+	font-weight: bold;
+}
+.folders a
+{
+
+	text-decoration: none;
+}
+.folders a div:hover
+{
+	background-color: #AACC99;
+}
+</style>
+{% endblock %}
+{% block content %}
+  <section class="container" style="text-align:center;">
+    <form method="GET" style="position:absolute; right:50px;">
+      Sort by: 
+      <select id="sort" name="sort">
+        <option value="d"{% if sort == "d" %} selected="selected"{% endif %}>Date</option>
+        <option value="p"{% if sort == "p" %} selected="selected"{% endif %}>Popularity</option>
+        <option value="t"{% if sort == "t" %} selected="selected"{% endif %}>Title</option>
+      </select>
+      In 
+      <select id="order" name="order">
+        <option value="d"{% if order == "d" %} selected="selected"{% endif %}>Descending</option>
+        <option value="a"{% if order == "a" %} selected="selected"{% endif %}>Ascending</option>
+      </select>
+      order
+      <input type="submit" value="Go" class="button">
+    </form>
+    <h2>{{ author["username"] }}'s Gallery</h2>
+    <h4 style="position: absolute; right: 10%;">Folders</h4><br>
+    <div style="float: left; width: 80%;">
+      <div class="gallery">{{ drawGallery(art) }}</div>
+    </div>
+    <div class="folders" style="float: right; width: 20%; margin-top: 5px;">
+      <a href="all"><div class="roundBox"> All Artwork </div></a>
+      <a href="complete"><div class="roundBox"> Completed Works </div></a>
+      <a href="mature"><div class="roundBox"> Mature Works </div></a>
+      <a href="wip"><div class="roundBox"> Works In Progress </div></a>
+      <a href="scraps"><div class="roundBox"> Scraps </div></a>
+    </div>
+    <span style="clear:both;display:block;"></span>
+  </section>
+{% endblock %}

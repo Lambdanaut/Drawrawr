@@ -285,6 +285,10 @@ noscript
 {
 	height: 200px;
 }
+select
+{
+	border: 1px #513727 solid;
+}
 .moduleTitle                                                        
 {
 	display: block;

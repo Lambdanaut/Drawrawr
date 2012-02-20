@@ -5,9 +5,9 @@ host = '0.0.0.0'
 port = 5000
 
 #Production
-logging = False
-debug = True
-betaKey = False
+logging         = False
+debug           = True
+betaKey         = False
 randomSecretKey = False
 
 #Database
@@ -16,6 +16,9 @@ dbPort = 27017
 
 #Users
 iconSize = 75,75
+
+#Gallery
+displayedWorksPerPage = 30
 
 #Uploads
 uploadsDir      = "uploads"
