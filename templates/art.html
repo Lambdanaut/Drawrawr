@@ -2,19 +2,28 @@
 {% block title %}{{ art["title"] }} by {{ art["author"] }}{% endblock %}
 {% block head %}
 <script src="/static/js/art.js"></script>
+<style>
+#favButton {
+	cursor: pointer;
+}
+</style>
 {% endblock %}
 {% block content %}
+  <span id="artID" data-state="{{ art["_id"] }}"></span>
   <section class="container" style="text-align:center;overflow:auto;">
     <div id="previewText"></div>
     <img src="/art/uploads/{{ art["_id"] }}.{{ art["filetype"] }}" alt='' id="art" data-type="{{ art["type"] }}" data-size="small">
   </section>
-  <section class="container" style="text-align:center; margin-left: 20%; margin-right: 20%;">
+  <section class="container" style="margin-left: 20%; margin-right: 20%;">
     <div style="float:left;height:100%;margin-right:5px;">
-    <a href='/{{ art["author"] }}'>
-      <h3 style="float:right;height: 100%;margin-right:30px;">{{ art["title"] }}</h3>
-    </a>
       {{ userIcon(art["author"]) }}
-  </div>
+    </div>
+    <strong>{{ art["title"] }}</strong>
+    <div style="margin-left:85px;">
+      {{ art["description"] }}
+    </div>
+    <div style="clear:both;"></div>
+    {% if util.inList(g.loggedInUser["username"],art["favorites"]) %}{% set fav="unfav" %}{% else %}{% set fav="fav" %}{% endif %}
+    <div id="favButton" data-state="{{ fav }}">{% if fav=="fav" %}+ Favorite{% else %}- Unfavorite{% endif %}</div>
   </section>
-
 {% endblock %}

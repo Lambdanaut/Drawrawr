@@ -1,5 +1,6 @@
 $(document).ready ->
 	art = $("#art")
+	# Image Full View
 	if art.attr("data-type") == "image"
 		art.css
 			"max-width": "80%"
@@ -25,3 +26,18 @@ $(document).ready ->
 					art.fadeIn 100, ->
 						art.attr "data-size","small"
 
+	# Favorites
+	favButton = $("#favButton")
+	favButton.click ->
+		if favButton.attr("data-state") == "fav"
+			favButton.html "- Unfavorite"
+			favButton.attr "data-state", "unfav"
+			$.ajax
+				url: "/art/" + $("#artID").attr("data-state") + "/favorite",
+				type: "POST"
+		else
+			favButton.html "+ Favorite"
+			favButton.attr "data-state", "fav"
+			$.ajax
+				url: "/art/" + $("#artID").attr("data-state") + "/favorite",
+				type: "POST"

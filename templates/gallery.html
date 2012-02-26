@@ -42,18 +42,39 @@
       order
       <input type="submit" value="Go" class="button">
     </form>
-    <h2>{{ author["username"] }}'s Gallery</h2>
+    <h2><a href="/{{ author["username"] }}">{{ author["username"] }}'s</a> Gallery</h2>
     <h4 style="position: absolute; right: 10%;">Folders</h4><br>
     <div style="float: left; width: 80%;">
       <div class="gallery">{{ drawGallery(art) }}</div>
     </div>
+    {% macro makeFolder(folder,symbol) %}
+    <a href="{{ url_for("viewGallery",username=author["username"],folder=folder) }}"><div class="roundBox">{{ symbol }}</div></a>
+    {% endmacro %}
     <div class="folders" style="float: right; width: 20%; margin-top: 5px;">
-      <a href="all"><div class="roundBox"> All Artwork </div></a>
-      <a href="complete"><div class="roundBox"> Completed Works </div></a>
-      <a href="mature"><div class="roundBox"> Mature Works </div></a>
-      <a href="wip"><div class="roundBox"> Works In Progress </div></a>
-      <a href="scraps"><div class="roundBox"> Scraps </div></a>
+      {{ makeFolder("all","All Artwork") }}
+      {{ makeFolder("complete","Completed Works") }}
+      {{ makeFolder("mature","Mature Works") }}
+      {{ makeFolder("wip","Works in Progress") }}
+      {{ makeFolder("scraps","Scraps") }}
     </div>
     <span style="clear:both;display:block;"></span>
+    {% macro makeIndexLink(page,symbol) %}
+    <a href="{{ url_for("viewGallery",username=author["username"],folder=folder,page=page) }}">{{ symbol }}</a> 
+    {% endmacro %}
+    {% if currentPage %}
+      {{ makeIndexLink(0,"«") }}
+      {{ makeIndexLink(currentPage - 1,"‹") }}
+    {% endif %}
+    {% if pages != [] %}
+    {% set currentPage = pages.pop(0) %}
+      <b>{{ currentPage + 1 }}</b>
+    {% endif %}
+    {% for p in pages %}
+      {{ makeIndexLink(p,p + 1) }}
+    {% endfor %}
+    {% if currentPage < last %}
+      {{ makeIndexLink(currentPage + 1,"›") }}
+      {{ makeIndexLink(last,"»") }}
+    {% endif %}
   </section>
 {% endblock %}

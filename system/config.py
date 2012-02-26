@@ -19,6 +19,7 @@ iconSize = 75,75
 
 #Gallery
 displayedWorksPerPage = 30
+pageIndexes = 15
 
 #Uploads
 uploadsDir      = "uploads"

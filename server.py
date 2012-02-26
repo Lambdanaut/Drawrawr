@@ -57,7 +57,7 @@ def beforeRequest():
 def injectUser():
   if g.loggedInUser: showAds = g.loggedInUser["showAds"]
   else:              showAds = True
-  return dict (loggedInUser = g.loggedInUser, showAds = showAds)
+  return dict (loggedInUser = g.loggedInUser, showAds = showAds, util = util)
 
 @app.route('/')
 def index():
@@ -280,28 +280,67 @@ def viewArt(art):
     authorLookup = db.db.users.find_one({'_id' : artLookup["authorID"]})
     return render_template("art.html", art=artLookup, author=authorLookup)
 
-@app.route('/art/gallery/<username>/', defaults={'folder': "all"})
-@app.route('/art/gallery/<username>/<folder>', methods=['GET'])
-def viewGallery(username,folder):
+@app.route('/art/<int:art>/favorite', methods=['POST','GET'])
+def favorite(art):
+  if request.method == 'POST':
+    if g.loggedInUser:
+      fav = db.db.art.find_one({"_id" : art})
+      if util.inList(g.loggedInUser["username"], fav["favorites"]): 
+        newFavs = fav["favorites"]
+        try: newFavs.remove(g.loggedInUser["username"])
+        except: return 0
+        db.db.art.update({"_id": art}, {"$set": {"favorites": newFavs } })
+      else:
+        db.db.art.update({"_id": art}, {"$addToSet": {"favorites": g.loggedInUser["username"] } })
+      return "1"
+    else: abort(401)
+  else:
+    # The GET method returns 1 if the user is watching this art, and a 0 if they're not. 
+    if g.loggedInUser:
+      fav = db.db.art.find_one({"_id" : art})
+      if util.inList(g.loggedInUser["username"], fav["favorites"]): return "1"
+      else:                                                         return "0"
+
+@app.route('/users/welcome', methods=['GET'])
+def welcome():
+  return render_template("welcome.html")
+
+@app.route('/art/gallery/<username>/', defaults={'folder': "all", 'page': 0}, methods=['GET'])
+@app.route('/art/gallery/<username>/<folder>', defaults={'page': 0}, methods=['GET'])
+@app.route('/art/gallery/<username>/<folder>/<int:page>', methods=['GET'])
+def viewGallery(username,folder,page):
   authorLookup = db.db.users.find_one({'lowername' : username.lower()})
   if not authorLookup: abort(404)
   else:
     sort  = "d"
     order = "d"
-    if "sort" in request.args:
-      sort = request.args["sort"]
-    if "order" in request.args:
-      order = request.args["order"]
+    if "sort" in request.args: sort = request.args["sort"]
+    if "order" in request.args: order = request.args["order"]
     if order == "d": useOrder = -1
     else:            useOrder = 1
+    if sort == "t": useSort = "title"
+    else:           useSort = "_id"
     if folder=="all":
-      artLookup = db.db.art.find({'author' : authorLookup["username"]}).limit( config.displayedWorksPerPage ).sort("_id",useOrder)
+      artLookup = db.db.art.find({'author' : authorLookup["username"]}).skip(config.displayedWorksPerPage * page).limit( config.displayedWorksPerPage ).sort(useSort,useOrder)
     elif folder=="mature":
-      artLookup = db.db.art.find({'author' : authorLookup["username"], 'mature' : True}).limit( config.displayedWorksPerPage ).sort("_id",useOrder)
+      artLookup = db.db.art.find({'author' : authorLookup["username"], 'mature' : True}).skip(config.displayedWorksPerPage * page).limit( config.displayedWorksPerPage ).sort(useSort,useOrder)
     else:
-      artLookup = db.db.art.find({'author' : authorLookup["username"], 'folder' : folder}).limit( config.displayedWorksPerPage ).sort("_id",useOrder)
-    if artLookup.count() == 0: artLookup = None
-    return render_template("gallery.html", art=artLookup, author=authorLookup, sort=sort, order=order)
+      artLookup = db.db.art.find({'author' : authorLookup["username"], 'folder' : folder}).skip(config.displayedWorksPerPage * page).limit( config.displayedWorksPerPage ).sort(useSort,useOrder)
+    # Create page index
+    artCount = artLookup.count()
+    if not artCount: artLookup = None
+    if artCount % config.displayedWorksPerPage: extraPage = 1
+    else:                                       extraPage = 0
+    pages = range(0,(artCount / config.displayedWorksPerPage) + extraPage)
+    pageCount = len(pages)
+    pagesLeft = len(pages[page:])
+    if pagesLeft > config.pageIndexes:
+      pages = pages[page: page + config.pageIndexes]
+      more = True
+    else:
+      pages = pages[page: page + pagesLeft]
+      more = False
+    return render_template("gallery.html", art=artLookup, author=authorLookup, folder=folder, sort=sort, order=order, currentPage=page, pages=pages, last=pageCount - 1)
 
 @app.route('/art/do/submit', methods=['GET','POST'])
 def submitArt():
@@ -332,6 +371,7 @@ def submitArt():
             "authorID"    : g.loggedInUser["_id"],
             "mature"      : False,
             "folder"      : "complete",
+            "favorites"   : [],
             "date"        : datetime.datetime.today(),
             "filetype"    : fileType,
             "type"        : "image"
