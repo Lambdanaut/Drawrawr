@@ -36,7 +36,6 @@ License
 -------
 [Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported](http://creativecommons.org/licenses/by-nc-sa/3.0/legalcode)
 
-
 Links
 -----
 * [Drawrawr.com](http://www.drawrawr.com/) - A Social Website for Artists... with awesome people.
