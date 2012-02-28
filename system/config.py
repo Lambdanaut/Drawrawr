@@ -15,7 +15,7 @@ randomSecretKey = False
 dbHost = "localhost"
 if production:
   dbPort = 29817
-  dbUsername = ""
+  dbUsername = "heroku_app2925802"
   dbPassword = "mc1bpm5c2mqf7f931m3a28820k"
 else:
   dbPort = 27017

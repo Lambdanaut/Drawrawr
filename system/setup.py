@@ -1,10 +1,8 @@
 from database import Database
 import config, os, commands
 
-db = Database(config.dbHost,config.dbPort)
-
-#if config.production: db = Database(config.dbHost,config.dbPort)
-#else: db = Database(config.dbHost,config.dbPort,config.dbUsername,config.dbPassword)
+if config.production: db = Database(config.dbHost,config.dbPort,config.dbUsername,config.dbPassword)
+else: db = Database(config.dbHost,config.dbPort)
 
 def databaseSetup():
   # Incremental Key Setup
