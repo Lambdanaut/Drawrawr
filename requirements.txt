@@ -5,13 +5,11 @@ PIL==1.1.7
 Pyrex>=0.9
 Werkzeug==0.8.3
 distribute==0.6.24
-louis==2.3.0
 numpy==1.6.1
-pygame==1.9.1release
 pymongo==2.1
 pysane==2.0
 pyxdg==0.19
-recaptcha-client==1.0.6
+recaptcha-client>=1.0.5
 urwid==1.0.1
 virtualenv==1.7.1.2
 wicd==1.7.1
