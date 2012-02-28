@@ -5,6 +5,7 @@ host = '0.0.0.0'
 port = int(os.environ.get("PORT", 80))
 
 #Production
+production      = True
 logging         = False
 debug           = True
 betaKey         = False
@@ -12,7 +13,12 @@ randomSecretKey = False
 
 #Database
 dbHost = "localhost"
-dbPort = 27017
+if production:
+  dbPort = 29817
+  dbUsername = ""
+  dbPassword = "mc1bpm5c2mqf7f931m3a28820k"
+else:
+  dbPort = 27017
 
 #Users
 iconSize = 75,75

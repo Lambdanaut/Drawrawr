@@ -7,7 +7,7 @@ import betaGenerator
 # user = db.db.users.find_one({"username" : "Lambdanaut"})
 
 class Database:
-  def __init__ (self,host,port):
+  def __init__ (self,host,port,username=None,password=None):
     self.con = pymongo.Connection(host, port)
     self.db  = self.con.DR
 

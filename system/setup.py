@@ -3,6 +3,9 @@ import config, os, commands
 
 db = Database(config.dbHost,config.dbPort)
 
+#if config.production: db = Database(config.dbHost,config.dbPort)
+#else: db = Database(config.dbHost,config.dbPort,config.dbUsername,config.dbPassword)
+
 def databaseSetup():
   # Incremental Key Setup
   art   = db.db.seq.find_one({"_id" : "art"})
