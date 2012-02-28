@@ -2,7 +2,7 @@ import os
 
 #Server
 host = '0.0.0.0'
-port = 80
+port = int(os.environ.get("PORT", 80))
 
 #Production
 logging         = False
