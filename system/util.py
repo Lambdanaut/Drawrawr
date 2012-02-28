@@ -1,6 +1,6 @@
 def allowedFile(filename,extensions):
   return '.' in filename and \
-    filename.rsplit('.', 1)[1] in extensions
+    filename.rsplit('.', 1)[1].lower() in extensions
 
 def fileType(filename):
   return filename.rsplit('.', 1)[1]

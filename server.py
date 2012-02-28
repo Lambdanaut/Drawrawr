@@ -22,6 +22,8 @@ if config.randomSecretKey: app.secret_key = os.urandom(24)
 else                     : app.secret_key = "0"
 
 # Add Config
+app.config['MAX_CONTENT_LENGTH'] = config.maxFileSize
+
 app.config["betaKey"] = config.betaKey
 app.config["uploadsDir"] = config.uploadsDir
 app.config["iconsDir"] = config.iconsDir
@@ -32,7 +34,6 @@ app.config["iconExtensions"] = config.iconExtensions
 app.config["thumbnailExtension"] = config.thumbnailExtension
 app.config["captchaSecretKey"] = config.captchaSecretKey
 app.config["captchaPublicKey"] = config.captchaPublicKey
-app.config['MAX_CONTENT_LENGTH'] = config.maxFileSize
 app.config["fileTypeError"] = config.fileTypeError
 
 db = Database(config.dbHost,config.dbPort)
@@ -90,7 +91,7 @@ def login():
         # Add the user's IP to the front of the list of his IPs
         ip = userResult["ip"]
         try: ip.remove(request.remote_addr)
-	except ValueError: pass
+        except ValueError: pass
         ip.insert(0,request.remote_addr)
         db.db.users.update({"lowername": userResult['lowername']}, {"$set": {"ip": ip} })
         return "1"
@@ -215,10 +216,10 @@ def settings():
       icon = request.files['iconUpload']
       if icon:
         if not icon.content_length <= config.maxIconSize:
-          flash(app.config["fileSizeError"] + "Your icon must be at most \"" + config.maxIconSizeText + "\". ")
+          flash(app.config["fileSizeError"] + "Your icon must be at most " + config.maxIconSizeText + ". ")
         else:
           if not util.allowedFile(icon.filename,config.iconExtensions):
-            flash(app.config["fileTypeError"] + "The allowed extensions are \"" + util.printList(config.iconExtensions) + "\"")
+            flash(app.config["fileTypeError"] + "The allowed extensions are " + util.printList(config.iconExtensions) + ". ")
           else: 
             try: os.remove(os.path.join(app.config["iconsDir"], g.loggedInUser['lowername'] + "." + g.loggedInUser["icon"]))
             except: 
@@ -235,12 +236,15 @@ def settings():
             messages.append("User Icon")
       # Password
       if request.form["changePassCurrent"] and request.form["changePassNew1"] and request.form["changePassNew2"]:
-        if system.cryptography.encryptPassword(request.form["changePassCurrent"], True) == g.loggedInUser['password']:
-          if request.form["changePassNew1"] == request.form["changePassNew2"]:
-            hashed = system.cryptography.encryptPassword(request.form['changePassNew1'], True)
-            db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"password": hashed}})
-            session['password']=hashed
-            messages.append("Password")
+        if system.cryptography.encryptPassword(request.form["changePassCurrent"], True) != g.loggedInUser['password']:
+          flash("The new password you gave didn't match the one in the database! ):")
+        elif request.form["changePassNew1"] != request.form["changePassNew2"]:
+          flash("The new passwords you gave don't match! Try retyping them carefully. ")
+        else:
+          hashed = system.cryptography.encryptPassword(request.form['changePassNew1'], True)
+          db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"password": hashed}})
+          session['password']=hashed
+          messages.append("Password")
       # Gender
       if request.form["changeGender"] != g.loggedInUser["gender"]:
         db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"gender": request.form["changeGender"] }})
@@ -278,6 +282,11 @@ def viewArt(art):
   if not artLookup: abort(404)
   else:
     authorLookup = db.db.users.find_one({'_id' : artLookup["authorID"]})
+    # Increment Art Views
+    incViews = True
+    if g.loggedInUser: incViews = not g.loggedInUser["_id"] == authorLookup["_id"]
+    if config.pageViewsRequireAlternateIP: not util.inList(request.remote_addr,authorLookup["ip"])
+    if incViews: db.db.art.update({"_id": art}, {"$inc": {"views": 1} })
     return render_template("art.html", art=artLookup, author=authorLookup)
 
 @app.route('/art/<int:art>/favorite', methods=['POST','GET'])
@@ -285,14 +294,17 @@ def favorite(art):
   if request.method == 'POST':
     if g.loggedInUser:
       fav = db.db.art.find_one({"_id" : art})
-      if util.inList(g.loggedInUser["username"], fav["favorites"]): 
-        newFavs = fav["favorites"]
-        try: newFavs.remove(g.loggedInUser["username"])
-        except: return 0
-        db.db.art.update({"_id": art}, {"$set": {"favorites": newFavs } })
-      else:
-        db.db.art.update({"_id": art}, {"$addToSet": {"favorites": g.loggedInUser["username"] } })
-      return "1"
+      # RE-WRITE THIS TO REMOVE USERS IN ONE FELL SWOOP RATHER THAN A BUNCH OF OTHER STUFF
+      if g.loggedInUser != fav["author"]:
+        if util.inList(g.loggedInUser["username"], fav["favorites"]): 
+          newFavs = fav["favorites"]
+          try: newFavs.remove(g.loggedInUser["username"])
+          except: return "0"
+          db.db.art.update({"_id": art}, {"$set": {"favorites": newFavs } , "$inc" : {"favAmount" : -1} } )
+        else:
+          db.db.art.update({"_id": art}, {"$addToSet": {"favorites": g.loggedInUser["username"] } , "$inc" : {"favAmount" : 1} } )
+        return "1"
+      else: return "0"
     else: abort(401)
   else:
     # The GET method returns 1 if the user is watching this art, and a 0 if they're not. 
@@ -305,9 +317,9 @@ def favorite(art):
 def welcome():
   return render_template("welcome.html")
 
-@app.route('/art/gallery/<username>/', defaults={'folder': "all", 'page': 0}, methods=['GET'])
-@app.route('/art/gallery/<username>/<folder>', defaults={'page': 0}, methods=['GET'])
-@app.route('/art/gallery/<username>/<folder>/<int:page>', methods=['GET'])
+@app.route('/<username>/gallery/', defaults={'folder': "all", 'page': 0}, methods=['GET'])
+@app.route('/<username>/gallery/<folder>', defaults={'page': 0}, methods=['GET'])
+@app.route('/<username>/gallery/<folder>/<int:page>', methods=['GET'])
 def viewGallery(username,folder,page):
   authorLookup = db.db.users.find_one({'lowername' : username.lower()})
   if not authorLookup: abort(404)
@@ -318,12 +330,15 @@ def viewGallery(username,folder,page):
     if "order" in request.args: order = request.args["order"]
     if order == "d": useOrder = -1
     else:            useOrder = 1
-    if sort == "t": useSort = "title"
-    else:           useSort = "_id"
+    if   sort == "t": useSort = "title"
+    elif sort == "p": useSort = "favAmount"
+    else:             useSort = "_id"
     if folder=="all":
       artLookup = db.db.art.find({'author' : authorLookup["username"]}).skip(config.displayedWorksPerPage * page).limit( config.displayedWorksPerPage ).sort(useSort,useOrder)
     elif folder=="mature":
       artLookup = db.db.art.find({'author' : authorLookup["username"], 'mature' : True}).skip(config.displayedWorksPerPage * page).limit( config.displayedWorksPerPage ).sort(useSort,useOrder)
+    elif folder=="favorites":
+      artLookup = db.db.art.find({'favorites' : {"$in" : [authorLookup["username"] ] } } ).skip(config.displayedWorksPerPage * page).limit( config.displayedWorksPerPage ).sort(useSort,useOrder)
     else:
       artLookup = db.db.art.find({'author' : authorLookup["username"], 'folder' : folder}).skip(config.displayedWorksPerPage * page).limit( config.displayedWorksPerPage ).sort(useSort,useOrder)
     # Create page index
@@ -356,32 +371,39 @@ def submitArt():
     if request.form["artType"] == "image":
       image = request.files['upload']
       if not image.content_length <= config.maxImageSize:
-        flash(app.config["fileSizeError"] + "Your image must be at most \"" + config.maxImageSizeText + "\". ")
+        flash(app.config["fileSizeError"] + "Your image must be at most " + config.maxImageSizeText + ". ")
+      elif not util.allowedFile(image.filename,config.imageExtensions):
+        flash(app.config["fileTypeError"] + "The allowed filetypes are " + util.printList(config.imageExtensions) + ". ")
       else:
-        if not util.allowedFile(image.filename,config.imageExtensions):
-          messages.append(app.config["fileTypeError"])
-        else:
-          fileType = util.fileType(request.files['upload'].filename)
-          key = db.nextKey("art")
-          db.db.art.insert({
-            "_id"         : key,
-            "title"       : request.form["title"],
-            "description" : request.form["description"],
-            "author"      : g.loggedInUser["username"],
-            "authorID"    : g.loggedInUser["_id"],
-            "mature"      : False,
-            "folder"      : "complete",
-            "favorites"   : [],
-            "date"        : datetime.datetime.today(),
-            "filetype"    : fileType,
-            "type"        : "image"
-          })
-          fileLocation = os.path.join(config.artDir, str(key) + "." + fileType)
-          try: image.save(fileLocation)
-          except: 
-            if config.logging: logging.warning("Couldn't save user \"" + g.loggedInUser['username'] + "\"'s art upload to the server at location \"" + fileLocation + "\". The art _id key was #" + str(key) + ". " )
-          autocrop(key)
-          return redirect(url_for('crop',art=key))
+        fileType = util.fileType(request.files['upload'].filename)
+        key = db.nextKey("art")
+        db.db.art.insert({
+          "_id"         : key,
+          "title"       : request.form["title"],
+          "description" : request.form["description"],
+          "author"      : g.loggedInUser["username"],
+          "authorID"    : g.loggedInUser["_id"],
+          "mature"      : False,
+          "folder"      : "complete",
+          "favorites"   : [],
+          "favAmount"   : 0,
+          "views"       : 0,
+          "date"        : datetime.datetime.today(),
+          "filetype"    : fileType,
+          "type"        : "image"
+        })
+        fileLocation = os.path.join(config.artDir, str(key) + "." + fileType)
+        try: image.save(fileLocation)
+        except: 
+          if config.logging: logging.warning("Couldn't save user \"" + g.loggedInUser['username'] + "\"'s art upload to the server at location \"" + fileLocation + "\". The art _id key was #" + str(key) + ". " )
+        autocrop(key)
+        return redirect(url_for('crop',art=key))
+  # Audio
+  # Literature
+  # Craft
+  # Cullinary
+  # Performance
+  return redirect(url_for('submitArt'))
 
 @app.route('/art/do/autocrop/<int:art>',methods=['POST'])
 def autocrop(art):

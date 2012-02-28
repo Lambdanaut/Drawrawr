@@ -23,7 +23,12 @@
       {{ art["description"] }}
     </div>
     <div style="clear:both;"></div>
+    {% if loggedInUser %}{% if loggedInUser["_id"] != author["_id"] %}
     {% if util.inList(g.loggedInUser["username"],art["favorites"]) %}{% set fav="unfav" %}{% else %}{% set fav="fav" %}{% endif %}
     <div id="favButton" data-state="{{ fav }}">{% if fav=="fav" %}+ Favorite{% else %}- Unfavorite{% endif %}</div>
+    {% endif %}{% endif %}
+
+    <div id="views">Views: {{ art["views"] }}</div>
+
   </section>
 {% endblock %}

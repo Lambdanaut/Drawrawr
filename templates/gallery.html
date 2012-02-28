@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% block title %}{{ author["username"] }}'s Gallery{% endblock %}
+{% block title %}{{ author["username"] }}'s Gallery - {{ folder }}{% endblock %}
 {% block head %}
 <script src="/static/js/gallery.js"></script>
 <link rel="stylesheet" href="/static/css/gallery.css" media="screen">
@@ -56,6 +56,7 @@
       {{ makeFolder("mature","Mature Works") }}
       {{ makeFolder("wip","Works in Progress") }}
       {{ makeFolder("scraps","Scraps") }}
+      {{ makeFolder("favorites","Favorites") }}
     </div>
     <span style="clear:both;display:block;"></span>
     {% macro makeIndexLink(page,symbol) %}

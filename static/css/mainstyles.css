@@ -138,6 +138,9 @@ noscript
 	height: 0px;
 	margin: 2% auto;
 }
+#modal h6 {
+	margin-bottom: 0px;
+}
 #navigation
 {
 	position: absolute;

@@ -2,7 +2,7 @@ import os
 
 #Server
 host = '0.0.0.0'
-port = 5000
+port = 80
 
 #Production
 logging         = False
@@ -16,6 +16,9 @@ dbPort = 27017
 
 #Users
 iconSize = 75,75
+
+#Art
+pageViewsRequireAlternateIP = False
 
 #Gallery
 displayedWorksPerPage = 30
@@ -36,6 +39,7 @@ thumbnailExtension  = ".thumbnail.jpg"
 
 maxFileSize      = 20 * 1024**2
 maxFileSizeText  = "Twenty Megabytes"
+
 maxIconSize      = 2 * 1024**2
 maxIconSizeText  = "Two Megabytes"
 maxImageSize     = 8 * 1024**2
