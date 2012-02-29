@@ -6,5 +6,5 @@ sessions/
 uploads/icons/*
 uploads/art/*
 uploads/thumbs/*
-system/captchaKey.py
+system/secrets.py
 venv
