@@ -11,6 +11,7 @@ class Database:
     self.con = pymongo.Connection(host, port)
     self.db  = self.con.DR
     if username and password:
+      print username + password
       self.db.authenticate(username, password)
 
   def userPassCheck(self,username,password):

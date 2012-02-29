@@ -36,13 +36,14 @@ app.config["captchaSecretKey"] = config.captchaSecretKey
 app.config["captchaPublicKey"] = config.captchaPublicKey
 app.config["fileTypeError"] = config.fileTypeError
 
-db = Database(config.dbHost,config.dbPort)
+if config.production: db = Database(config.dbHost,config.dbPort,config.dbUsername,config.dbPassword)
+else: db = Database(config.dbHost,config.dbPort)
 
 if config.logging: logging.basicConfig(filename='logs/DR.log',level=logging.DEBUG)
 
 def main():
   # First Start Setup
-  setup.main()
+  #setup.main(db)
 
   # Run Server
   app.run(host=config.host,port=config.port,debug=config.debug)

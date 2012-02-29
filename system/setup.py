@@ -1,10 +1,6 @@
-from database import Database
 import config, os, commands
 
-if config.production: db = Database(config.dbHost,config.dbPort,config.dbUsername,config.dbPassword)
-else: db = Database(config.dbHost,config.dbPort)
-
-def databaseSetup():
+def databaseSetup(db):
   # Incremental Key Setup
   art   = db.db.seq.find_one({"_id" : "art"})
   users = db.db.seq.find_one({"_id" : "users"})
@@ -26,7 +22,7 @@ def javascriptSetup():
   if not os.path.exists(os.path.join(jsPath,"main.js")):
     commands.getoutput("coffee -c " + os.path.join(jsPath,"main.coffee") + " " + os.path.join(jsPath,"tabs.coffee") + " " + os.path.join(jsPath,"submit.coffee") + " " + os.path.join(jsPath,"settings.coffee") )
 
-def main():
-  databaseSetup()
+def main(db):
+  databaseSetup(db)
   directorySetup()
   javascriptSetup()
