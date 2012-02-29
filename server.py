@@ -43,7 +43,7 @@ if config.logging: logging.basicConfig(filename='logs/DR.log',level=logging.DEBU
 
 def main():
   # First Start Setup
-  #setup.main(db)
+  setup.main(db)
 
   # Run Server
   app.run(host=config.host,port=config.port,debug=config.debug)

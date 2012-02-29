@@ -2,7 +2,6 @@
 *.swn
 *.swo
 *.pyc
-static/js/*.js
 sessions/
 uploads/icons/*
 uploads/art/*

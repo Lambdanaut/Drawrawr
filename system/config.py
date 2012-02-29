@@ -1,4 +1,7 @@
 import os
+usingSecrets=True
+try: import secrets
+except ImportError: usingSecrets=False
 
 #Server
 host = '0.0.0.0'
@@ -12,11 +15,11 @@ betaKey         = False
 randomSecretKey = False
 
 #Database
-if production:
+if production and usingSecrets:
   dbHost = "ds029817.mongolab.com"
   dbPort = 29817
-  dbUsername = "heroku_app2925802"
-  dbPassword = "mc1bpm5c2mqf7f931m3a28820k"
+  dbUsername = secrets.dbUsername
+  dbPassword = secrets.dbPassword
 else:
   dbHost = "localhost"
   dbPort = 27017
@@ -57,10 +60,9 @@ fileTypeError = "The file you uploaded had an incorrect filetype. "
 fileSizeError = "The file you uploaded was too large. "
 
 #Captcha API
-try:
-  import captchaKey
-  captchaPublicKey = captchaKey.public
-  captchaSecretKey = captchaKey.secret
-except ImportError: 
+if usingSecrets:
+  captchaPublicKey = secrets.public
+  captchaSecretKey = secrets.secret
+else:
   captchaPublicKey = None
   captchaSecretKey = None
