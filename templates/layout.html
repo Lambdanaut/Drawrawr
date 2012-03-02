@@ -47,7 +47,7 @@
       {% if loggedInUser['username'] %}
         <aside id="control-panel">
           <div style="float:right;">
-            <b><a href='/{{ url_for("userpage", username=loggedInUser['username']) }}'>{{ loggedInUser['username'] }}</a></b><br>
+            <b><a href='{{ url_for("userpage", username=loggedInUser['username']) }}'>{{ loggedInUser['username'] }}</a></b><br>
             <a>Updates</a><br>
             <div id="options-tab">
               <u style="cursor:pointer;">Options</u>
@@ -59,7 +59,7 @@
               </div>
             </div>
           </div>
-          <a href = "/{{ loggedInUser["username"] }}">
+          <a href = "{{ url_for("userpage", username=loggedInUser['username']) }}">
             <img src='/icons/{{ loggedInUser["lowername"] }}' class='tinyIcon'  style='margin-right: 5px;' alt='User Icon'>
           </a>
         </aside>

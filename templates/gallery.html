@@ -4,6 +4,49 @@
 <script src="/static/js/gallery.js"></script>
 <link rel="stylesheet" href="/static/css/gallery.css" media="screen">
 <style>
+#titleBar
+{
+	background-color: #93AE83;
+	padding: 4px 10px 0px 20px;
+	margin-bottom: 20px;
+	color: #ffffff;
+	background: -moz-linear-gradient(top, #92a992 0%, #637e63 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#92a992), color-stop(100%,#637e63)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #92a992 0%,#637e63 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #92a992 0%,#637e63 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #92a992 0%,#637e63 100%); /* IE10+ */
+	background: linear-gradient(top, #92a992 0%,#637e63 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#92a992', endColorstr='#637e63',GradientType=0 ); /* IE6-9 */
+}
+#titleBar a
+{
+	color: inherit;
+}
+#orderForm
+{
+	float: right;
+}
+#orderForm button
+{
+	background:none!important;
+	border:none; 
+	margin: 0px;
+	margin-left: 5px;
+	padding:0!important;
+	vertical-align:middle;
+	/*border is optional*/
+}
+#orderForm button img
+{
+	width: 29px;
+	height: 29px;
+	margin: 0px;
+}
+#title
+{
+	float: left;
+	margin: 0px;
+}
 .folders div
 {
 	text-align: left;
@@ -27,22 +70,25 @@
 {% endblock %}
 {% block content %}
   <section class="container" style="text-align:center;">
-    <form method="GET" style="position:absolute; right:50px;">
-      Sort by: 
-      <select id="sort" name="sort">
-        <option value="d"{% if sort == "d" %} selected="selected"{% endif %}>Date</option>
-        <option value="p"{% if sort == "p" %} selected="selected"{% endif %}>Popularity</option>
-        <option value="t"{% if sort == "t" %} selected="selected"{% endif %}>Title</option>
-      </select>
-      In 
-      <select id="order" name="order">
-        <option value="d"{% if order == "d" %} selected="selected"{% endif %}>Descending</option>
-        <option value="a"{% if order == "a" %} selected="selected"{% endif %}>Ascending</option>
-      </select>
-      order
-      <input type="submit" value="Go" class="button">
-    </form>
-    <h2><a href="/{{ author["username"] }}">{{ author["username"] }}'s</a> Gallery</h2>
+    <div id="titleBar" class="roundBox">
+      <form method="GET" id="orderForm">
+        <b>Sort by: </b>
+        <select id="sort" name="sort">
+          <option value="d"{% if sort == "d" %} selected="selected"{% endif %}>Date</option>
+          <option value="p"{% if sort == "p" %} selected="selected"{% endif %}>Popularity</option>
+          <option value="t"{% if sort == "t" %} selected="selected"{% endif %}>Title</option>
+        </select>
+        In
+        <select id="order" name="order">
+          <option value="d"{% if order == "d" %} selected="selected"{% endif %}>Descending</option>
+          <option value="a"{% if order == "a" %} selected="selected"{% endif %}>Ascending</option>
+        </select>
+        order. 
+        <button type="submit" value="Go" class="button"><img src="/static/images/searchbutton.png"></button>
+      </form>
+      <h2 id="title"><a href="/{{ author["username"] }}">{{ author["username"] }}'s</a> Gallery</h2>
+      <div style="clear:both;"></div>
+    </div>
     <h4 style="position: absolute; right: 10%;">Folders</h4><br>
     <div style="float: left; width: 80%;">
       <div class="gallery">{{ drawGallery(art) }}</div>
