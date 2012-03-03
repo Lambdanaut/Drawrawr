@@ -33,13 +33,12 @@
 {% endmacro %}
 {# Prints out a user's icon #}
 {% macro userIcon(user) %}
-<a href="/{{ user }}"><img src="/icons/{{ user.lower() }}" alt="{{ user }}'s icon" class="userIcon" style="float: left;margin: 2px;" title="{{ user }}"></a>
+<a href="{{ url_for('userpage',username=user) }}"><img src="{{ url_for('iconFiles',filename=user.lower()) }}" alt="{{ user }}'s icon" class="userIcon" style="float: left;margin: 2px;" title="{{ user }}"></a>
 {% endmacro %}
 {# Prints out a tiny user's icon #}
 {% macro tinyUserIcon(user) %}
-<a href="/{{ user }}"><img src="/icons/{{ user.lower() }}" alt="{{ user }}'s icon" class="tinyIcon" style="float: left;margin: 2px;" title="{{ user }}"></a>
+<a href="/{{ user }}"><img src="{{ url_for('iconFiles',filename=user.lower()) }}" alt="{{ user }}'s icon" class="tinyIcon" style="float: left;margin: 2px;" title="{{ user }}"></a>
 {% endmacro %}
-{# Take a list of arts from the database and shows them in gallery format on the page #}
 {# Take a list of arts from the database and shows them in gallery format on the page #}
 {% macro drawGallery(gallery) %}
 {% if gallery %}
@@ -49,8 +48,8 @@
       {% if art["type"] != "image" %}
       <img src="/static/images/{{ art["type"] }}overlay.png" class="typeOverlay">
       {% endif %}
-      <a href="/art/{{ art["_id"] }}"><span class="thumbLink"></span></a>
-      <img src="/art/uploads/thumbs/{{ art["_id"] }}{{ config["thumbnailExtension"] }}" alt="{{ art["title"] }}" class="artworkImage">
+      <a href="{{ url_for('viewArt',art=art["_id"]) }}"><span class="thumbLink"></span></a>
+      <img src="{{ url_for('thumbFile',filename=art["_id"]) }}{{ config["thumbnailExtension"] }}" alt="{{ art["title"] }}" class="artworkImage">
     </div>
   {% endfor %}
 {% else %}

@@ -26,11 +26,11 @@
     <h2>Welcome to Drawrawr!</h2>
     <h3>Now that you're a member, you can get started using your Account!</h3>
 
-    <a href="/{{ g.loggedInUser["username"] }}">-Check out your Drawrawr Userpage!-</a> 
-    <a href="/users/settings">-Choose your Account settings-</a>
-    <a href="/users/settings#profile">-Change your Profile Information-</a>
-    <a href="/users/settings#layout">-Customize your Userpage Layout-</a>
-    <a href="/art/do/submit">-Submit your first Artwork-</a>
+    <a href="{{ url_for('userpage', username = g.loggedInUser["username"]) }}">-Check out your Drawrawr Userpage!-</a> 
+    <a href="{{ url_for('settings') }}">-Choose your Account settings-</a>
+    <a href="{{ url_for('settings') }}#-profile">-Change your Profile Information-</a>
+    <a href="{{ url_for('settings') }}#-layout">-Customize your Userpage Layout-</a>
+    <a href="{{ url_for('submitArt') }}">-Submit your first Artwork-</a>
     <a href="/journal/view">-Write your first Journal-</a>
     <a href="/">-Or just start Browsing and Meeting Artists!-</a>
   </section>

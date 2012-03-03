@@ -52,9 +52,9 @@
             <div id="options-tab">
               <u style="cursor:pointer;">Options</u>
               <div class="roundBox">
-                <a href="/art/do/submit">Submit Art</a><br>
+                <a href="{{ url_for('submitArt') }}">Submit Art</a><br>
                 <a href="/journals/view">Journals</a><br>
-                <a href="/users/settings">Settings</a><br>
+                <a href="{{ url_for('settings') }}">Settings</a><br>
                 <a id="logout-button">Logout</a>
               </div>
             </div>
@@ -112,10 +112,10 @@
           </aside>
         </aside>
       {% endif %}
-      <a href="/"><div id="header-image"><img src="/static/images/newyearheader.png" alt="Header"></div></a>
+      <a href="{{ url_for('index') }}"><div id="header-image"><img src="/static/images/newyearheader.png" alt="Header"></div></a>
     <nav id="navigation">
       <ul>
-        <li><a href="/">News</a></li><li><a href="#">Search</a></li><li><a href="/">Clubs</a></li><li><a href="/">Shops</a></li><li><a href="/">Roleplay</a></li><li><a href="#">Draw</a></li><li><a href="#">Chat</a></li><li><a href="/">DRadio</a></li><li><a href="/meta/donate">Donate</a></li>
+        <li><a href="{{ url_for('index') }}">News</a></li><li><a href="/">Search</a></li><li><a href="/">Clubs</a></li><li><a href="/">Shops</a></li><li><a href="/">Roleplay</a></li><li><a href="/">Draw</a></li><li><a href="/">Chat</a></li><li><a href="/">DRadio</a></li><li><a href="{{ url_for('donate') }}">Donate</a></li>
       </ul>
     </nav>
     </div>
@@ -129,8 +129,8 @@
       <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="Creative Commons License" style="border-width:0;float:right; margin-left: 10px;" src="http://i.creativecommons.org/l/by-nc-sa/3.0/80x15.png"></a>
       &copy;2010-<span id="copyright-date"></span> DrawRawr. Some rights reserved
     </div>
-    <a href="/meta/terms-of-service">Terms of Service</a> ·
-    <a href="/meta/about">About</a> ·
+    <a href="{{ url_for('policy') }}">Terms of Service</a> ·
+    <a href="{{ url_for('about') }}">About</a> ·
     <a href="">DrawRawr API</a> ·
     <a href="">Something Else</a> 
     {% if showAds %}<div id="pw_adbox_55977_5_0"></div>{% endif %}
