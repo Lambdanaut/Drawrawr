@@ -3,13 +3,13 @@
 {% block head %}
 <script src="/static/js/art.js"></script>
 <style>
-#favButton {
-	cursor: pointer;
-}
+#favButton { cursor: pointer;}
+#watchButton { cursor: pointer;}
 </style>
 {% endblock %}
 {% block content %}
   <span id="artID" data-state="{{ art["_id"] }}"></span>
+  <span id="author" data-name="{{ art["author"] }}"></span>
   <section class="container" style="text-align:center;overflow:auto;">
     <div id="previewText"></div>
     <img src="/art/uploads/{{ art["_id"] }}.{{ art["filetype"] }}" alt='' id="art" data-type="{{ art["type"] }}" data-size="small">
@@ -24,11 +24,14 @@
     </div>
     <div style="clear:both;"></div>
     {% if loggedInUser %}{% if loggedInUser["_id"] != author["_id"] %}
-    {% if util.inList(g.loggedInUser["username"],art["favorites"]) %}{% set fav="unfav" %}{% else %}{% set fav="fav" %}{% endif %}
-    <div id="favButton" data-state="{{ fav }}">{% if fav=="fav" %}+ Favorite{% else %}- Unfavorite{% endif %}</div>
+      {% if util.inList(g.loggedInUser["username"],art["favorites"]) %}{% set fav="unfav" %}{% else %}{% set fav="fav" %}{% endif %}
+      <div id="favButton" data-state="{{ fav }}">{% if fav=="fav" %}+ Favorite{% else %}- Unfavorite{% endif %}</div>
+      {% if util.inList(g.loggedInUser["username"],author["watchers"]) %}{% set watch="unwatch" %}{% else %}{% set watch="watch" %}{% endif %}
+      <div id="watchButton" data-state="{{ watch }}">{% if watch=="watch" %}+ Watch{% else %}- Unwatch{% endif %}</div>
     {% endif %}{% endif %}
 
     <div id="views">Views: {{ art["views"] }}</div>
+    <div id="favorites">Favorites: {{ favCount }}</div>
 
   </section>
 {% endblock %}

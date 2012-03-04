@@ -3,8 +3,10 @@ from flask import *
 import os, shutil, sys, random, logging, datetime, base64
 
 from PIL import Image
-from system.database import Database
 from werkzeug import secure_filename
+
+from system.database import Database
+from system.storage import Storage
 
 import system.captcha as captcha
 import system.config as config
@@ -38,6 +40,8 @@ app.config["fileTypeError"] = config.fileTypeError
 
 if config.production: db = Database(config.dbHost,config.dbPort,config.dbUsername,config.dbPassword)
 else: db = Database(config.dbHost,config.dbPort)
+
+storage = Storage(s3 = config.usingS3)
 
 if config.logging: logging.basicConfig(filename='logs/DR.log',level=logging.DEBUG)
 
@@ -188,11 +192,11 @@ def watch():
     if g.loggedInUser:
       watchedUser = request.form["watchedUser"]
       if g.loggedInUser["lowername"] != watchedUser.lower():
-        watchedUserResult = db.db.users.find_one({"lowername" : watchedUser.lower()})
-        watchers = watchedUserResult["watchers"]
-        try: watchers.remove(g.loggedInUser["username"])
-        except ValueError: watchers.insert(0, g.loggedInUser["username"])
-        db.db.users.update({"lowername" : watchedUser.lower()},{"$set" : {"watchers" : watchers}})
+        userResult = db.db.users.find_one({"lowername" : watchedUser.lower()})
+        if util.inList(g.loggedInUser["username"], userResult["watchers"]):
+          db.db.users.update({"lowername" : watchedUser.lower()},{"$pull" : {"watchers" : g.loggedInUser["username"] } })
+        else:
+          db.db.users.update({"lowername" : watchedUser.lower()},{"$addToSet" : {"watchers" : g.loggedInUser["username"]}})
         return "1"
       else:
         if config.logging: logging.warning("User \"" + watchedUser + "\" tried to watch themself. The procedure failed, but it's a bit weird that they should even be able to do this. Keep a watch out for them. ")
@@ -288,27 +292,23 @@ def viewArt(art):
     if g.loggedInUser: incViews = not g.loggedInUser["_id"] == authorLookup["_id"]
     if config.pageViewsRequireAlternateIP: not util.inList(request.remote_addr,authorLookup["ip"])
     if incViews: db.db.art.update({"_id": art}, {"$inc": {"views": 1} })
-    return render_template("art.html", art=artLookup, author=authorLookup)
+    return render_template("art.html", art=artLookup, author=authorLookup, favCount=len(artLookup["favorites"]) )
 
 @app.route('/art/<int:art>/favorite', methods=['POST','GET'])
 def favorite(art):
   if request.method == 'POST':
     if g.loggedInUser:
       fav = db.db.art.find_one({"_id" : art})
-      # RE-WRITE THIS TO REMOVE USERS IN ONE FELL SWOOP RATHER THAN A BUNCH OF OTHER STUFF
       if g.loggedInUser != fav["author"]:
-        if util.inList(g.loggedInUser["username"], fav["favorites"]): 
-          newFavs = fav["favorites"]
-          try: newFavs.remove(g.loggedInUser["username"])
-          except: return "0"
-          db.db.art.update({"_id": art}, {"$set": {"favorites": newFavs } , "$inc" : {"favAmount" : -1} } )
+        if util.inList(g.loggedInUser["username"], fav["favorites"]):
+          db.db.art.update({"_id" : art}, {"$pull" : {"favorites" : g.loggedInUser["username"] } })
         else:
-          db.db.art.update({"_id": art}, {"$addToSet": {"favorites": g.loggedInUser["username"] } , "$inc" : {"favAmount" : 1} } )
+          db.db.art.update({"_id" : art}, {"$addToSet" : {"favorites" : g.loggedInUser["username"]} })
         return "1"
       else: return "0"
     else: abort(401)
   else:
-    # The GET method returns 1 if the user is watching this art, and a 0 if they're not. 
+    # The GET method returns 1 if the user has fav'd this art, and a 0 if they're not. 
     if g.loggedInUser:
       fav = db.db.art.find_one({"_id" : art})
       if util.inList(g.loggedInUser["username"], fav["favorites"]): return "1"
@@ -439,6 +439,10 @@ def crop(art):
       return redirect(url_for('viewArt',art=art))
   else: abort(401)
 
+@app.route('/clubs/index')
+def clubs():
+  return render_template("clubs.html")
+
 @app.route('/art/uploads/<filename>')
 def artFile(filename):
   return send_from_directory(config.artDir,filename)
@@ -486,19 +490,14 @@ def updateCount():
 
 @app.errorhandler(404)
 def page_not_found(e):
-  rando = random.randint(0,5)
-  if   rando == 0:
-    randimg = "scary404.png"
-  elif rando == 1:
-    randimg = "vonderdevil404.png"
-  elif rando == 2:
-    randimg = "cute404.png"
-  elif rando == 3:
-    randimg = "bomb404.png"
-  elif rando == 4:
-    randimg = "bile404.png"
-  elif rando == 5:
-    randimg = "sexy404.png"
+  rando = random.randint(0,6)
+  if   rando == 0: randimg = "scary404.png"
+  elif rando == 1: randimg = "vonderdevil404.png"
+  elif rando == 2: randimg = "cute404.png"
+  elif rando == 3: randimg = "bomb404.png"
+  elif rando == 4: randimg = "bile404.png"
+  elif rando == 5: randimg = "sexy404.png"
+  elif rando == 6: randimg = "browniexxx404.png"
   return render_template('404.html',randimg=randimg), 404
 
 @app.errorhandler(401)

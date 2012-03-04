@@ -1,8 +1,10 @@
 (function() {
 
   $(document).ready(function() {
-    var art, favButton;
+    var art, favButton, watchButton;
     art = $("#art");
+    /* Image Full View
+    */
     if (art.attr("data-type") === "image") {
       art.css({
         "max-width": "80%",
@@ -36,23 +38,48 @@
         }
       });
     }
+    /* Favorites
+    */
     favButton = $("#favButton");
-    return favButton.click(function() {
-      if (favButton.attr("data-state") === "fav") {
-        favButton.html("- Unfavorite");
-        favButton.attr("data-state", "unfav");
-        return $.ajax({
-          url: "/art/" + $("#artID").attr("data-state") + "/favorite",
-          type: "POST"
-        });
-      } else {
-        favButton.html("+ Favorite");
-        favButton.attr("data-state", "fav");
-        return $.ajax({
-          url: "/art/" + $("#artID").attr("data-state") + "/favorite",
-          type: "POST"
-        });
-      }
+    favButton.click(function() {
+      return $.ajax({
+        url: "/art/" + $("#artID").attr("data-state") + "/favorite",
+        type: "POST",
+        beforeSend: function() {
+          return favButton.text(" - Loading - ");
+        },
+        complete: function(msg) {
+          if (favButton.attr("data-state") === "fav") {
+            favButton.text("- Unfavorite");
+            return favButton.attr("data-state", "unfav");
+          } else {
+            favButton.text("+ Favorite");
+            return favButton.attr("data-state", "fav");
+          }
+        }
+      });
+    });
+    /* Watch Button
+    */
+    watchButton = $("#watchButton");
+    return watchButton.click(function() {
+      return $.ajax({
+        url: "/users/watch",
+        type: "POST",
+        data: "watchedUser=" + $("#author").attr("data-name"),
+        beforeSend: function() {
+          return watchButton.text(" - Loading - ");
+        },
+        complete: function(msg) {
+          if (watchButton.attr("data-state") === "watch") {
+            watchButton.text("- Unwatch");
+            return watchButton.attr("data-state", "unwatch");
+          } else {
+            watchButton.text("+ Watch");
+            return watchButton.attr("data-state", "watch");
+          }
+        }
+      });
     });
   });
 

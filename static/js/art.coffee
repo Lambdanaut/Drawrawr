@@ -1,6 +1,6 @@
 $(document).ready ->
 	art = $("#art")
-	# Image Full View
+	### Image Full View ###
 	if art.attr("data-type") == "image"
 		art.css
 			"max-width": "80%"
@@ -26,18 +26,35 @@ $(document).ready ->
 					art.fadeIn 100, ->
 						art.attr "data-size","small"
 
-	# Favorites
+	### Favorites ###
 	favButton = $("#favButton")
 	favButton.click ->
-		if favButton.attr("data-state") == "fav"
-			favButton.html "- Unfavorite"
-			favButton.attr "data-state", "unfav"
 			$.ajax
 				url: "/art/" + $("#artID").attr("data-state") + "/favorite",
 				type: "POST"
-		else
-			favButton.html "+ Favorite"
-			favButton.attr "data-state", "fav"
-			$.ajax
-				url: "/art/" + $("#artID").attr("data-state") + "/favorite",
-				type: "POST"
+				beforeSend: -> 
+					favButton.text(" - Loading - ")
+				complete: (msg) ->
+					if favButton.attr("data-state") == "fav"
+						favButton.text "- Unfavorite"
+						favButton.attr "data-state", "unfav"
+					else
+						favButton.text "+ Favorite"
+						favButton.attr "data-state", "fav"
+
+	### Watch Button ###
+	watchButton = $("#watchButton")
+	watchButton.click ->
+		$.ajax
+			url:  "/users/watch",
+			type: "POST",
+			data: "watchedUser=" + $("#author").attr("data-name"),
+			beforeSend: -> 
+				watchButton.text " - Loading - "
+			complete: (msg) ->
+				if watchButton.attr("data-state") == "watch"
+					watchButton.text "- Unwatch"
+					watchButton.attr "data-state","unwatch"
+				else
+					watchButton.text "+ Watch"
+					watchButton.attr "data-state","watch"

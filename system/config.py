@@ -35,6 +35,8 @@ displayedWorksPerPage = 30
 pageIndexes = 15
 
 #Uploads
+usingS3 = True
+
 uploadsDir      = "uploads"
 iconsDir        = os.path.join(uploadsDir, "icons")
 artDir          = os.path.join(uploadsDir, "art")
@@ -61,8 +63,8 @@ fileSizeError = "The file you uploaded was too large. "
 
 #Captcha API
 if usingSecrets:
-  captchaPublicKey = secrets.public
-  captchaSecretKey = secrets.secret
+  captchaPublicKey = secrets.captchaPublic
+  captchaSecretKey = secrets.captchaSecret
 else:
   captchaPublicKey = None
   captchaSecretKey = None
