@@ -292,7 +292,7 @@ def viewArt(art):
     if g.loggedInUser: incViews = not g.loggedInUser["_id"] == authorLookup["_id"]
     if config.pageViewsRequireAlternateIP: not util.inList(request.remote_addr,authorLookup["ip"])
     if incViews: db.db.art.update({"_id": art}, {"$inc": {"views": 1} })
-    return render_template("art.html", art=artLookup, author=authorLookup, favCount=len(artLookup["favorites"]) )
+    return render_template("art.html", art=artLookup, author=authorLookup )
 
 @app.route('/art/<int:art>/favorite', methods=['POST','GET'])
 def favorite(art):
@@ -301,9 +301,9 @@ def favorite(art):
       fav = db.db.art.find_one({"_id" : art})
       if g.loggedInUser != fav["author"]:
         if util.inList(g.loggedInUser["username"], fav["favorites"]):
-          db.db.art.update({"_id" : art}, {"$pull" : {"favorites" : g.loggedInUser["username"] } })
+          db.db.art.update({"_id" : art}, {"$pull" : {"favorites" : g.loggedInUser["username"] }  , "$inc" : {"favAmount": -1 } } )
         else:
-          db.db.art.update({"_id" : art}, {"$addToSet" : {"favorites" : g.loggedInUser["username"]} })
+          db.db.art.update({"_id" : art}, {"$addToSet" : {"favorites" : g.loggedInUser["username"] } , "$inc" : {"favAmount": 1 } } )
         return "1"
       else: return "0"
     else: abort(401)

@@ -29,18 +29,16 @@ $(document).ready ->
 	### Favorites ###
 	favButton = $("#favButton")
 	favButton.click ->
-			$.ajax
-				url: "/art/" + $("#artID").attr("data-state") + "/favorite",
-				type: "POST"
-				beforeSend: -> 
-					favButton.text(" - Loading - ")
-				complete: (msg) ->
-					if favButton.attr("data-state") == "fav"
-						favButton.text "- Unfavorite"
-						favButton.attr "data-state", "unfav"
-					else
-						favButton.text "+ Favorite"
-						favButton.attr "data-state", "fav"
+		$.ajax
+			url: "/art/" + $("#artID").attr("data-state") + "/favorite",
+			type: "POST"
+			complete: (msg) ->
+				if favButton.attr("data-state") == "fav"
+					favButton.attr "src","/static/images/unfavoritebutton.png"
+					favButton.attr "data-state", "unfav"
+				else
+					favButton.attr "src", "/static/images/favoritebutton.png"
+					favButton.attr "data-state", "fav"
 
 	### Watch Button ###
 	watchButton = $("#watchButton")
@@ -53,8 +51,8 @@ $(document).ready ->
 				watchButton.text " - Loading - "
 			complete: (msg) ->
 				if watchButton.attr("data-state") == "watch"
-					watchButton.text "- Unwatch"
+					watchButton.attr "src","/static/images/unwatchbutton.png"
 					watchButton.attr "data-state","unwatch"
 				else
-					watchButton.text "+ Watch"
+					watchButton.attr "src","/static/images/watchbutton.png"
 					watchButton.attr "data-state","watch"

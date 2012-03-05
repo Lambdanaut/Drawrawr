@@ -45,15 +45,12 @@
       return $.ajax({
         url: "/art/" + $("#artID").attr("data-state") + "/favorite",
         type: "POST",
-        beforeSend: function() {
-          return favButton.text(" - Loading - ");
-        },
         complete: function(msg) {
           if (favButton.attr("data-state") === "fav") {
-            favButton.text("- Unfavorite");
+            favButton.attr("src", "/static/images/unfavoritebutton.png");
             return favButton.attr("data-state", "unfav");
           } else {
-            favButton.text("+ Favorite");
+            favButton.attr("src", "/static/images/favoritebutton.png");
             return favButton.attr("data-state", "fav");
           }
         }
@@ -72,10 +69,10 @@
         },
         complete: function(msg) {
           if (watchButton.attr("data-state") === "watch") {
-            watchButton.text("- Unwatch");
+            watchButton.attr("src", "/static/images/unwatchbutton.png");
             return watchButton.attr("data-state", "unwatch");
           } else {
-            watchButton.text("+ Watch");
+            watchButton.attr("src", "/static/images/watchbutton.png");
             return watchButton.attr("data-state", "watch");
           }
         }
