@@ -4,20 +4,6 @@
 <script src="/static/js/gallery.js"></script>
 <link rel="stylesheet" href="/static/css/gallery.css" media="screen">
 <style>
-#titleBar
-{
-	background-color: #93AE83;
-	padding: 4px 10px 0px 20px;
-	margin-bottom: 20px;
-	color: #ffffff;
-	background: -moz-linear-gradient(top, #92a992 0%, #637e63 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#92a992), color-stop(100%,#637e63)); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top, #92a992 0%,#637e63 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top, #92a992 0%,#637e63 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(top, #92a992 0%,#637e63 100%); /* IE10+ */
-	background: linear-gradient(top, #92a992 0%,#637e63 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#92a992', endColorstr='#637e63',GradientType=0 ); /* IE6-9 */
-}
 #titleBar a
 {
 	color: inherit;
@@ -70,7 +56,7 @@
 {% endblock %}
 {% block content %}
   <section class="container" style="text-align:center;">
-    <div id="titleBar" class="roundBox">
+    <div class="roundBox greenContainer">
       <form method="GET" id="orderForm">
         <b>Sort by: </b>
         <select id="sort" name="sort">

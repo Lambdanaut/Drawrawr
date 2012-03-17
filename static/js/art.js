@@ -59,14 +59,11 @@
     /* Watch Button
     */
     watchButton = $("#watchButton");
-    return watchButton.click(function() {
+    watchButton.click(function() {
       return $.ajax({
         url: "/users/watch",
         type: "POST",
         data: "watchedUser=" + $("#author").attr("data-name"),
-        beforeSend: function() {
-          return watchButton.text(" - Loading - ");
-        },
         complete: function(msg) {
           if (watchButton.attr("data-state") === "watch") {
             watchButton.attr("src", "/static/images/unwatchbutton.png");
@@ -77,6 +74,20 @@
           }
         }
       });
+    });
+    /* Delete Button
+    */
+    return $("#deleteButton").click(function() {
+      var conf;
+      conf = confirm("Are you sure you want to delete this artwork? ");
+      if (conf) {
+        return $.ajax({
+          type: "DELETE",
+          complete: function(msg) {
+            return window.location = $("#author").attr("data-name");
+          }
+        });
+      }
     });
   });
 

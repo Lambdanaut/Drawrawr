@@ -6,7 +6,7 @@ from PIL import Image
 from werkzeug import secure_filename
 
 from system.database import Database
-from system.storage import Storage
+from system.S3 import S3
 
 import system.captcha as captcha
 import system.config as config
@@ -41,7 +41,7 @@ app.config["fileTypeError"] = config.fileTypeError
 if config.production: db = Database(config.dbHost,config.dbPort,config.dbUsername,config.dbPassword)
 else: db = Database(config.dbHost,config.dbPort)
 
-storage = Storage(s3 = config.usingS3)
+storage = S3()
 
 if config.logging: logging.basicConfig(filename='logs/DR.log',level=logging.DEBUG)
 
@@ -146,6 +146,7 @@ def signup():
     },
     "permissions" : {
       "deleteComments"   : False,
+      "editArt"          : False,
       "deleteArt"        : False,
       "banUsers"         : False,
       "makeProps"        : False,
@@ -279,20 +280,33 @@ def about():
 def donate():
   return render_template("donate.html")
 
-@app.route('/art/<int:art>', methods=['GET'])
+@app.route('/art/<int:art>', methods=['GET','DELETE'])
 def viewArt(art):
   try: 
     artLookup = db.db.art.find_one({'_id' : art})
   except ValueError: abort(404)
-  if not artLookup: abort(404)
-  else:
-    authorLookup = db.db.users.find_one({'_id' : artLookup["authorID"]})
-    # Increment Art Views
-    incViews = True
-    if g.loggedInUser: incViews = not g.loggedInUser["_id"] == authorLookup["_id"]
-    if config.pageViewsRequireAlternateIP: not util.inList(request.remote_addr,authorLookup["ip"])
-    if incViews: db.db.art.update({"_id": art}, {"$inc": {"views": 1} })
-    return render_template("art.html", art=artLookup, author=authorLookup )
+  if request.method == 'GET':
+    if not artLookup: abort(404)
+    else:
+      authorLookup = db.db.users.find_one({'_id' : artLookup["authorID"]})
+      # Increment Art Views
+      incViews = True
+      if g.loggedInUser: incViews = not g.loggedInUser["_id"] == authorLookup["_id"]
+      if config.pageViewsRequireAlternateIP: not util.inList(request.remote_addr,authorLookup["ip"])
+      if incViews: db.db.art.update({"_id": art}, {"$inc": {"views": 1} })
+      return render_template("art.html", art=artLookup, author=authorLookup )
+  elif request.method == 'DELETE':
+    if not artLookup: abort(404)
+    else: 
+      if g.loggedInUser:
+        if artLookup["authorID"] == g.loggedInUser["_id"] or g.loggedInUser["permissions"]["deleteArt"]:
+          # Delete From Database
+          storage.deleteArt(artLookup['_id'] + artLookup['filetype'])
+          # Delete File
+          db.db.art.remove({'_id' : artLookup['_id']})
+          return "1"
+        else: abort(401)
+
 
 @app.route('/art/<int:art>/favorite', methods=['POST','GET'])
 def favorite(art):

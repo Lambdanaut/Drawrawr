@@ -47,8 +47,6 @@ $(document).ready ->
 			url:  "/users/watch",
 			type: "POST",
 			data: "watchedUser=" + $("#author").attr("data-name"),
-			beforeSend: -> 
-				watchButton.text " - Loading - "
 			complete: (msg) ->
 				if watchButton.attr("data-state") == "watch"
 					watchButton.attr "src","/static/images/unwatchbutton.png"
@@ -56,3 +54,13 @@ $(document).ready ->
 				else
 					watchButton.attr "src","/static/images/watchbutton.png"
 					watchButton.attr "data-state","watch"
+
+	### Delete Button ###
+	$("#deleteButton").click ->
+		conf = confirm "Are you sure you want to delete this artwork? "
+		if conf
+			$.ajax
+				type: "DELETE",
+				complete: (msg) ->
+					window.location = $("#author").attr "data-name"
+

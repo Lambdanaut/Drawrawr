@@ -3,8 +3,11 @@
 {% block head %}
 <script src="/static/js/art.js"></script>
 <style>
-#favButton { cursor: pointer;}
-#watchButton { cursor: pointer;}
+.userButton { 
+	cursor: pointer;
+	margin: 0 17px 0 17px;
+	vertical-align: middle;
+}
 </style>
 {% endblock %}
 {% block content %}
@@ -23,15 +26,37 @@
       {{ art["description"] }}
     </div>
     <div style="clear:both;"></div>
-    {% if loggedInUser %}{% if loggedInUser["_id"] != author["_id"] %}
-      {% if util.inList(g.loggedInUser["username"],art["favorites"]) %}{% set fav="unfav" %}{% else %}{% set fav="fav" %}{% endif %}
-      <img src="{% if fav=="fav" %}/static/images/favoritebutton.png{% else %}/static/images/unfavoritebutton.png{% endif %}" id="favButton" data-state="{{ fav }}" alt="Favorite Button">
-      {% if util.inList(g.loggedInUser["username"],author["watchers"]) %}{% set watch="unwatch" %}{% else %}{% set watch="watch" %}{% endif %}
-      <img src="{% if watch=="watch" %}/static/images/watchbutton.png{% else %}/static/images/unwatchbutton.png{% endif %}" id="watchButton" data-state="{{ watch }}" alt="Watch Button">
-    {% endif %}{% endif %}
-
     <div id="views">Views: {{ art["views"] }}</div>
     <div id="favorites">Favorites: {{ art["favAmount"] }}</div>
-
   </section>
+  {% macro favButton() %}
+    {% if util.inList(g.loggedInUser["username"],art["favorites"]) %}{% set fav="unfav" %}{% else %}{% set fav="fav" %}{% endif %}
+    <img src="{% if fav=="fav" %}/static/images/favoritebutton.png{% else %}/static/images/unfavoritebutton.png{% endif %}" id="favButton" data-state="{{ fav }}" class="userButton" title="Favorite Button" alt="Favorite Button">  
+  {% endmacro %}
+  {% macro watchButton() %}
+    {% if util.inList(g.loggedInUser["username"],author["watchers"]) %}{% set watch="unwatch" %}{% else %}{% set watch="watch" %}{% endif %}
+    <img src="{% if watch=="watch" %}/static/images/watchbutton.png{% else %}/static/images/unwatchbutton.png{% endif %}" id="watchButton" data-state="{{ watch }}" class="userButton" title="Watch Button" alt="Watch Button">
+  {% endmacro %}
+  {% macro deleteButton() %}
+    <img src="/static/images/deletebutton.png" id="deleteButton" class="userButton" title="Delete Button">
+  {% endmacro %}
+  {% if loggedInUser %}
+  <section class="roundBox greenContainer" style="text-align: center; width: 736px; margin-left:auto; margin-right:auto; padding: 5px 00px 5px 00px;">
+    {# Not Art Owner #}
+    {% if loggedInUser["_id"] != author["_id"] %}
+      {{ favButton() }}
+      {{ watchButton() }} 
+      {% if loggedInUser["permissions"]["editArt"] %} <img src="/static/images/deletebutton.png" class="userButton" title="Delete Button"> {% endif %}
+      <img src="/static/images/commentbutton.png" class="userButton" title="Comment Button">
+      <img src="/static/images/featurebutton.png" class="userButton" title="Feature Button">
+      <img src="/static/images/reportbutton.png" class="userButton" title="Report Button">
+      {% if loggedInUser["permissions"]["deleteArt"] %}{{ deleteButton() }}{% endif %}
+    {# Art Owner #}
+    {% else %}
+      <img src="/static/images/editbutton.png" class="userButton" title="Edit Button">
+      <img src="/static/images/commentbutton.png" class="userButton" title="Comment Button">
+      {{ deleteButton() }}
+    {% endif %}
+  </section>
+  {% endif %}
 {% endblock %}
