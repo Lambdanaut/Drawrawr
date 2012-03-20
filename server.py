@@ -145,14 +145,14 @@ def signup():
       "comments" : "b"
     },
     "permissions" : {
-      "deleteComments"   : False,
-      "editArt"          : False,
-      "deleteArt"        : False,
-      "banUsers"         : False,
-      "makeProps"        : False,
-      "vote"             : False,
+      "deleteComments"   : True,
+      "editArt"          : True,
+      "deleteArt"        : True,
+      "banUsers"         : True,
+      "makeProps"        : True,
+      "vote"             : True,
       "generateBetaPass" : True,
-      "cropArt"          : False
+      "cropArt"          : True
     },
     "theme"       : "default",
     "profile"     : "",

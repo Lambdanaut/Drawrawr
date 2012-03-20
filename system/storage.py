@@ -1,4 +1,4 @@
-# A template class for storag
+# A template class for storage
 
 class Storage:
   def __init__(self):
