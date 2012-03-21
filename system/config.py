@@ -46,8 +46,8 @@ imageExtensions = set(['png', 'jpg', 'jpeg', 'gif', 'tif', 'svg'])
 iconExtensions  = imageExtensions
 
 thumbnailDimensions = 135,110
-thumbnailFormat     = "JPEG"
-thumbnailExtension  = ".thumbnail.jpg"
+thumbnailFormat     = "PNG"
+thumbnailExtension  = ".thumbnail.png"
 
 maxFileSize      = 20 * 1024**2
 maxFileSizeText  = "Twenty Megabytes"

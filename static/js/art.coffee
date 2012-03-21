@@ -61,6 +61,7 @@ $(document).ready ->
 		if conf
 			$.ajax
 				type: "DELETE",
-				complete: (msg) ->
-					window.location = $("#author").attr "data-name"
+				complete: (status,msg) ->
+					if msg is "success"
+						window.location = "/" + $("#author").attr "data-name"
 

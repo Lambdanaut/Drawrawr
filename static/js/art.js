@@ -83,8 +83,10 @@
       if (conf) {
         return $.ajax({
           type: "DELETE",
-          complete: function(msg) {
-            return window.location = $("#author").attr("data-name");
+          complete: function(status, msg) {
+            if (msg === "success") {
+              return window.location = "/" + $("#author").attr("data-name");
+            }
           }
         });
       }

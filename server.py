@@ -1,6 +1,6 @@
 from flask import *
 
-import os, shutil, sys, random, logging, datetime, base64
+import os, mimetypes, shutil, sys, random, logging, datetime, base64
 
 from PIL import Image
 from werkzeug import secure_filename
@@ -230,15 +230,16 @@ def settings():
             try: os.remove(os.path.join(app.config["iconsDir"], g.loggedInUser['lowername'] + "." + g.loggedInUser["icon"]))
             except: 
               if config.logging: logging.warning("Couldn't remove user \"" + g.loggedInUser['username']+ "\"'s old icon while attempting to upload a new icon. ")
-            fileName = g.loggedInUser['lowername'] + "." + util.fileType(icon.filename)
+            fileName = g.loggedInUser['lowername']
+            fileType = util.fileType(icon.filename)
+            (mimetype,i) = mimetypes.guess_type(icon.filename)
             fileLocation = os.path.join(app.config["iconsDir"], fileName)
-            db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"icon": util.fileType(fileName) }})
+            db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"icon": fileType }})
             icon.save(fileLocation)
             image = Image.open(fileLocation)
             resized = image.resize(config.iconSize, Image.ANTIALIAS)
-            try: resized.save(fileLocation, quality=100)
-            except: 
-              if config.logging: logging.warning("Couldn't save user \"" + g.loggedInUser['username'] + "\"'s new icon while attempting to upload a new icon. ")
+            resized.save(fileLocation, fileType, quality=100)
+            storage.push(fileLocation, fileLocation, mimetype )
             messages.append("User Icon")
       # Password
       if request.form["changePassCurrent"] and request.form["changePassNew1"] and request.form["changePassNew2"]:
@@ -263,7 +264,7 @@ def settings():
       if request.form["changeColorTheme"] != g.loggedInUser["theme"]:
         db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"theme": request.form["changeColorTheme"]} })
         messages.append("Color Theme")
-      return render_template("settingsSuccess.html",messages=messages, len=len)
+      return render_template("settingsSuccess.html",messages=messages,len=len)
     else: abort(401)
 
 @app.route('/meta/terms-of-service', methods=['GET'])
@@ -300,9 +301,10 @@ def viewArt(art):
     else: 
       if g.loggedInUser:
         if artLookup["authorID"] == g.loggedInUser["_id"] or g.loggedInUser["permissions"]["deleteArt"]:
-          # Delete From Database
-          storage.deleteArt(artLookup['_id'] + artLookup['filetype'])
           # Delete File
+          print os.path.join(config.artDir , str(artLookup['_id']) + "." + artLookup['filetype'] )
+          storage.delete(os.path.join(config.artDir , str(artLookup['_id']) + "." + artLookup['filetype'] ) )
+          # Delete From Database
           db.db.art.remove({'_id' : artLookup['_id']})
           return "1"
         else: abort(401)
@@ -385,10 +387,10 @@ def submitArt():
     # Image
     if request.form["artType"] == "image":
       image = request.files['upload']
-      if not image.content_length <= config.maxImageSize:
-        flash(app.config["fileSizeError"] + "Your image must be at most " + config.maxImageSizeText + ". ")
-      elif not util.allowedFile(image.filename,config.imageExtensions):
+      if not util.allowedFile(image.filename, config.imageExtensions):
         flash(app.config["fileTypeError"] + "The allowed filetypes are " + util.printList(config.imageExtensions) + ". ")
+      elif image.content_length >= config.maxImageSize:
+        flash(app.config["fileSizeError"] + "Your image must be at most " + config.maxImageSizeText + ". ")
       else:
         fileType = util.fileType(request.files['upload'].filename)
         key = db.nextKey("art")
@@ -408,9 +410,8 @@ def submitArt():
           "type"        : "image"
         })
         fileLocation = os.path.join(config.artDir, str(key) + "." + fileType)
-        try: image.save(fileLocation)
-        except: 
-          if config.logging: logging.warning("Couldn't save user \"" + g.loggedInUser['username'] + "\"'s art upload to the server at location \"" + fileLocation + "\". The art _id key was #" + str(key) + ". " )
+        image.save(fileLocation)
+        storage.push(fileLocation, fileLocation)
         autocrop(key)
         return redirect(url_for('crop',art=key))
   # Audio
@@ -431,6 +432,7 @@ def autocrop(art):
     cropped = image.resize(config.thumbnailDimensions,Image.ANTIALIAS)
     croppedLocation = os.path.join(config.thumbDir, str(artLookup["_id"]) + config.thumbnailExtension)
     cropped.save( croppedLocation, config.thumbnailFormat, quality=100)
+    storage.push(croppedLocation, croppedLocation)
     return "1"
   else: abort(401)
 
@@ -450,6 +452,7 @@ def crop(art):
       cropped = image.crop(cropArea).resize(config.thumbnailDimensions,Image.ANTIALIAS)
       croppedLocation = os.path.join(config.thumbDir, str(artLookup["_id"]) + config.thumbnailExtension)
       cropped.save( croppedLocation, config.thumbnailFormat, quality=100)
+      storage.push(croppedLocation, croppedLocation)
       return redirect(url_for('viewArt',art=art))
   else: abort(401)
 
@@ -459,7 +462,7 @@ def clubs():
 
 @app.route('/art/uploads/<filename>')
 def artFile(filename):
-  return send_from_directory(config.artDir,filename)
+  return redirect( storage.get(os.path.join(config.artDir,filename ) ) )
 
 @app.route('/art/uploads/thumbs/<filename>')
 def thumbFile(filename):
@@ -467,6 +470,8 @@ def thumbFile(filename):
 
 @app.route('/icons/<filename>')
 def iconFiles(filename):
+  return redirect( storage.get(os.path.join(config.iconsDir,filename ) ) )
+  '''
   filename = filename.lower()
   icon = None
   for f in os.listdir(config.iconsDir):
@@ -476,6 +481,7 @@ def iconFiles(filename):
       except: abort(404)
   if icon: return icon
   else: abort(404)
+  '''
 
 @app.route('/util/parseUsercode/<text>')
 def parseUsercode(text):

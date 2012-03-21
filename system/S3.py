@@ -1,4 +1,5 @@
 # A module defining interaction with the S3 Amazon Service
+# The bucket needs to be publically readable in order to serve the files 
 
 import os
 
@@ -12,18 +13,21 @@ class S3 (Storage):
     try: import secrets
     except: exit("Error: Amazon's S3 service requires a username and password that can be specifed as the variables wsPublic and wsSecret in the file system/secrets.py")
 
-    self.conn = S3Connection(secrets.wsPublic, secrets.wsSecret)
-    self.bucket = self.conn.get_bucket("drawrawr")
+    self.bucketName = "drawrawr"
 
-  def push(self,loc,dest):
+    self.conn = S3Connection(secrets.wsPublic, secrets.wsSecret)
+    self.bucket = self.conn.get_bucket(self.bucketName)
+
+  def push(self,loc,dest,mimetype = None):
     k = Key(self.bucket)
     k.key = dest
+    if mimetype: k.set_metadata('Content-Type', mimetype)
+    
     k.set_contents_from_filename(loc)
 
-  def get(self,filepath):
+  def get(self,filepath): return "https://s3.amazonaws.com/drawrawr/" + filepath
+
+  def delete(self,filepath): 
     k = Key(self.bucket)
     k.key = filepath
-    return k.generate_url(5)
-
-  def delete(self,filepath):
-    pass
+    self.bucket.delete_key(k)
