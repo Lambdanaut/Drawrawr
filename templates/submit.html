@@ -56,7 +56,7 @@
           </tr>
           <tr>
             <th></th>
-            <th><input type="submit" class='button'></th>
+            <th><input type="submit"  class='button uploadButton'></th>
           </tr>
         </table>
       </form>
@@ -71,4 +71,10 @@
     </div>
     <div id="performanceArea" class="artArea">
     </div>
+    <aside id='modal'>
+      <div style="margin-top: 10%; margin-left: auto; margin-right: auto; z-index:10000;">
+        <b>UPLOADING ART</b><br>
+        <img src="/static/images/loader.gif" alt="LOADING">
+      </div>
+    </aside>
 {% endblock %}

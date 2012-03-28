@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% block title %}{{ author["username"] }}'s Gallery - {{ folder }}{% endblock %}
+{% block title %}Search Drawrawr{% endblock %}
 {% block head %}
 <script src="/static/js/gallery.js"></script>
 <link rel="stylesheet" href="/static/css/gallery.css" media="screen">
@@ -72,27 +72,18 @@
         order. 
         <button type="submit" value="Go" class="button"><img src="/static/images/searchbutton.png"></button>
       </form>
-      <h2 id="title"><a href="/{{ author["username"] }}">{{ author["username"] }}'s</a> Gallery</h2>
+      <h2 id="title">Search Drawrawr</h2>
       <div style="clear:both;"></div>
     </div>
     <h4 style="position: absolute; right: 10%;">Folders</h4><br>
     <div style="float: left; width: 80%;">
       <div class="gallery">{{ drawGallery(art) }}</div>
     </div>
-    {% macro makeFolder(folder,symbol) %}
-    <a href="{{ url_for("viewGallery",username=author["username"],folder=folder) }}"><div class="roundBox">{{ symbol }}</div></a>
-    {% endmacro %}
     <div class="folders" style="float: right; width: 20%; margin-top: 5px;">
-      {{ makeFolder("all","All Artwork") }}
-      {{ makeFolder("complete","Completed Works") }}
-      {{ makeFolder("wip","Works in Progress") }}
-      {{ makeFolder("scraps","Scraps") }}
-      {{ makeFolder("mature","Mature Works") }}
-      {{ makeFolder("favorites","Favorites") }}
     </div>
     <span style="clear:both;display:block;"></span>
     {% macro makeIndexLink(page,symbol) %}
-    <a href="{{ url_for("viewGallery",username=author["username"],folder=folder,page=page) }}">{{ symbol }}</a> 
+    <a href="{{ url_for("search") }}">{{ symbol }}</a> 
     {% endmacro %}
     {% if currentPage %}
       {{ makeIndexLink(0,"%AB") }}

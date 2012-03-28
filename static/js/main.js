@@ -1,4 +1,5 @@
 (function() {
+  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   this.Header = (function() {
 
@@ -100,6 +101,29 @@
     };
 
     return Modal;
+
+  })();
+
+  this.Helpbox = (function() {
+
+    function Helpbox(helpDiv) {
+      this.helpDiv = helpDiv;
+      this.die = __bind(this.die, this);
+      $(this.helpDiv).click(this.die);
+      $(this.helpDiv).addClass("helpBox");
+      $(this.helpDiv).addClass("roundBox");
+      this.show();
+    }
+
+    Helpbox.prototype.show = function() {
+      return $(this.helpDiv).css("display", "block");
+    };
+
+    Helpbox.prototype.die = function() {
+      return $(this.helpDiv).css("display", "none");
+    };
+
+    return Helpbox;
 
   })();
 

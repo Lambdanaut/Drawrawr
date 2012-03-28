@@ -14,11 +14,11 @@
 
   <link href='http://fonts.googleapis.com/css?family=Ubuntu:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'> 
 
-  <link rel="stylesheet" href="/static/css/mainstyles.css" media="screen">
   <link rel="stylesheet" href="/static/css/normalize.css" media="screen">
+  <link rel="stylesheet" href="/static/css/mainstyles.css" media="screen">
 
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
-  <script src="/static/js/modernizr-1.6.min.js"></script>
+  <script src="/static/js/modernizr.geo.js"></script>
   <script src="/static/js/main.js"></script>
   {% if config["captchaPublicKey"] and config["captchaSecretKey"] %}
   <script type="text/javascript" src="http://www.google.com/recaptcha/api/js/recaptcha_ajax.js"></script>
@@ -53,8 +53,9 @@
               <u style="cursor:pointer;">Options</u>
               <div class="roundBox">
                 <a href="{{ url_for('submitArt') }}">Submit Art</a><br>
-                <a href="/journals/view">Journals</a><br>
+                <a href="{{ url_for('manageJournal') }}">Journals</a><br>
                 <a href="{{ url_for('settings') }}">Settings</a><br>
+                {% if any(util.dictToList(loggedInUser["permissions"]) ) %} <a href="{{ url_for('staff') }}">Staff</a><br>{% endif %}
                 <a id="logout-button">Logout</a>
               </div>
             </div>
@@ -106,7 +107,6 @@
               <h4>Log In</h4>
               <h6>USERNAME:</h6> <input type='text' class='textInputNoRecoil' name='username'> <br>
               <h6>PASSWORD:</h6> <input type='password' class='textInputNoRecoil' name='password'> <br><br>
-              <input type='checkbox' name='rememberMe' value='True'>Remember Me<br>
               <input type='submit' id="login-submit" class='button' value='Log In'>
             </form>
           </aside>
@@ -115,7 +115,7 @@
       <a href="{{ url_for('index') }}"><div id="header-image"><img src="/static/images/newyearheader.png" alt="Header"></div></a>
     <nav id="navigation">
       <ul>
-        <li><a href="{{ url_for('index') }}">News</a></li><li><a href="/">Search</a></li><li><a href="{{ url_for('clubs') }}">Clubs</a></li><li><a href="/">Shops</a></li><li><a href="/">Roleplay</a></li><li><a href="/">Draw</a></li><li><a href="/">Chat</a></li><li><a href="/">DRadio</a></li><li><a href="{{ url_for('donate') }}">Donate</a></li>
+        <li><a href="{{ url_for('index') }}">News</a></li><li><a href="{{ url_for("search") }}">Search</a></li><li><a href="{{ url_for('clubs') }}">Clubs</a></li><li><a href="/">Shops</a></li><li><a href="/">Roleplay</a></li><li><a href="/">Draw</a></li><li><a href="/">Chat</a></li><li><a href="/">DRadio</a></li><li><a href="{{ url_for('donate') }}">Donate</a></li>
       </ul>
     </nav>
     </div>
@@ -126,7 +126,6 @@
   </div>
   <footer id="footer">
     <div style="float:right;">
-      <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="Creative Commons License" style="border-width:0;float:right; margin-left: 10px;" src="http://i.creativecommons.org/l/by-nc-sa/3.0/80x15.png"></a>
       &copy;2010-<span id="copyright-date"></span> DrawRawr. Some rights reserved
     </div>
     <a href="{{ url_for('policy') }}">Terms of Service</a> ·

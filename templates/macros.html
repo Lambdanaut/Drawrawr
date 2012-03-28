@@ -57,9 +57,9 @@
 {% endif %}
 {% endmacro %}
 {# Take a list of usernames and shows their clickable avatars one after another #}
-{% macro drawUsers(users) %}
+{% macro drawUsers(users, smallIcon = False) %}
 {% if users %}
-{% for user in users %}{{ userIcon(user) }}{% endfor %}
+{% for user in users %}{% if smallIcon %}{{ tinyUserIcon(user) }}{% else %}{{ userIcon(user) }}{% endif %}{% endfor %}
 {% else %}
 <p>There aren't any users to display yet. </p>
 {% endif %}

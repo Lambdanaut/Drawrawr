@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block title %}Manage Journals{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="/static/css/jquery-ui-1.8.18.custom.css" media="screen">
+<style media="screen" type="text/css">
+#rightCol
+{
+	float: right;
+	width: 25%;
+}
+#leftCol
+{
+	width: 75%;
+}
+</style>
+<script src="/static/js/jquery-ui-1.8.18.custom.min.js"></script>
+<script src="/static/js/manageJournals.js"></script>
+{% endblock %}
+{% block content %}
+<div id="rightCol">
+  <b style="margin-left: 5px;">Manage Journals</b> <br><br>
+  <section class="container"></section>
+</div>  
+<div id="leftCol">
+  <b style="margin-left: 5px;">Create Journal</b> <br><br>
+  <section class="container" style="padding: 15px;">
+    <form method="POST">
+      <b>Title:</b> <br>
+      <input type="text" name="journalTitle" class="textInput"> <br><br>
+      <b>Journal:</b> <br>
+      <textarea class="textArea" name="journalContent" style="width: 100%;" cols=50></textarea> <br><br>
+      <b>Mood:</b> <br>
+      <input type="text" name="journalMood" id="moods" class="textInput"><br><br>
+      <input type="submit" class="button">
+    </form>
+  </section>
+</div>
+{% endblock %}

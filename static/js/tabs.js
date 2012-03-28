@@ -1,7 +1,6 @@
 (function() {
-  var Tabs;
 
-  Tabs = (function() {
+  this.Tabs = (function() {
 
     function Tabs(firstTab) {
       var anchor,

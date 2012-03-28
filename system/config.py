@@ -11,7 +11,7 @@ port = int(os.environ.get("PORT", 80))
 production      = True
 logging         = False
 debug           = True
-betaKey         = False
+betaKey         = True
 randomSecretKey = False
 
 #Database
@@ -26,6 +26,8 @@ else:
 
 #Users
 iconSize = 75,75
+maxNearbyUserDistance = 5
+startingBetaKeys = 3
 
 #Art
 pageViewsRequireAlternateIP = False

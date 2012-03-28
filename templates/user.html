@@ -84,7 +84,7 @@
 {% macro watches() %}
   <section class="container gallery" style="max-height: 260px;">
     <span class="moduleTitle">Watchers</span>
-    {{ drawUsers( user["watchers"][:25] ) }}
+    {{ drawUsers( user["watchers"][:25], smallIcon=True ) }}
   </section>
 {% endmacro %}
 
@@ -95,22 +95,59 @@
   </section>
 {% endmacro %}
 
-{% macro row(rowName) %}
-  {% if user["layout"]["profile" ] == rowName %} {{ profile () }} {% endif %}
-  {% if user["layout"]["gallery" ] == rowName %} {{ gallery () }} {% endif %}
-  {% if user["layout"]["watches" ] == rowName %} {{ watches () }} {% endif %}
-  {% if user["layout"]["comments"] == rowName %} {{ comments() }} {% endif %}
+{% macro nearby() %}
+  <section class="container gallery" style="max-height: 260px;">
+    <span class="moduleTitle">Nearby Artists</span>
+    {{ drawUsers( nearbyUsers, smallIcon=True ) }}
+  </section>
+{% endmacro %}
+
+{% macro journal() %}
+  <section class="container">
+    <span class="moduleTitle">Journal</span>
+    {% if journalResult %}
+      {{ journalResult["title"] }}
+      <p>{{ journalResult["content"] }}</p>
+    {% else %}
+      <p style="text-align:center;">There aren't any journals to display just yet! </p>
+    {% endif %}
+  </section>
+{% endmacro %}
+
+{% macro modToFunc(m) %}
+  {% if    m == "profile" %}{{ profile() }}
+  {% elif m == "gallery"  %}{{ gallery() }}
+  {% elif m == "watches"  %}{{ watches() }}
+  {% elif m == "comments" %}{{ comments() }}
+  {% elif m == "nearby"   %}{{ nearby() }}
+  {% elif m == "journal"  %}{{ journal() }}
+  {% endif %}
+{% endmacro %}
+
+{% macro drawModule(module,loc,order) %}
+  {% if user["layout"][module][0] == loc and user["layout"][module][1] == order %} {{ modToFunc(module) }} {% endif %}
+{% endmacro %}
+
+{% macro row(l) %}
+  {% for o in range(0,5) %}
+    {{ drawModule("profile",l,o) }}
+    {{ drawModule("gallery",l,o) }}
+    {{ drawModule("watches",l,o) }}
+    {{ drawModule("comments",l,o) }}
+    {{ drawModule("nearby",l,o) }}
+    {{ drawModule("journal",l,o) }}
+  {% endfor %}
 {% endmacro %}
 
 {% block content %}
 <span id="username" data-name="{{ user["username"] }}"></span>
 <div style="float: left;" id="userNavArea">
-  <a href="" class="container tabButton"><img src="/static/images/tinyCHAT.png" alt="Drawrboard icon" style="vertical-align:bottom;"> View Journals</a>
+  <a href="{{ url_for("viewUserJournals", username=user["username"]) }}" class="container tabButton"><img src="/static/images/tinyCHAT.png" alt="Drawrboard icon" style="vertical-align:bottom;"> View Journals</a>
   <a href="{{ url_for("viewGallery", username=user["username"]) }}" class="container tabButton"><img src="/static/images/tinyDRAWRBOARD.png" alt="Drawrboard icon" style="vertical-align:bottom;"> View Gallery</a>
 </div>
 {% if g.loggedInUser and g.loggedInUser["_id"] != user["_id"] %}
 <div id="topArea">
-  <div class="container tabButton" id="watchUserButton" data-state="{{ inList(loggedInUser["username"], user["watchers"]) }}"> + watch </div>
+  <div class="container tabButton" id="watchUserButton" data-state="{{ util.inList(loggedInUser["username"], user["watchers"]) }}"> + watch </div>
   <div class="container tabButton" id="messageUserButton"> ~ message </div>
 </div>
 {% endif %}

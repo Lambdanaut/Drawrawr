@@ -22,7 +22,7 @@
   };
 
   $(document).ready(function() {
-    return $('#art').load(function() {
+    $('#art').load(function() {
       window.imageWidth = $("#art").width();
       window.imageHeight = $("#art").height();
       $('#art').Jcrop({
@@ -35,6 +35,12 @@
         w: imageWidth,
         h: imageHeight
       });
+    });
+    return $("form").submit(function() {
+      var m;
+      $(".button").attr("disabled", "disabled");
+      m = new Modal("#modal");
+      return 1;
     });
   });
 

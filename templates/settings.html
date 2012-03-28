@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block title %}Settings{% endblock %}
 {% block head %}
-<script src="/static/js/jquery-ui-1.8.17.custom.min.js"></script>
+<script src="/static/js/jquery-ui-1.8.18.custom.min.js"></script>
 <script src="/static/js/tabs.js"></script>
 <script src="/static/js/settings.js"></script>
 <link rel="stylesheet" href="/static/css/tabs.css" media="screen">
@@ -89,6 +89,7 @@ h3
       <li id="general"><a href="#-general">General Settings</a></li>
       <li id="profile"><a href="#-profile">My Profile</a></li>
       <li id="layout"><a href="#-layout">Page Layout</a></li>
+      {% if config["betaKey"] %}<li id="beta"><a href="#-beta">Invites</a></li>{% endif %}
     </ul>
   </div>
   <form enctype="multipart/form-data" method="POST" action="/users/settings">
@@ -115,7 +116,16 @@ h3
           </select><br><br>
         </div>
         <div class="rightCol">
-          right
+          <div id="whyHelp" style="display: none; top: 4px;">
+            <p> Drawrawr uses your location to help you find artists near you! Your exact latitude and longitude is not shared, only your general distance from other users is shown. </p>
+          </div>
+          <h3 style="display:inline; ">Location: </h3> <span id="whyLocation" style="cursor:pointer;font-size: 12px;font-weight: bold;text-decoration:underline">(why?)</span> <br>
+          Latitude: <br>
+          <input type="text" name="changeLatitude" id="latitude" class="textInput" value="{{ loggedInUser["latitude"] }}"><br>
+          Longitude: <br>
+          <input type="text" name="changeLongitude" id="longitude" class="textInput" value="{{ loggedInUser["longitude"] }}"><br>
+          <button type="button" id="getLocation" class="button" style="margin-top: 5px;" >Automatically Get Location</button>
+          <div id="noLocationBrowser" style="display:none; font-size: 12px;"> You can find your location at <a href="http://itouchmap.com/latlong.html">itouchmap.com</a></div>
         </div>
         <div style="clear: both;"></div>
       </div>
@@ -162,34 +172,75 @@ h3
           
             </div>
           </div>
+{% macro drawModule(module,loc,order) %}
+  {% if loggedInUser["layout"][module][0] == loc and loggedInUser["layout"][module][1] == order %} <div id="{{ module }}" class="draggable container">{{ module }}</div> {% endif %}
+{% endmacro %}
+{% macro drawModules(l) %}
+  {% for o in range(0,6) %}
+    {{ drawModule("profile",l,o) }}
+    {{ drawModule("gallery",l,o) }}
+    {{ drawModule("watches",l,o) }}
+    {{ drawModule("comments",l,o) }}
+    {{ drawModule("nearby",l,o) }}
+    {{ drawModule("journal",l,o) }}
+  {% endfor %}
+{% endmacro %}
           <div id="contentMimic" class='roundBox'>
             <div class='layoutSection'>
               <div id="visibleArea">
-                <div id="profileTop" class="profileFullRow dragBox">
-                  <div class="draggable container">Profile</div>
-                  <div class="draggable container">Profile</div>
+                <div id="profileTop" class="profileFullRow dragBox" data-loc="t">
+                  {{ drawModules("t") }}
                 </div>
                 <div id="profileMiddle" class="profileFullRow">
-                  <div id="profileRightCol" class="dragBox">
-                    <div class="draggable container">Profile</div>
+                  <div id="profileRightCol" class="dragBox" data-loc="r">
+                    {{ drawModules("r") }}
                   </div>
-                  <div id="profileLeftCol" class="dragBox">
-                    <div class="draggable container">Profile</div>
-                    <div class="draggable container">Profile</div>
+                  <div id="profileLeftCol" class="dragBox" data-loc="l">
+                    {{ drawModules("l") }}
                   </div>
                 </div>
-                <div id="profileBottom" class="profileFullRow dragBox">
-                  <div class="draggable container">Profile</div>
+                <div id="profileBottom" class="profileFullRow dragBox" data-loc="b">
+                  {{ drawModules("b") }}
                 </div>
                 <div id="profileHiddenDivider"><h3>Hidden Modules</h3></div>
-		<div id="profileHidden" class="profileFullRow dragBox">
+		<div id="profileHidden" class="profileFullRow dragBox" data-loc="h">
+                  {{ drawModules("h") }}
 		</div>
               </div>
             </div>
           </div>
         <div style="clear: both;"></div>
       </div>
+      {% if config["betaKey"] %}
+      <div id="tab-beta"> 
+        <div class="leftCol">
+          <h3>Invite a Friend to Drawrawr!</h3>
+          <p>This is where you can redeem your <b>invites</b> for Beta Pass codes!
+Each time you click the "Get Invite" button, a random 8-letter code will be generated for you. 
+This code can be given to friends and used to make a new account on Drawrawr, but <b>each code can only be used once</b>.
+Once it is used, it is gone. So use them wisely!</p>
+        </div>
+	<div class="middleCol">
+          <h3>Invites Left: <span style="color: #CD7300; text-decoration: underline;">{{ loggedInUser["betaKeys"] }}</span></h3>
+          <button type="button" id="generateNewInvite" class="button"> Generate a New Invite </button>
+        </div>
+	<div class="rightCol">
+          <ul id="betaKeyList">
+          {% if betaKeys.count() != 0 %}
+            <strong>Your Beta Keys: </strong>
+            {% for key in betaKeys %}
+            <li>{{ key["password"] }}</li>
+            {% endfor %}
+          {% endif %}
+          </ul>
+          <img src="/static/images/loader.gif" id="betaLoader" alt="LOADING" style="display:none;">
+        </div>
+        <div style="clear: both;"></div>
+      </div>
+      {% endif %}
     </section>
-    <div style="text-align:center;"><input type="submit" value="Update Settings" class="button"></div>
+    <input type = "hidden" id="changeLayout" name="changeLayout">
+    <input type = "hidden" id="changeLayoutOrder" name="changeLayoutOrder">
+    <div style="text-align:center;"><input type="submit" id="submitButton" value="Update Settings" class="button"></div>
   </form>
 {% endblock %}

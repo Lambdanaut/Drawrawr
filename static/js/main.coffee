@@ -66,6 +66,21 @@ class @Modal
 		$("#modal aside").css("display","none")
 		$("#modal").css("display","none")
 
+class @Helpbox
+	constructor: (@helpDiv) ->
+		$(@helpDiv).click @die
+
+		$(@helpDiv).addClass "helpBox"
+		$(@helpDiv).addClass "roundBox"
+
+		@show()
+
+	show: () ->
+		$(@helpDiv).css "display","block"
+
+	die: () =>
+		$(@helpDiv).css "display","none"
+
 $(document).ready ->
 	### Keeps the copyright up to date on the current year ###
 	date = new Date()

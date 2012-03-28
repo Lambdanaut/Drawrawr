@@ -4,3 +4,8 @@ $(document).ready ->
 		$("#submitTitle").text($(this).val())
 		$(".artArea").css "display","none"
 		$("#" + $(this).val().toLowerCase() + "Area").css "display","inline"
+
+	$("form").submit () ->
+		$(".uploadButton").attr "disabled","disabled"
+		m = new Modal "#modal"
+		return 1

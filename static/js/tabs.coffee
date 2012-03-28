@@ -1,4 +1,4 @@
-class Tabs
+class @Tabs
 	constructor: (firstTab) ->
 		$("#tabs ul li").each (i, self) =>
 			$("#tab-" + ($(self).attr "id")).css("display","none")

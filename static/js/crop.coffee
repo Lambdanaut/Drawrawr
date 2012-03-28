@@ -24,3 +24,8 @@ $(document).ready ->
 			onSelect: showPreview,
 			setSelect:   [ 0,0,imageWidth,imageHeight ],
 		showPreview(w:imageWidth,h:imageHeight)
+
+	$("form").submit () ->
+		$(".button").attr "disabled","disabled"
+		m = new Modal "#modal"
+		return 1

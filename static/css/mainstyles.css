@@ -141,6 +141,27 @@ noscript
 #modal h6 {
 	margin-bottom: 0px;
 }
+.helpBox {
+	position: absolute;
+	font-size: 12px;
+	background-color: #DDFFEE;
+	padding: 4px 10px 4px 10px;
+	width: 150px;
+	cursor: pointer;
+	z-index: 500;
+}
+/* creates triangle */
+.helpBox:after {
+	content:"";
+	display:block; 
+	position:absolute;
+	bottom:-15px;
+	left:50px;
+	width:0;
+	border-width:15px 15px 0;
+	border-style:solid;
+	border-color:#DDFFEE transparent;
+}
 #navigation
 {
 	position: absolute;
@@ -261,6 +282,9 @@ noscript
         background: linear-gradient(top, #92a992 0%,#637e63 100%); /* W3C */
         filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#92a992', endColorstr='#637e63',GradientType=0 ); /* IE6-9 */
 }
+.shadow {
+	text-shadow: 0px 2px 3px #777777;
+}
 .greenContainer a {
 	color: inherit;
 }
@@ -302,7 +326,7 @@ noscript
 }
 .textArea:focus
 {
-	height: 200px;
+	height: 300px;
 }
 select
 {

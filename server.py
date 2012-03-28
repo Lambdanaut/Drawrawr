@@ -1,9 +1,9 @@
 from flask import *
+import werkzeug
 
-import os, mimetypes, shutil, sys, random, logging, datetime, base64
+import os, math, mimetypes, sys, random, logging, datetime, base64
 
 from PIL import Image
-from werkzeug import secure_filename
 
 from system.database import Database
 from system.S3 import S3
@@ -63,7 +63,7 @@ def beforeRequest():
 def injectUser():
   if g.loggedInUser: showAds = g.loggedInUser["showAds"]
   else:              showAds = True
-  return dict (loggedInUser = g.loggedInUser, showAds = showAds, util = util)
+  return dict (loggedInUser = g.loggedInUser, showAds = showAds, util = util, any = any, str = str)
 
 @app.route('/')
 def index():
@@ -73,6 +73,7 @@ def index():
 @app.route('/<username>')
 def userpage(username):
   user = db.getUser(username)
+  closeUsers = None
   if user:
     # Increment Page Views
     db.db.users.update({"lowername": user['lowername']}, {"$inc": {"pageViews": 1} })
@@ -81,7 +82,20 @@ def userpage(username):
       gallery = db.db.art.find({"authorID": user["_id"]}).limit(15).sort("_id",-1)
       if gallery.count() == 0: gallery = None
     else: gallery = None
-    return render_template("user.html", user=user, userGallery=gallery, inList=util.inList, showAds=False)
+    # Nearby Users Module
+    # It's rather naiive in that the processing is done by the server and not the database. It may be a problem in the future. 
+    if user["layout"]["nearby"] != "h" and user["latitude"] and user["longitude"]:
+      allUsers = db.db.users.find({"_id": {"$ne" : user["_id"]} , "latitude" : {"$ne" : None}, "longitude" : {"$ne" : None} })
+      closeUsers = []
+      for aUser in allUsers:
+        if math.sqrt( (user["latitude"] - aUser["latitude"])**2 + (user["longitude"] - aUser["longitude"])**2 ) < config.maxNearbyUserDistance: closeUsers.append(aUser["username"])
+    # Journal Module
+    if user["layout"]["journal"] != "h":
+      journalResult = db.db.journals.find({"authorID" : user["_id"] }).limit(1).sort("_id",-1)
+      if journalResult.count() == 0: journal = None
+      else: journal = journalResult[0]
+
+    return render_template("user.html", user=user, userGallery=gallery, nearbyUsers=closeUsers, journalResult=journal , showAds=False)
   else: abort(404)
 
 @app.route('/users/login', methods=['POST'])
@@ -124,7 +138,8 @@ def signup():
       return "3" #ERROR, Beta Code Fail
   else: betaKey = None
   hashed = system.cryptography.encryptPassword(request.form['password1'], True)
-  shutil.copy("static/images/newbyicon.png", os.path.join(config.iconsDir, request.form['username'].lower() + ".png"))
+  #shutil.copy("static/images/newbyicon.png", os.path.join(config.iconsDir, request.form['username'].lower() + ".png"))
+  storage.push("static/images/newbyicon.png", os.path.join(config.iconsDir, request.form['username'].lower() + ".png"))
   key = db.nextKey("users")
   db.db.users.insert({
     "_id"         : key,
@@ -135,14 +150,26 @@ def signup():
     "ip"          : [request.remote_addr],
     "dob"         : None,
     "betaKey"     : betaKey,
+    "betaKeys"    : config.startingBetaKeys,
     "dateJoined"  : datetime.datetime.today(),
     "showAds"     : True,
     "layout"      : {
+      # [CARDINAL LOCATION, ORDERING]
       # t == top; l == left; r == right; b == bottom; h == hidden
-      "profile"  : "t",
-      "gallery"  : "l",
-      "watches"  : "r",
-      "comments" : "b"
+      "profile"   : ["t",0],
+      "gallery"   : ["l",0],
+      "watches"   : ["r",0],
+      "comments"  : ["b",0],
+      "nearby"    : ["r",1],
+      "journal"   : ["l",1],
+      "shout"     : ["h",0],
+      "friends"   : ["h",0],
+      "awards"    : ["h",0],
+      "shop"      : ["h",0],
+      "favorites" : ["h",0],
+      "tips"      : ["h",0],
+      "chars"     : ["h",0],
+      "playlist"  : ["h",0]
     },
     "permissions" : {
       "deleteComments"   : True,
@@ -154,6 +181,8 @@ def signup():
       "generateBetaPass" : True,
       "cropArt"          : True
     },
+    "latitude"    : None,
+    "longitude"   : None,
     "theme"       : "default",
     "profile"     : "",
     "codeProfile" : "",
@@ -208,11 +237,15 @@ def watch():
 def welcome():
   return render_template("welcome.html")
 
+# TODO:
+# Optimize Settings by building up one single dictionary to push to the database, rather than running multiple queries. 
 @app.route('/users/settings', methods=['GET','POST'])
 def settings():
   if request.method == 'GET':
     if g.loggedInUser:
-      return render_template("settings.html")
+      if config.betaKey: betaKeys = db.db.betaPass.find({"owner" : g.loggedInUser["username"] })
+      else: betaKeys = None
+      return render_template("settings.html", betaKeys = betaKeys)
     else: abort(401)
   elif request.method == 'POST':
     if g.loggedInUser:
@@ -256,6 +289,15 @@ def settings():
       if request.form["changeGender"] != g.loggedInUser["gender"]:
         db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"gender": request.form["changeGender"] }})
         messages.append("Gender")
+      # Location
+      if request.form["changeLatitude"] != str(g.loggedInUser["latitude"]) or request.form["changeLongitude"] != str(g.loggedInUser["longitude"]):
+        try:
+          latFloat = float(request.form["changeLatitude"])
+          lonFloat = float(request.form["changeLongitude"])
+          db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"latitude": latFloat, "longitude": lonFloat } } )
+          messages.append("Location")
+        except ValueError:
+          flash("The locations you gave were invalid latitude and longitude coordinates! ): ")
       # Profile
       if request.form["changeProfile"] != g.loggedInUser["profile"]:
         db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"profile": request.form["changeProfile"], "codeProfile": usercode.parse(request.form["changeProfile"]) } })
@@ -264,6 +306,18 @@ def settings():
       if request.form["changeColorTheme"] != g.loggedInUser["theme"]:
         db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"theme": request.form["changeColorTheme"]} })
         messages.append("Color Theme")
+      # Layout
+      l1 = util.urlDecode(request.form["changeLayout"])
+      l2 = util.urlDecode(request.form["changeLayoutOrder"])
+      for key in l2: l2[key] = int(l2[key]) # Converts orderings to integers
+      layout = util.concDictValues(l1,l2)
+      if not util.compareDicts(layout, g.loggedInUser["layout"]):
+        if util.compareDictKeys(layout, g.loggedInUser["layout"]):
+          layoutToPush = {}
+          for key in layout:
+            layoutToPush["layout." + key] = layout[key]
+          db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": layoutToPush })
+          messages.append("Layout")
       return render_template("settingsSuccess.html",messages=messages,len=len)
     else: abort(401)
 
@@ -302,7 +356,6 @@ def viewArt(art):
       if g.loggedInUser:
         if artLookup["authorID"] == g.loggedInUser["_id"] or g.loggedInUser["permissions"]["deleteArt"]:
           # Delete File
-          print os.path.join(config.artDir , str(artLookup['_id']) + "." + artLookup['filetype'] )
           storage.delete(os.path.join(config.artDir , str(artLookup['_id']) + "." + artLookup['filetype'] ) )
           # Delete From Database
           db.db.art.remove({'_id' : artLookup['_id']})
@@ -456,9 +509,69 @@ def crop(art):
       return redirect(url_for('viewArt',art=art))
   else: abort(401)
 
-@app.route('/clubs/index')
+@app.route('/<username>/journals', methods=['GET'])
+def viewUserJournals(username):
+  ownerResult = db.db.users.find_one({"lowername" : username.lower() })
+  if not ownerResult: abort(404)
+  journalResult = db.db.journals.find({"authorID" : ownerResult["_id"] }).limit(1).sort("_id",-1)
+  if journalResult.count() == 0: abort(404)
+  return redirect(url_for('viewJournal', journal = journalResult[0]["_id"]) )
+
+@app.route('/journal/view/<int:journal>', methods=['GET'])
+def viewJournal(journal):
+  journalResult = db.db.journals.find_one({"_id" : journal })
+  if not journalResult: abort(404)
+  db.db.journals.update({"_id": journal}, {"$inc": {"views": 1} })
+  return render_template("viewJournal.html", journal=journalResult)
+
+@app.route('/journal/manage', methods=['GET','POST'])
+def manageJournal():
+  if g.loggedInUser:
+    if request.method == 'GET':
+      return render_template("manageJournals.html")
+    else:
+      if not "journalTitle" in request.form or not "journalContent" in request.form: abort(500)
+      key = db.nextKey("journals")
+      db.db.journals.insert({
+        "_id"         : key,
+        "title"       : request.form["journalTitle"],
+        "content"     : request.form["journalContent"],
+        "codeContent" : usercode.parse(request.form["journalContent"]),
+        "mood"        : request.form["journalMood"],
+        "author"      : g.loggedInUser["username"],
+        "authorID"    : g.loggedInUser["_id"],
+        "views"       : 0,
+        "date"        : datetime.datetime.today(),
+      })
+      return redirect(url_for('viewJournal',journal=key))
+      
+  else: abort(401)    
+
+@app.route('/clubs/')
 def clubs():
   return render_template("clubs.html")
+
+@app.route('/clubs/edit',  methods=['GET','POST'])
+def clubsEdit():
+  return render_template("clubedit.html")
+
+@app.route('/clubs/view/<clubName>')
+def clubsPage(clubName):
+  return render_template("clubpage.html")
+
+@app.route('/search/')
+def search():
+  return render_template("search.html",pages=[],order=None,currentPage=0,last=0)
+
+@app.route('/staff/')
+def staff():
+  if g.loggedInUser:
+    if any(util.dictToList(g.loggedInUser["permissions"]) ): 
+      users = db.db.users.find()
+      art   = db.db.art.find()
+      return render_template("staff.html", userCount=users.count(), artCount=art.count() )
+    else: abort(401)
+  else: abort(401)
 
 @app.route('/art/uploads/<filename>')
 def artFile(filename):
@@ -487,10 +600,13 @@ def iconFiles(filename):
 def parseUsercode(text):
   return usercode.parse(text)
 
-@app.route('/admin/generateBetaPass',methods=['GET'])
+@app.route('/admin/generateBetaPass',methods=['POST'])
 def generateBetaPass():
   if g.loggedInUser:
     if g.loggedInUser["permissions"]["generateBetaPass"]:
+      return db.generateBetaPass(ownerName=g.loggedInUser["username"])
+    elif g.loggedInUser["betaKeys"] > 0:
+      db.db.users.update({"_id" : g.loggedInUser["_id"]}, {"$inc" : {"betaKeys" : -1} } )
       return db.generateBetaPass(ownerName=g.loggedInUser["username"])
     else: abort(401)
   else: abort(401)
@@ -508,6 +624,10 @@ def updateCount():
     else: return "Error: Invalid Username/Password combo"
   else: return "Error: Invalid request"
 
+@app.errorhandler(401)
+def unauthorized(e):
+  return render_template('401.html'), 401
+
 @app.errorhandler(404)
 def page_not_found(e):
   rando = random.randint(0,6)
@@ -520,6 +640,6 @@ def page_not_found(e):
   elif rando == 6: randimg = "browniexxx404.png"
   return render_template('404.html',randimg=randimg), 404
 
-@app.errorhandler(401)
+@app.errorhandler(500)
 def unauthorized(e):
-  return render_template('401.html'), 401
+  return render_template('500.html'), 500
