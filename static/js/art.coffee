@@ -56,6 +56,10 @@ $(document).ready ->
 					watchButton.attr "data-state","watch"
 
 	### Delete Button ###
+	$("#featureButton").click ->
+		featureModal = new Modal "modal"
+
+	### Delete Button ###
 	$("#deleteButton").click ->
 		conf = confirm "Are you sure you want to delete this artwork? "
 		if conf
@@ -64,4 +68,3 @@ $(document).ready ->
 				complete: (status,msg) ->
 					if msg is "success"
 						window.location = "/" + $("#author").attr "data-name"
-

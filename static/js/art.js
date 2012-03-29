@@ -77,6 +77,12 @@
     });
     /* Delete Button
     */
+    $("#featureButton").click(function() {
+      var featureModal;
+      return featureModal = new Modal("modal");
+    });
+    /* Delete Button
+    */
     return $("#deleteButton").click(function() {
       var conf;
       conf = confirm("Are you sure you want to delete this artwork? ");

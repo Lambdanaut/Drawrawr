@@ -12,12 +12,16 @@
 {
   width: 20%;
 }
+h3 { margin-top: 0px; }
 </style>
 {% endblock %}
 {% block content %}
 <div id="rightCol">
   <section class="container gallery">
     <h3 class="moduleTitle">POPULAR ART</h3>
+    <div style="width: 95%;margin-left: auto; margin-right: auto;">
+      {{ drawGallery(popularArt) }}
+    </div>
   </section>
   <section class="container gallery" style="max-height:500px;">
     <h3 class="moduleTitle">RECENT ART</h3>
@@ -26,20 +30,17 @@
     </div>
   </section>
   <section class="container">
-    <h1>FEATURED ART</h1>
+    <h3 class="moduleTitle">FEATURED ART</h3>
     <p>U liek em featured? it goz her</p>
   </section>
 </div>  
 <div id="leftCol">
   <section id="news" class="container">
-    <h1>NEWS NEWS NEWS</h1>
+    <h3 class="moduleTitle">NEWS NEWS NEWS</h3>
     <p>HOT FUCK. NEWS IS THE GREATEST</p>
   </section>
   <section class="container">
-    Ad
-  </section>
-  <section class="container">
-    <h1>RECENT JOURNALS</h1>
+    <h3 class="moduleTitle">RECENT JOURNALS</h3>
     <p>Prolly like some recent journals or recent poops go here. </p>
   </section>
 </div>

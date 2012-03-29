@@ -40,20 +40,34 @@
   {% macro deleteButton() %}
     <img src="/static/images/deletebutton.png" id="deleteButton" class="userButton" title="Delete Button">
   {% endmacro %}
+  {% macro editButton() %}
+    <img src="/static/images/editbutton.png" class="userButton" title="Edit Button">
+  {% endmacro %}
   {% if loggedInUser %}
   <section class="roundBox greenContainer" style="text-align: center; width: 736px; margin-left:auto; margin-right:auto; padding: 5px 00px 5px 00px;">
     {# Not Art Owner #}
     {% if loggedInUser["_id"] != author["_id"] %}
       {{ favButton() }}
       {{ watchButton() }} 
-      {% if loggedInUser["permissions"]["editArt"] %} <img src="/static/images/deletebutton.png" class="userButton" title="Delete Button"> {% endif %}
+      {% if loggedInUser["permissions"]["editArt"] %} {{ editButton() }} {% endif %}
       <img src="/static/images/commentbutton.png" class="userButton" title="Comment Button">
-      <img src="/static/images/featurebutton.png" class="userButton" title="Feature Button">
+      <img src="/static/images/featurebutton.png" id="featureButton" class="userButton" title="Feature Button">
       <img src="/static/images/reportbutton.png" class="userButton" title="Report Button">
       {% if loggedInUser["permissions"]["deleteArt"] %}{{ deleteButton() }}{% endif %}
+      <aside id="modal">
+        <section class="container" style="color: #513727; margin: 20px 20% 0 20%;">
+          <span class="close"></span>
+          <h3>Suggest <i>{{ art["title"] }}</i> to be Featured</h3>
+          <form>
+            <p>Please type a well-thought out reason for why you think this art should be featured: </p>
+            <textarea class="textArea" name="featuredText" cols=50 rows=5 style="width: 100%; margin-bottom: 10px;"></textarea><br>
+            <input type="submit" value="Submit">
+          </form>
+        </section>
+      </aside>
     {# Art Owner #}
     {% else %}
-      <img src="/static/images/editbutton.png" class="userButton" title="Edit Button">
+      {{ editButton() }}
       <img src="/static/images/commentbutton.png" class="userButton" title="Comment Button">
       {{ deleteButton() }}
     {% endif %}
