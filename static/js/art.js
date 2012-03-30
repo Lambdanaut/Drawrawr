@@ -75,7 +75,7 @@
         }
       });
     });
-    /* Delete Button
+    /* Feature Button
     */
     $("#featureButton").click(function() {
       var featureModal;

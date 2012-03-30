@@ -7,5 +7,7 @@ class Storage:
     pass
   def get(self,filepath):
     pass
+  def download(self,filepath):
+    pass
   def delete(self,filepath):
     pass

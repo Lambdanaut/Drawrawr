@@ -11,7 +11,7 @@ from storage import Storage
 class S3 (Storage):
   def __init__(self):
     try: import secrets
-    except: exit("Error: Amazon's S3 service requires a username and password that can be specifed as the variables wsPublic and wsSecret in the file system/secrets.py")
+    except: exit("Error: Amazon's S3 service requires a username and password that can be specifed as the variables wsPublic and wsSecret in the file \"system/secrets.py\"")
 
     self.bucketName = "drawrawr"
 
@@ -26,6 +26,12 @@ class S3 (Storage):
     k.set_contents_from_filename(loc)
 
   def get(self,filepath): return "https://s3.amazonaws.com/drawrawr/" + filepath
+
+  def download(self,filepath): 
+    if not os.path.exists(filepath):
+      k = Key(self.bucket)
+      k.key = filepath
+      k.get_contents_to_filename(filepath)
 
   def delete(self,filepath): 
     k = Key(self.bucket)

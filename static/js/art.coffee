@@ -55,7 +55,7 @@ $(document).ready ->
 					watchButton.attr "src","/static/images/watchbutton.png"
 					watchButton.attr "data-state","watch"
 
-	### Delete Button ###
+	### Feature Button ###
 	$("#featureButton").click ->
 		featureModal = new Modal "modal"
 

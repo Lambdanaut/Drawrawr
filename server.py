@@ -341,28 +341,40 @@ def viewArt(art):
   try: 
     artLookup = db.db.art.find_one({'_id' : art})
   except ValueError: abort(404)
+  if not artLookup: abort(404)
   if request.method == 'GET':
-    if not artLookup: abort(404)
-    else:
-      authorLookup = db.db.users.find_one({'_id' : artLookup["authorID"]})
-      # Increment Art Views
-      incViews = True
-      if g.loggedInUser: incViews = not g.loggedInUser["_id"] == authorLookup["_id"]
-      if config.pageViewsRequireAlternateIP: not util.inList(request.remote_addr,authorLookup["ip"])
-      if incViews: db.db.art.update({"_id": art}, {"$inc": {"views": 1} })
-      return render_template("art.html", art=artLookup, author=authorLookup )
+    authorLookup = db.db.users.find_one({'_id' : artLookup["authorID"]})
+    # Increment Art Views
+    incViews = True
+    if g.loggedInUser: incViews = not g.loggedInUser["_id"] == authorLookup["_id"]
+    if config.pageViewsRequireAlternateIP: not util.inList(request.remote_addr,authorLookup["ip"])
+    if incViews: db.db.art.update({"_id": art}, {"$inc": {"views": 1} })
+    return render_template("art.html", art=artLookup, author=authorLookup )
   elif request.method == 'DELETE':
-    if not artLookup: abort(404)
-    else: 
-      if g.loggedInUser:
-        if artLookup["authorID"] == g.loggedInUser["_id"] or g.loggedInUser["permissions"]["deleteArt"]:
-          # Delete File
-          storage.delete(os.path.join(config.artDir , str(artLookup['_id']) + "." + artLookup['filetype'] ) )
-          # Delete From Database
-          db.db.art.remove({'_id' : artLookup['_id']})
-          return "1"
-        else: abort(401)
+    if g.loggedInUser:
+      if artLookup["authorID"] == g.loggedInUser["_id"] or g.loggedInUser["permissions"]["deleteArt"]:
+        # Delete File
+        storage.delete(os.path.join(config.artDir , str(artLookup['_id']) + "." + artLookup['filetype'] ) )
+        # Delete From Database
+        db.db.art.remove({'_id' : artLookup['_id']})
+        return "1"
+      else: abort(401)
 
+@app.route('/art/<int:art>/feature', methods=['POST'])
+def featureArt(art):
+  try: 
+    artLookup = db.db.art.find_one({'_id' : art})
+  except ValueError: abort(404)
+  if not artLookup: abort(404)
+  if not "featuredText" in request.form: abort(500)
+  db.db.feature.insert({
+    "author"  : g.loggedInUser["username"],
+    "artID"   : art,
+    "content" : request.form["featuredText"],
+    "date"    : datetime.datetime.today()
+  })
+  flash("Your feature suggestion was submitted successfully. We'll read through it right away! ")
+  return redirect(url_for("viewArt", art=art))
 
 @app.route('/art/<int:art>/favorite', methods=['POST','GET'])
 def favorite(art):
@@ -482,6 +494,7 @@ def autocrop(art):
     if not artLookup: abort(404)
     if not g.loggedInUser["_id"] == artLookup["authorID"] and not g.loggedInUser["permissions"]["cropArt"]: abort(401)
     imageLocation = os.path.join(config.artDir, str(artLookup["_id"]) + "." + artLookup["filetype"] )
+    storage.download(imageLocation)
     image = Image.open(imageLocation)
     cropped = image.resize(config.thumbnailDimensions,Image.ANTIALIAS)
     croppedLocation = os.path.join(config.thumbDir, str(artLookup["_id"]) + config.thumbnailExtension)
@@ -501,6 +514,7 @@ def crop(art):
       return render_template("crop.html",art=artLookup)
     else: 
       imageLocation = os.path.join(config.artDir, str(artLookup["_id"]) + "." + artLookup["filetype"] )
+      storage.download(imageLocation)
       image = Image.open(imageLocation)
       cropArea = int(request.form["x"]),int(request.form["y"]),int(request.form["x"]) + int(request.form["w"]), int(request.form["y"]) + int(request.form["h"])
       cropped = image.crop(cropArea).resize(config.thumbnailDimensions,Image.ANTIALIAS)
@@ -580,7 +594,7 @@ def artFile(filename):
 
 @app.route('/art/uploads/thumbs/<filename>')
 def thumbFile(filename):
-  return send_from_directory(config.thumbDir,filename)
+  return redirect( storage.get(os.path.join(config.thumbDir,filename ) ) )
 
 @app.route('/icons/<filename>')
 def iconFiles(filename):
@@ -642,5 +656,5 @@ def page_not_found(e):
   return render_template('404.html',randimg=randimg), 404
 
 @app.errorhandler(500)
-def unauthorized(e):
+def internalError(e):
   return render_template('500.html'), 500

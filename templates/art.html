@@ -58,7 +58,7 @@
         <section class="container" style="color: #513727; margin: 20px 20% 0 20%;">
           <span class="close"></span>
           <h3>Suggest <i>{{ art["title"] }}</i> to be Featured</h3>
-          <form>
+          <form method="POST" action="{{ art["_id"] }}/feature">
             <p>Please type a well-thought out reason for why you think this art should be featured: </p>
             <textarea class="textArea" name="featuredText" cols=50 rows=5 style="width: 100%; margin-bottom: 10px;"></textarea><br>
             <input type="submit" value="Submit">
