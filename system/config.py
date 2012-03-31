@@ -29,8 +29,12 @@ iconSize = 75,75
 maxNearbyUserDistance = 5
 startingBetaKeys = 3
 
+#Comments
+minimumCommentLengthInCharacters = 1
+
 #Art
 pageViewsRequireAlternateIP = False
+featuresBeforeConsideration = 10
 
 #Gallery
 displayedWorksPerPage = 30

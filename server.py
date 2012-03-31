@@ -140,60 +140,60 @@ def signup():
   else: betaKey = None
   hashed = system.cryptography.encryptPassword(request.form['password1'], True)
   #shutil.copy("static/images/newbyicon.png", os.path.join(config.iconsDir, request.form['username'].lower() + ".png"))
-  storage.push("static/images/newbyicon.png", os.path.join(config.iconsDir, request.form['username'].lower() + ".png"))
+  storage.push("/static/images/newbyicon.png", os.path.join(config.iconsDir, request.form['username'].lower() + ".png"))
   key = db.nextKey("users")
   db.db.users.insert({
-    "_id"         : key,
-    "username"    : request.form['username'],
-    "lowername"   : request.form['username'].lower(),
-    "password"    : hashed, 
-    "email"       : None, #request.form['email'],
-    "ip"          : [request.remote_addr],
-    "dob"         : None,
-    "betaKey"     : betaKey,
-    "betaKeys"    : config.startingBetaKeys,
-    "dateJoined"  : datetime.datetime.today(),
-    "showAds"     : True,
-    "layout"      : {
+    "_id"         : key
+  , "username"    : request.form['username']
+  , "lowername"   : request.form['username'].lower()
+  , "password"    : hashed
+  , "email"       : None #request.form['email']
+  , "ip"          : [request.remote_addr]
+  , "dob"         : None
+  , "betaKey"     : betaKey
+  , "betaKeys"    : config.startingBetaKeys
+  , "dateJoined"  : datetime.datetime.today()
+  , "showAds"     : True
+  , "layout"      : {
       # [CARDINAL LOCATION, ORDERING]
       # t == top; l == left; r == right; b == bottom; h == hidden
-      "profile"   : ["t",0],
-      "gallery"   : ["l",0],
-      "watches"   : ["r",0],
-      "comments"  : ["b",0],
-      "nearby"    : ["r",1],
-      "journal"   : ["l",1],
-      "shout"     : ["h",0],
-      "friends"   : ["h",0],
-      "awards"    : ["h",0],
-      "shop"      : ["h",0],
-      "favorites" : ["h",0],
-      "tips"      : ["h",0],
-      "chars"     : ["h",0],
-      "playlist"  : ["h",0]
-    },
-    "permissions" : {
-      "deleteComments"   : True,
-      "editArt"          : True,
-      "deleteArt"        : True,
-      "banUsers"         : True,
-      "makeProps"        : True,
-      "vote"             : True,
-      "generateBetaPass" : True,
-      "cropArt"          : True
-    },
-    "latitude"    : None,
-    "longitude"   : None,
-    "theme"       : "default",
-    "profile"     : "",
-    "codeProfile" : "",
-    "pageViews"   : 0,
-    "watchers"    : [],
-    "bground"     : None,
-    "icon"        : "png",
-    "glued"       : 1,
+      "profile"   : ["t",0]
+    , "gallery"   : ["l",0]
+    , "watches"   : ["r",0]
+    , "comments"  : ["b",0]
+    , "nearby"    : ["r",1]
+    , "journal"   : ["l",1]
+    , "shout"     : ["h",0]
+    , "friends"   : ["h",0]
+    , "awards"    : ["h",0]
+    , "shop"      : ["h",0]
+    , "favorites" : ["h",0]
+    , "tips"      : ["h",0]
+    , "chars"     : ["h",0]
+    , "playlist"  : ["h",0]
+    }
+  , "permissions" : {
+      "deleteComments"   : True
+    , "editArt"          : True
+    , "deleteArt"        : True
+    , "banUsers"         : True
+    , "makeProps"        : True
+    , "vote"             : True
+    , "generateBetaPass" : True
+    , "cropArt"          : True
+    }
+  , "latitude"    : None
+  , "longitude"   : None
+  , "theme"       : "default"
+  , "profile"     : ""
+  , "codeProfile" : ""
+  , "pageViews"   : 0
+  , "watchers"    : []
+  , "bground"     : None
+  , "icon"        : "png"
+  , "glued"       : 1
     # m == Male; f == Female; h == Hide Gender
-    "gender"      : "h"
+  , "gender"      : "h"
   }) 
   session['username'] = request.form['username']
   session['password'] = hashed
@@ -322,6 +322,67 @@ def settings():
       return render_template("settingsSuccess.html",messages=messages,len=len)
     else: abort(401)
 
+@app.route('/<username>/comment', methods=['GET','POST'])
+@app.route('/art/<int:art>/comment', methods=['GET','POST'])
+@app.route('/journal/view/<int:journal>/comment', methods=['GET','POST'])
+def comment(username=None,art=None,journal=None):
+  if request.method == 'GET':
+    return str(username)
+  else:
+    if g.loggedInUser:
+      # Filter out broken or incomplete comments
+      if "parent" in request.form and "commentMap" in request.form: 
+        try: 
+          parent     = int(request.form["parent"])
+          commentMap = util.parseCommentMap(request.form["commentMap"])
+        except ValueError: abort(500)
+      else: parent = commentMap = None
+      
+      if not "content" in request.form: abort(500)
+      if len(request.form["content"]) < config.minimumCommentLengthInCharacters: return "0"
+      # Comment Reply
+      if parent and commentMap: 
+        db.db.comments.update( { "_id" : parent }, {
+          "$push" : { commentMap : {
+            "authorID"    : g.loggedInUser["_id"]
+          , "author"      : g.loggedInUser["username"]
+          , "content"     : request.form["content"]
+          , "codeContent" : usercode.parse(request.form["content"])
+          , "r"           : []
+          , "date"        : datetime.datetime.today()
+          } }
+        })
+        return "1"
+      # Top Level Comment
+      else:
+        if username:
+          location = "u"
+          userLookup = db.db.users.find_one({"username" : username})
+          if userLookup: home = userLookup["_id"]
+          else: abort(500)
+        elif art:
+          location = "a"
+          home = art
+        elif journal:
+          location = "j"
+          home = journal
+        else         : abort(500)
+        key = db.nextKey("comments")
+        db.db.comments.insert({
+          "_id"         : key
+        , "authorID"    : g.loggedInUser["_id"]
+        , "author"      : g.loggedInUser["username"]
+        , "content"     : request.form["content"]
+        , "codeContent" : usercode.parse(request.form["content"])
+        , "r"           : []
+        , "home"        : home
+        , "homeType"    : location
+        , "date"        : datetime.datetime.today()
+        })
+        return "1"
+
+    else: abort(401)
+
 @app.route('/meta/terms-of-service', methods=['GET'])
 def policy():
   f = open("static/legal/tos")
@@ -368,12 +429,13 @@ def featureArt(art):
   if not artLookup: abort(404)
   if not "featuredText" in request.form: abort(500)
   db.db.feature.insert({
-    "author"  : g.loggedInUser["username"],
-    "artID"   : art,
-    "content" : request.form["featuredText"],
-    "date"    : datetime.datetime.today()
+    "author"  : g.loggedInUser["username"]
+  , "artID"   : art
+  , "content" : request.form["featuredText"]
+  , "date"    : datetime.datetime.today()
   })
-  flash("Your feature suggestion was submitted successfully. We'll read through it right away! ")
+  featureCount = db.db.feature.find({"artID" : art}).count()
+  flash("Your feature suggestion was submitted successfully. If " + str(config.featuresBeforeConsideration - featureCount) + " more users request this artwork to be featured, then staff will be notified. " )
   return redirect(url_for("viewArt", art=art))
 
 @app.route('/art/<int:art>/favorite', methods=['POST','GET'])
@@ -461,19 +523,20 @@ def submitArt():
         fileType = util.fileType(request.files['upload'].filename)
         key = db.nextKey("art")
         db.db.art.insert({
-          "_id"         : key,
-          "title"       : request.form["title"],
-          "description" : request.form["description"],
-          "author"      : g.loggedInUser["username"],
-          "authorID"    : g.loggedInUser["_id"],
-          "mature"      : False,
-          "folder"      : "complete",
-          "favorites"   : [],
-          "favAmount"   : 0,
-          "views"       : 0,
-          "date"        : datetime.datetime.today(),
-          "filetype"    : fileType,
-          "type"        : "image"
+          "_id"         : key
+        , "title"       : request.form["title"]
+        , "description" : request.form["description"]
+        , "codeDesc"    : usercode.parse(request.form["description"])
+        , "author"      : g.loggedInUser["username"]
+        , "authorID"    : g.loggedInUser["_id"]
+        , "mature"      : False
+        , "folder"      : "complete"
+        , "favorites"   : []
+        , "favAmount"   : 0
+        , "views"       : 0
+        , "date"        : datetime.datetime.today()
+        , "filetype"    : fileType
+        , "type"        : "image"
         })
         fileLocation = os.path.join(config.artDir, str(key) + "." + fileType)
         image.save(fileLocation)
@@ -548,15 +611,15 @@ def manageJournal():
       if not "journalTitle" in request.form or not "journalContent" in request.form: abort(500)
       key = db.nextKey("journals")
       db.db.journals.insert({
-        "_id"         : key,
-        "title"       : request.form["journalTitle"],
-        "content"     : request.form["journalContent"],
-        "codeContent" : usercode.parse(request.form["journalContent"]),
-        "mood"        : request.form["journalMood"],
-        "author"      : g.loggedInUser["username"],
-        "authorID"    : g.loggedInUser["_id"],
-        "views"       : 0,
-        "date"        : datetime.datetime.today(),
+        "_id"         : key
+      , "title"       : request.form["journalTitle"]
+      , "content"     : request.form["journalContent"]
+      , "codeContent" : usercode.parse(request.form["journalContent"])
+      , "mood"        : request.form["journalMood"]
+      , "author"      : g.loggedInUser["username"]
+      , "authorID"    : g.loggedInUser["_id"]
+      , "views"       : 0
+      , "date"        : datetime.datetime.today()
       })
       return redirect(url_for('viewJournal',journal=key))
       

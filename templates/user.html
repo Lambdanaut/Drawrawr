@@ -91,7 +91,12 @@
 {% macro comments() %}
   <section class="container">
     <span class="moduleTitle">Comments</span>
-    <p>Comments Go Here</p>
+    <form method="POST" action="{{ url_for("userpage", username=user["username"]) }}/comment">
+      <input type="text" name="content">
+      <input type="hidden" name="parent" value="1">
+      <input type="hidden" name="commentMap" value="">
+      <input type="submit">
+    </form>
   </section>
 {% endmacro %}
 
