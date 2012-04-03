@@ -1,3 +1,51 @@
-.comment {
-
+.comment .userIcon {
+	padding-top: 10px;
 }
+
+.comment .commentHeader .deleteComment {
+	background: url("/static/images/XUnclick.png");
+}
+
+.comment .commentHeader {
+	position: relative;
+	top: 10px;
+	left: 120px;
+	font-weight: bold;
+}
+
+.comment .commentBubble {
+	position: relative;
+	margin: 10px 10px 2px 100px;
+	padding: 10px 15px 10px 15px;
+	background-color: #fff;
+	border: 2px solid #BBB;
+	-webkit-border-radius: 30px;
+	-moz-border-radius: 30px;
+	border-radius: 8px;
+	-webkit-box-shadow: 2px 2px 4px #888;
+	-moz-box-shadow: 2px 2px 4px #888;
+	box-shadow: 3px 3px 4px #888;
+}
+
+.comment .commentBubble:before {
+	content: ' ';
+	position: absolute;
+	width: 0;
+	height: 0;
+	left: -50px;
+	top: 5px;
+	border: 25px solid;
+	border-color: transparent #BBB transparent transparent;
+}
+
+.comment .commentBubble:after {
+	content: ' ';
+	position: absolute;
+	width: 0;
+	height: 0;
+	left: -41px;
+	top: 9px;
+	border: 21px solid;
+	border-color: transparent #fff transparent transparent;
+}
+

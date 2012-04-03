@@ -2,6 +2,7 @@
 {% block title %} {{ user["username"] }} @ DrawRawr  {% endblock %}
 {% block head %}
 <link rel="stylesheet" href="/static/css/gallery.css" media="screen">
+<link rel="stylesheet" href="/static/css/comment.css" media="screen">
 <script src="/static/js/user.js"></script>
 
 <style media="screen" type="text/css">
@@ -97,6 +98,33 @@
       <input type="hidden" name="commentMap" value="">
       <input type="submit">
     </form>
+    <div class="comment">
+      <div class="commentHeader">
+        <div style="float:right; margin-right: 140px;">
+          <span class="close"></span>
+          <span style="margin-right: 10px;"><a href="">Report</a></span>
+        </div>
+        <div style="text-align:left;">
+          {{ user["username"] }} says: 
+        </div>
+      </div>
+      {{ userIcon(user['username']) }}
+      <div class="commentBubble">
+        This is a comment<br>lol
+        This is a comment<br>lol
+        This is a comment<br>lol
+        This is a comment<br>lol
+        This is a comment<br>lol
+        This is a comment<br>lol
+        This is a comment<br>lol
+        This is a comment<br>lol
+        This is a comment<br>lol
+        This is a comment<br>lol
+      </div>
+      <div class="commentHeader" style="float: right; margin-right: 140px; clear:both;">
+        REPLY
+      </div><div style="clear:both;"></div>
+    </div>
   </section>
 {% endmacro %}
 
