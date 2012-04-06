@@ -1,4 +1,5 @@
 Flask==0.8
+boto>=2.2
 Jinja2==2.6
 MarkupSafe==0.15
 PIL==1.1.7
@@ -9,3 +10,4 @@ pymongo==2.1
 recaptcha-client>=1.0.5
 urwid==1.0.1
 virtualenv==1.7.1.2
+
