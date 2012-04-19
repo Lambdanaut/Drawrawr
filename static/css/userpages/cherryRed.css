@@ -21,7 +21,7 @@ body
 
 #navigation li:hover
 {
-	background-color: #D20000;
+	background-color: #9A0000;
        -moz-box-shadow: inset 1px 1px #FF2F2F, inset -1px -1px #AA0000;
        -webkit-box-shadow: inset 1px 1px #FF2F2F, inset -1px -1px #AA0000;
        box-shadow: inset 1px 1px #FF2F2F, inset -1px -1px #AA0000;
@@ -45,7 +45,7 @@ body
 
 #content
 {
-	background-color: #FF3939;
-	color: #5A0000;
+	background-color: #C81712;
+	color: #9A0000;
 }
 

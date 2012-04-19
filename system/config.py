@@ -31,6 +31,7 @@ startingBetaKeys = 3
 
 #Comments
 minimumCommentLengthInCharacters = 1
+maxCommentsOnUserpages = 5
 
 #Art
 pageViewsRequireAlternateIP = False

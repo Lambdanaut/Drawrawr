@@ -13,18 +13,33 @@
 	font-weight: bold;
 }
 
+.comment .replyButton {
+	cursor: pointer;
+}
+
+.comment form {
+	display: none;
+	margin-bottom: 5px;
+}
+
+.comment .textArea {
+	width: 700px;
+	margin-bottom: 5px;
+}
+
 .comment .commentBubble {
 	position: relative;
+	min-height: 60px;
 	margin: 10px 10px 2px 100px;
 	padding: 10px 15px 10px 15px;
 	background-color: #fff;
-	border: 2px solid #BBB;
-	-webkit-border-radius: 30px;
-	-moz-border-radius: 30px;
+	border: 2px solid #BBBBBB;
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
 	border-radius: 8px;
-	-webkit-box-shadow: 2px 2px 4px #888;
-	-moz-box-shadow: 2px 2px 4px #888;
-	box-shadow: 3px 3px 4px #888;
+	-webkit-box-shadow: 2px 3px 2px #888;
+	-moz-box-shadow: 2px 3px 2px #888;
+	box-shadow: 2px 3px 2px #888;
 }
 
 .comment .commentBubble:before {
@@ -35,7 +50,7 @@
 	left: -50px;
 	top: 5px;
 	border: 25px solid;
-	border-color: transparent #BBB transparent transparent;
+	border-color: transparent #BBBBBB transparent transparent;
 }
 
 .comment .commentBubble:after {
@@ -43,7 +58,7 @@
 	position: absolute;
 	width: 0;
 	height: 0;
-	left: -41px;
+	left: -42px;
 	top: 9px;
 	border: 21px solid;
 	border-color: transparent #fff transparent transparent;

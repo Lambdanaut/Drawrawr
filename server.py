@@ -74,29 +74,36 @@ def index():
 @app.route('/<username>')
 def userpage(username):
   user = db.getUser(username)
-  closeUsers = None
   if user:
     # Increment Page Views
     db.db.users.update({"lowername": user['lowername']}, {"$inc": {"pageViews": 1} })
     # Gallery Module
-    if user["layout"]["gallery"] != "h":
+    gallery = None
+    if user["layout"]["gallery"][0] != "h":
       gallery = db.db.art.find({"authorID": user["_id"]}).limit(15).sort("_id",-1)
       if gallery.count() == 0: gallery = None
     else: gallery = None
     # Nearby Users Module
-    # It's rather naiive in that the processing is done by the server and not the database. It may be a problem in the future. 
-    if user["layout"]["nearby"] != "h" and user["latitude"] and user["longitude"]:
+    # It's rather naive in that the processing is done by the server and not the database. It may be a problem in the future. 
+    closeUsers = None
+    if user["layout"]["nearby"][0] != "h" and user["latitude"] and user["longitude"]:
       allUsers = db.db.users.find({"_id": {"$ne" : user["_id"]} , "latitude" : {"$ne" : None}, "longitude" : {"$ne" : None} })
       closeUsers = []
       for aUser in allUsers:
         if math.sqrt( (user["latitude"] - aUser["latitude"])**2 + (user["longitude"] - aUser["longitude"])**2 ) < config.maxNearbyUserDistance: closeUsers.append(aUser["username"])
     # Journal Module
-    if user["layout"]["journal"] != "h":
-      journalResult = db.db.journals.find({"authorID" : user["_id"] }).limit(1).sort("_id",-1)
+    journal = None
+    if user["layout"]["journal"][0] != "h":
+      journalResult = db.db.journals.find({"authorID" : user["_id"] }).sort("_id",-1).limit(1)
       if journalResult.count() == 0: journal = None
       else: journal = journalResult[0]
+    # Comment Module
+    comments = None
+    if user["layout"]["comments"][0] != "h":
+      comments = db.db.comments.find({"homeType" : "u"}).sort("_id",-1).limit(config.maxCommentsOnUserpages)
+      if comments.count() == 0: comments = None
 
-    return render_template("user.html", user=user, userGallery=gallery, nearbyUsers=closeUsers, journalResult=journal , showAds=False)
+    return render_template("user.html", user=user, userGallery=gallery, nearbyUsers=closeUsers, journalResult=journal, commentResult=comments, showAds=False)
   else: abort(404)
 
 @app.route('/users/login', methods=['POST'])
@@ -327,7 +334,7 @@ def settings():
 @app.route('/journal/view/<int:journal>/comment', methods=['GET','POST'])
 def comment(username=None,art=None,journal=None):
   if request.method == 'GET':
-    return str(username)
+    return username
   else:
     if g.loggedInUser:
       # Filter out broken or incomplete comments
@@ -357,7 +364,7 @@ def comment(username=None,art=None,journal=None):
       else:
         if username:
           location = "u"
-          userLookup = db.db.users.find_one({"username" : username})
+          userLookup = db.db.users.find_one({"lowername" : username.lower()})
           if userLookup: home = userLookup["_id"]
           else: abort(500)
         elif art:

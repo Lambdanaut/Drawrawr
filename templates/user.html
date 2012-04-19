@@ -4,6 +4,7 @@
 <link rel="stylesheet" href="/static/css/gallery.css" media="screen">
 <link rel="stylesheet" href="/static/css/comment.css" media="screen">
 <script src="/static/js/user.js"></script>
+<script src="/static/js/comment.js"></script>
 
 <style media="screen" type="text/css">
 .fullRow
@@ -92,39 +93,11 @@
 {% macro comments() %}
   <section class="container">
     <span class="moduleTitle">Comments</span>
-    <form method="POST" action="{{ url_for("userpage", username=user["username"]) }}/comment">
-      <input type="text" name="content">
-      <input type="hidden" name="parent" value="1">
-      <input type="hidden" name="commentMap" value="">
-      <input type="submit">
-    </form>
-    <div class="comment">
-      <div class="commentHeader">
-        <div style="float:right; margin-right: 140px;">
-          <span class="close"></span>
-          <span style="margin-right: 10px;"><a href="">Report</a></span>
-        </div>
-        <div style="text-align:left;">
-          {{ user["username"] }} says: 
-        </div>
-      </div>
-      {{ userIcon(user['username']) }}
-      <div class="commentBubble">
-        This is a comment<br>lol
-        This is a comment<br>lol
-        This is a comment<br>lol
-        This is a comment<br>lol
-        This is a comment<br>lol
-        This is a comment<br>lol
-        This is a comment<br>lol
-        This is a comment<br>lol
-        This is a comment<br>lol
-        This is a comment<br>lol
-      </div>
-      <div class="commentHeader" style="float: right; margin-right: 140px; clear:both;">
-        REPLY
-      </div><div style="clear:both;"></div>
-    </div>
+    {% if commentResult %}
+      {% for comment in commentResult %}
+        {{ drawCommentChain(comment,user["username"],"userpage") }}
+      {% endfor %}
+    {% endif %}
   </section>
 {% endmacro %}
 
@@ -148,7 +121,7 @@
 {% endmacro %}
 
 {% macro modToFunc(m) %}
-  {% if    m == "profile" %}{{ profile() }}
+  {% if   m == "profile"  %}{{ profile() }}
   {% elif m == "gallery"  %}{{ gallery() }}
   {% elif m == "watches"  %}{{ watches() }}
   {% elif m == "comments" %}{{ comments() }}
