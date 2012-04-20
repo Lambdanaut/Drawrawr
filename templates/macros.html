@@ -64,9 +64,9 @@
 {% endif %}
 {% endmacro %}
 {# Takes a comment chain and draws it out #}
-{% macro drawCommentChain(comment, home, homeType, rootID=None) %}
-  {% if "_id" in comment and not rootID %}
-    {% set id = comment["_id"] %}
+{% macro drawCommentChain(comment, home, homeType, depthChain=[]) %}
+  {% if depthChain == []  %}
+    {% set depth = 0 %}
   {% else %}
     {% set id = rootID %}
   {% endif %}
@@ -76,14 +76,14 @@
   {% endfor %} 
 {% endmacro %}
 {# Takes an individual comment and draws it out #}
-{% macro drawComment(comment,home,homeType,id) %}
+{% macro drawComment(comment,home,homeType,depthChain) %}
 <div class="comment">
   <div class="commentHeader">
     <div style="float:right; margin-right: 140px;">
       <span class="close"></span>
       <span style="margin-right: 10px;"><a href="">Report</a></span>
     </div>
-    <span style="text-align:left;">{{ user["username"] }} says: </span>
+    <span style="text-align:left;">{{ comment['author'] }} says: </span>
   </div>
   {{ userIcon(comment['author']) }}
   <div class="commentBubble">
@@ -96,8 +96,8 @@
     {% elif homeType == "j" %}<form method="POST" class="replyForm" action="{{ url_for("viewJournal", journal=home) }}/comment">
     {% else %}<form method="POST" class="replyForm" action="{{ url_for("userpage", username=home) }}/comment">
     {% endif %}
-      {# <input type="hidden" name="parent" value="1"> #}
-      <input type="hidden" name="commentMap" value="">
+      <input type="hidden" name="parent" value="{{ home }}">
+      <input type="hidden" name="commentMap" value="{{ util.printList(depthChain) }}">
       <textarea name="content" class="textArea"></textarea><br>
       <input type="submit" class="button">
     </form>

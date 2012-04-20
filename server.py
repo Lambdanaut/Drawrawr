@@ -329,12 +329,17 @@ def settings():
       return render_template("settingsSuccess.html",messages=messages,len=len)
     else: abort(401)
 
-@app.route('/<username>/comment', methods=['GET','POST'])
-@app.route('/art/<int:art>/comment', methods=['GET','POST'])
-@app.route('/journal/view/<int:journal>/comment', methods=['GET','POST'])
-def comment(username=None,art=None,journal=None):
+@app.route('/<username>/comment/<int:commentID>', methods=['GET'])
+@app.route('/art/<int:art>/comment/<int:commentID>', methods=['GET'])
+@app.route('/journal/view/<int:journal>/comment/<int:commentID>', methods=['GET'])
+@app.route('/<username>/comment', methods=['POST'])
+@app.route('/art/<int:art>/comment', methods=['POST'])
+@app.route('/journal/view/<int:journal>/comment', methods=['POST'])
+def comment(username=None,art=None,journal=None,commentID=None):
   if request.method == 'GET':
-    return username
+    commentResult = db.db.comments.find_one({"_id" : commentID})
+    if not commentResult: abort(404)
+    return render_template("comment.html", comment=commentResult)
   else:
     if g.loggedInUser:
       # Filter out broken or incomplete comments
@@ -724,6 +729,10 @@ def page_not_found(e):
   elif rando == 5: randimg = "sexy404.png"
   elif rando == 6: randimg = "browniexxx404.png"
   return render_template('404.html',randimg=randimg), 404
+
+@app.errorhandler(501)
+def unauthorized(e):
+  return render_template('501.html'), 501
 
 @app.errorhandler(500)
 def internalError(e):

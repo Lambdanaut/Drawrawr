@@ -30,37 +30,39 @@
 .comment .commentBubble {
 	position: relative;
 	min-height: 60px;
-	margin: 10px 10px 2px 100px;
+	margin: 10px 10px 0 100px;
+	margin-left: 110px;
 	padding: 10px 15px 10px 15px;
 	background-color: #fff;
-	border: 2px solid #BBBBBB;
+	border: 1px solid #BBBBBB;
 	-webkit-border-radius: 8px;
 	-moz-border-radius: 8px;
 	border-radius: 8px;
 	-webkit-box-shadow: 2px 3px 2px #888;
 	-moz-box-shadow: 2px 3px 2px #888;
-	box-shadow: 2px 3px 2px #888;
+	box-shadow: 1px 2px 2px #CCC;
 }
 
+/* Border of Pointer */
 .comment .commentBubble:before {
 	content: ' ';
 	position: absolute;
 	width: 0;
-	height: 0;
+	height:  0;
 	left: -50px;
-	top: 5px;
+	top: 8px;
 	border: 25px solid;
-	border-color: transparent #BBBBBB transparent transparent;
+	border-color: transparent #CCCCCC transparent transparent;
 }
-
+/* White Insides of Pointer */
 .comment .commentBubble:after {
 	content: ' ';
 	position: absolute;
 	width: 0;
 	height: 0;
-	left: -42px;
-	top: 9px;
-	border: 21px solid;
+	left: -46px;
+	top: 10px;
+	border: 23px solid;
 	border-color: transparent #fff transparent transparent;
 }
 

@@ -8,7 +8,7 @@ def fileType(filename):
 def printList(l):
   newL = ""
   while not len(l) == 0:
-    newL += l.pop()
+    newL += str(l.pop(0))
     if len(l) > 0:
       newL += ", "
   return newL
