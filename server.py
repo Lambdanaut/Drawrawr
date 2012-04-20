@@ -730,9 +730,9 @@ def page_not_found(e):
   elif rando == 6: randimg = "browniexxx404.png"
   return render_template('404.html',randimg=randimg), 404
 
-@app.errorhandler(501)
+@app.errorhandler(405)
 def unauthorized(e):
-  return render_template('501.html'), 501
+  return render_template('401.html'), 401
 
 @app.errorhandler(500)
 def internalError(e):
