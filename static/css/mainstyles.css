@@ -46,7 +46,7 @@ noscript
 	top: 0px; left:0px; right:0px;
 	z-index: 500;
 	padding: 10px;
-	height: 50px;
+	height: 74px;
 	border-bottom: 1px solid #7f7f7f;
 	background: rgb(255,255,255); /* Old browsers */
 	background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(243,243,243,1) 50%, rgba(237,237,237,1) 51%, rgba(255,255,255,1) 100%); /* FF3.6+ */
@@ -59,13 +59,13 @@ noscript
 }
 #header-image {
 	position: absolute;
-	top: 0px;
+	top: -1px;
 	left: 0px;
 }
 #control-panel
 {
 	float: right;
-	margin-right: 85px;
+	margin: 10px 85px;
 	overflow: hidden;
 }
 #options-tab div
@@ -165,7 +165,7 @@ noscript
 #navigation
 {
 	position: absolute;
-	top: 71px; left: 0px;
+	top: 95px; left: 0px;
 	background-color: #637E63;
 	text-align: left;
 	width: 100%;
@@ -226,7 +226,7 @@ noscript
 
 #content {
 	background-color: #f1e3d1;
-	margin: 77px 15px 4px 15px;
+	margin: 100px 15px 4px 15px;
 	padding: 10px;
 	padding-top: 25px;
 	height: 1%;
