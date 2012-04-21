@@ -1,3 +1,4 @@
+{# Maps integers to month names #}
 {% macro monthName(m) %}{% if m == 1 %}January{% elif m == 2 %}February{% elif m == 3 %}March{% elif m == 4 %}April{% elif m == 5 %}May{% elif m == 6 %}June{% elif m == 7 %}July{% elif m == 8 %}August{% elif m == 9 %}September{% elif m == 10 %}October{% elif m == 11 %}November{% else %}December{% endif %}{% endmacro %}
 {# Writes out three select boxes with names "changeYear", "changeMonth", and "changeDay" #}
 {% macro dateSelects() %}
@@ -65,14 +66,11 @@
 {% endmacro %}
 {# Takes a comment chain and draws it out #}
 {% macro drawCommentChain(comment, home, homeType, depthChain=[]) %}
-  {% if depthChain == []  %}
-    {% set depth = 0 %}
-  {% else %}
-    {% set id = rootID %}
-  {% endif %}
-  {{ drawComment(comment,home,homeType,id) }}
+  {{ drawComment(comment,home,homeType,depthChain) }}
+  {% set order = 0 %}
   {% for c in comment["r"] %}
-    {{ drawCommentChain(c, home, homeType, rootID = id) }}
+    {{ drawCommentChain(c, home, homeType, depthChain + [order] ) }}
+    {% set order = order + 1 %}
   {% endfor %} 
 {% endmacro %}
 {# Takes an individual comment and draws it out #}
@@ -91,18 +89,25 @@
   </div>
   <div class="commentHeader">
     <div class="replyButton" style="float: right; margin-right: 140px; clear:both;">REPLY</div>
-    {% if   homeType == "u" %}<form method="POST" class="replyForm" action="{{ url_for("userpage", username=home) }}/comment">
-    {% elif homeType == "a" %}<form method="POST" class="replyForm" action="{{ url_for("viewArt", art=home) }}/comment">
-    {% elif homeType == "j" %}<form method="POST" class="replyForm" action="{{ url_for("viewJournal", journal=home) }}/comment">
-    {% else %}<form method="POST" class="replyForm" action="{{ url_for("userpage", username=home) }}/comment">
-    {% endif %}
-      <input type="hidden" name="parent" value="{{ home }}">
-      <input type="hidden" name="commentMap" value="{{ util.printList(depthChain) }}">
-      <textarea name="content" class="textArea"></textarea><br>
-      <input type="submit" class="button">
-    </form>
+    <div class="parentData" data-value="{{ home }}" style="display: none;"></div>
+    <div class="commentMapData" data-value="{{ util.printList(depthChain) }}" style="display: none;"></div>
+    <div class="reply">
+    </div>
   </div>
   <div style="clear:both;"></div>
 </div>
+{% endmacro %}
+{# Draws out a generic reply form #}
+{% macro drawReplyForm(home, homeType) %}
+  {% if   homeType == "u" %}<form method="POST" class="replyForm" action="{{ url_for("userpage", username=user["username"]) }}/comment">
+  {% elif homeType == "a" %}<form method="POST" class="replyForm" action="{{ url_for("viewArt", art=home) }}/comment">
+  {% elif homeType == "j" %}<form method="POST" class="replyForm" action="{{ url_for("viewJournal", journal=home) }}/comment">
+  {% else %}<form method="POST" class="replyForm" action="{{ url_for("userpage", username=home) }}/comment">
+  {% endif %}
+      <input type="hidden" class="parentInput" name="parent" value="">
+      <input type="hidden" class="commentMapInput" name="commentMap" value="">
+      <textarea name="content" class="textArea"></textarea><br>
+      <input type="submit" class="button">
+    </form>
 {% endmacro %}
 {% block layout %}{% endblock %}

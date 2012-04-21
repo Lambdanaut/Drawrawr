@@ -100,7 +100,7 @@ def userpage(username):
     # Comment Module
     comments = None
     if user["layout"]["comments"][0] != "h":
-      comments = db.db.comments.find({"homeType" : "u"}).sort("_id",-1).limit(config.maxCommentsOnUserpages)
+      comments = db.db.comments.find({"home": user["_id"], "homeType" : "u"}).sort("_id",1).limit(config.maxCommentsOnUserpages)
       if comments.count() == 0: comments = None
 
     return render_template("user.html", user=user, userGallery=gallery, nearbyUsers=closeUsers, journalResult=journal, commentResult=comments, showAds=False)
@@ -343,17 +343,16 @@ def comment(username=None,art=None,journal=None,commentID=None):
   else:
     if g.loggedInUser:
       # Filter out broken or incomplete comments
-      if "parent" in request.form and "commentMap" in request.form: 
+      if "parent" not in request.form or "commentMap" not in request.form or "content" not in request.form: abort(500)
+      if len(request.form["content"]) < config.minimumCommentLengthInCharacters: return "0"
+      parent = request.form["parent"]
+      commentMap = request.form["commentMap"]
+      # Comment Reply
+      if parent != "" and commentMap != "": 
         try: 
           parent     = int(request.form["parent"])
           commentMap = util.parseCommentMap(request.form["commentMap"])
         except ValueError: abort(500)
-      else: parent = commentMap = None
-      
-      if not "content" in request.form: abort(500)
-      if len(request.form["content"]) < config.minimumCommentLengthInCharacters: return "0"
-      # Comment Reply
-      if parent and commentMap: 
         db.db.comments.update( { "_id" : parent }, {
           "$push" : { commentMap : {
             "authorID"    : g.loggedInUser["_id"]
@@ -732,7 +731,7 @@ def page_not_found(e):
 
 @app.errorhandler(405)
 def unauthorized(e):
-  return render_template('401.html'), 401
+  return page_not_found(e)
 
 @app.errorhandler(500)
 def internalError(e):

@@ -93,11 +93,14 @@
 {% macro comments() %}
   <section class="container">
     <span class="moduleTitle">Comments</span>
+    <div id="replyFormTemplate">{{ drawReplyForm(user["_id"], "u") }}</div>
     {% if commentResult %}
       {% for comment in commentResult %}
-        {{ drawCommentChain(comment,user["username"],"userpage") }}
+        {{ drawCommentChain(comment,user["_id"],"u") }}
       {% endfor %}
     {% endif %}
+    <div class="leaveCommentButton">Leave a Comment</div>
+    <div class="comment" id="leaveCommentForm"></div>
   </section>
 {% endmacro %}
 

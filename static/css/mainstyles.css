@@ -292,11 +292,11 @@ noscript
         background: linear-gradient(top, #92a992 0%,#637e63 100%); /* W3C */
         filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#92a992', endColorstr='#637e63',GradientType=0 ); /* IE6-9 */
 }
-.shadow {
-	text-shadow: 0px 2px 3px #777777;
-}
 .greenContainer a {
 	color: inherit;
+}
+.shadow {
+	text-shadow: 0px 2px 3px #777777;
 }
 .userIcon {
 	width: 75px;
