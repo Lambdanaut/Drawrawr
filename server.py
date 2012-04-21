@@ -146,8 +146,7 @@ def signup():
       return "3" #ERROR, Beta Code Fail
   else: betaKey = None
   hashed = system.cryptography.encryptPassword(request.form['password1'], True)
-  #shutil.copy("static/images/newbyicon.png", os.path.join(config.iconsDir, request.form['username'].lower() + ".png"))
-  storage.push("/static/images/newbyicon.png", os.path.join(config.iconsDir, request.form['username'].lower() + ".png"))
+  storage.push("static/images/newbyicon.png", os.path.join(config.iconsDir, request.form['username'].lower() ), mimetype="image/png")
   key = db.nextKey("users")
   db.db.users.insert({
     "_id"         : key
@@ -234,7 +233,9 @@ def watch():
         if util.inList(g.loggedInUser["username"], userResult["watchers"]):
           db.db.users.update({"lowername" : watchedUser.lower()},{"$pull" : {"watchers" : g.loggedInUser["username"] } })
         else:
-          db.db.users.update({"lowername" : watchedUser.lower()},{"$addToSet" : {"watchers" : g.loggedInUser["username"]}})
+          watchers = userResult["watchers"]
+          watchers.insert(0, g.loggedInUser["username"])
+          db.db.users.update({"lowername" : watchedUser.lower()},{"$set" : {"watchers" : watchers } } )
         return "1"
       else:
         if config.logging: logging.warning("User \"" + watchedUser + "\" tried to watch themself. The procedure failed, but it's a bit weird that they should even be able to do this. Keep a watch out for them. ")
@@ -273,14 +274,15 @@ def settings():
               if config.logging: logging.warning("Couldn't remove user \"" + g.loggedInUser['username']+ "\"'s old icon while attempting to upload a new icon. ")
             fileName = g.loggedInUser['lowername']
             fileType = util.fileType(icon.filename)
+            if fileType.lower() == "jpg": fileType = "jpeg" # Change filetype for PIL
             (mimetype,i) = mimetypes.guess_type(icon.filename)
             fileLocation = os.path.join(app.config["iconsDir"], fileName)
-            db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"icon": fileType }})
+            db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"icon": fileType } } )
             icon.save(fileLocation)
             image = Image.open(fileLocation)
             resized = image.resize(config.iconSize, Image.ANTIALIAS)
             resized.save(fileLocation, fileType, quality=100)
-            storage.push(fileLocation, fileLocation, mimetype )
+            storage.push(fileLocation, fileLocation, mimetype = mimetype )
             messages.append("User Icon")
       # Password
       if request.form["changePassCurrent"] and request.form["changePassNew1"] and request.form["changePassNew2"]:

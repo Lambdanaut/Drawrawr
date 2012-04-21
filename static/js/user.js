@@ -23,12 +23,25 @@
           return $("#watchUserButton").text(" - Loading - ");
         },
         complete: function(msg) {
+          var loggedInLowername, loggedInUsername;
           if ($("#watchUserButton").attr("data-state") === "True") {
             $("#watchUserButton").attr("data-state", "False");
-            return $("#watchUserButton").text(watchText);
+            $("#watchUserButton").text(watchText);
+            /* Hide user from watch list
+            */
+            return $('#watchers img[title="' + $("#loggedInUsername").attr("data-name") + '"]').fadeOut("slow", function() {
+              return $(this).remove();
+            });
           } else {
             $("#watchUserButton").attr("data-state", "True");
-            return $("#watchUserButton").text(unwatchText);
+            $("#watchUserButton").text(unwatchText);
+            /* Show user in watch list
+            */
+            $("#watchers p").remove();
+            loggedInUsername = $("#loggedInUsername").attr("data-name");
+            loggedInLowername = loggedInUsername.toLowerCase();
+            $("#watchers").prepend('<a href="/{{ user }}"><img src="/icons/' + loggedInLowername + '" alt="' + loggedInUsername + '\'s icon" class="tinyIcon" style="float: left;margin: 2px; display: none;" title="' + loggedInUsername + '"></a>');
+            return $('#watchers img[title="' + $("#loggedInUsername").attr("data-name") + '"]').fadeIn("slow");
           }
         }
       });

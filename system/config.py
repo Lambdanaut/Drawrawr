@@ -11,7 +11,7 @@ port = int(os.environ.get("PORT", 80))
 production      = True
 logging         = False
 debug           = True
-betaKey         = True
+betaKey         = False
 randomSecretKey = False
 
 #Database

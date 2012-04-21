@@ -86,7 +86,9 @@
 {% macro watches() %}
   <section class="container gallery" style="max-height: 260px;">
     <span class="moduleTitle">Watchers</span>
+    <div id="watchers">
     {{ drawUsers( user["watchers"][:25], smallIcon=True ) }}
+    </div>
   </section>
 {% endmacro %}
 
@@ -150,6 +152,7 @@
 
 {% block content %}
 <span id="username" data-name="{{ user["username"] }}"></span>
+{% if loggedInUser %}<span id="loggedInUsername" data-name="{{ loggedInUser["username"] }}"></span>{% endif %}
 <div style="float: left;" id="userNavArea">
   <a href="{{ url_for("viewUserJournals", username=user["username"]) }}" class="container tabButton"><img src="/static/images/tinyCHAT.png" alt="Drawrboard icon" style="vertical-align:bottom;"> View Journals</a>
   <a href="{{ url_for("viewGallery", username=user["username"]) }}" class="container tabButton"><img src="/static/images/tinyDRAWRBOARD.png" alt="Drawrboard icon" style="vertical-align:bottom;"> View Gallery</a>
