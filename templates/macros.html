@@ -49,7 +49,7 @@
       <img src="/static/images/{{ art["type"] }}overlay.png" class="typeOverlay">
       {% endif %}
       <a href="{{ url_for('viewArt',art=art["_id"]) }}"><span class="thumbLink"></span></a>
-      <img src="{{ url_for('thumbFile',filename=art["_id"]) }}{{ config["thumbnailExtension"] }}" alt="{{ art["title"] }}" class="artworkImage">
+      <img src="{{ url_for('thumbFile',filename=art["_id"]) }}{{ config.thumbnailExtension }}" alt="{{ art["title"] }}" class="artworkImage">
     </div>
   {% endfor %}
 {% else %}

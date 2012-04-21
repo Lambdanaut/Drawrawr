@@ -26,18 +26,6 @@ else                     : app.secret_key = "0"
 # Add Config
 app.config['MAX_CONTENT_LENGTH'] = config.maxFileSize
 
-app.config["betaKey"] = config.betaKey
-app.config["uploadsDir"] = config.uploadsDir
-app.config["iconsDir"] = config.iconsDir
-app.config["artDir"] = config.artDir
-app.config["thumbDir"] = config.thumbDir
-app.config["imageExtensions"] = config.imageExtensions
-app.config["iconExtensions"] = config.iconExtensions
-app.config["thumbnailExtension"] = config.thumbnailExtension
-app.config["captchaSecretKey"] = config.captchaSecretKey
-app.config["captchaPublicKey"] = config.captchaPublicKey
-app.config["fileTypeError"] = config.fileTypeError
-
 if config.production: db = Database(config.dbHost,config.dbPort,config.dbUsername,config.dbPassword)
 else: db = Database(config.dbHost,config.dbPort)
 
@@ -63,7 +51,7 @@ def beforeRequest():
 def injectUser():
   if g.loggedInUser: showAds = g.loggedInUser["showAds"]
   else:              showAds = True
-  return dict (loggedInUser = g.loggedInUser, showAds = showAds, util = util, any = any, str = str)
+  return dict (loggedInUser = g.loggedInUser, showAds = showAds, util = util, config=config, any = any, str = str)
 
 @app.route('/')
 def index():
@@ -264,19 +252,19 @@ def settings():
       icon = request.files['iconUpload']
       if icon:
         if not icon.content_length <= config.maxIconSize:
-          flash(app.config["fileSizeError"] + "Your icon must be at most " + config.maxIconSizeText + ". ")
+          flash(config.fileSizeError + "Your icon must be at most " + config.maxIconSizeText + ". ")
         else:
           if not util.allowedFile(icon.filename,config.iconExtensions):
-            flash(app.config["fileTypeError"] + "The allowed extensions are " + util.printList(config.iconExtensions) + ". ")
+            flash(config.fileTypeError + "The allowed extensions are " + util.printList(config.iconExtensions) + ". ")
           else: 
-            try: os.remove(os.path.join(app.config["iconsDir"], g.loggedInUser['lowername'] + "." + g.loggedInUser["icon"]))
+            try: os.remove(os.path.join(config.iconsDir, g.loggedInUser['lowername'] + "." + g.loggedInUser["icon"]))
             except: 
               if config.logging: logging.warning("Couldn't remove user \"" + g.loggedInUser['username']+ "\"'s old icon while attempting to upload a new icon. ")
             fileName = g.loggedInUser['lowername']
             fileType = util.fileType(icon.filename)
             if fileType.lower() == "jpg": fileType = "jpeg" # Change filetype for PIL
             (mimetype,i) = mimetypes.guess_type(icon.filename)
-            fileLocation = os.path.join(app.config["iconsDir"], fileName)
+            fileLocation = os.path.join(config.iconsDir, fileName)
             db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": {"icon": fileType } } )
             icon.save(fileLocation)
             image = Image.open(fileLocation)
@@ -529,9 +517,9 @@ def submitArt():
     if request.form["artType"] == "image":
       image = request.files['upload']
       if not util.allowedFile(image.filename, config.imageExtensions):
-        flash(app.config["fileTypeError"] + "The allowed filetypes are " + util.printList(config.imageExtensions) + ". ")
+        flash(app.config.fileTypeError + "The allowed filetypes are " + util.printList(config.imageExtensions) + ". ")
       elif image.content_length >= config.maxImageSize:
-        flash(app.config["fileSizeError"] + "Your image must be at most " + config.maxImageSizeText + ". ")
+        flash(app.config.fileSizeError + "Your image must be at most " + config.maxImageSizeText + ". ")
       else:
         fileType = util.fileType(request.files['upload'].filename)
         key = db.nextKey("art")

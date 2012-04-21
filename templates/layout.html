@@ -20,7 +20,7 @@
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
   <script src="/static/js/modernizr.geo.js"></script>
   <script src="/static/js/main.js"></script>
-  {% if config["captchaPublicKey"] and config["captchaSecretKey"] %}
+  {% if config.captchaPublicKey and config.captchaSecretKey %}
   <script type="text/javascript" src="http://www.google.com/recaptcha/api/js/recaptcha_ajax.js"></script>
   {% endif %}
   {% if showAds %}
@@ -77,10 +77,10 @@
               <!-- <h6>EMAIL: (<i>optional</i>)</h6> <input type = 'text' class='textInputNoRecoil' name = 'email'> -->
               <h6>PASSWORD:</h6> <input type='password' class='textInputNoRecoil' name='password1'>
               <h6>VERIFY PASSWORD:</h6> <input type='password' class='textInputNoRecoil' name='password2'> <br>
-              {% if config["betaKey"] %}
+              {% if config.betaKey %}
               <h6>BETA CODE:</h6> <input type='text' class='textInputNoRecoil' name='betaCode'> <br>
               {% endif %}
-              <div id="registerCaptcha" data-publicKey="{{ config["captchaPublicKey"] }}">
+              <div id="registerCaptcha" data-publicKey="{{ config.captchaPublicKey }}">
                 <div id="recaptcha_image" style="margin-left: auto; margin-right: auto; margin-top: 5px;"></div>
                 <div class="recaptcha_only_if_incorrect_sol" style="color:red">Incorrect please try again</div>
 
@@ -112,7 +112,7 @@
           </aside>
         </aside>
       {% endif %}
-      <a href="{{ url_for('index') }}"><div id="header-image"><img src="/static/images/newyearheader.png" alt="Header"></div></a>
+      <a href="{{ url_for('index') }}"><div id="header-image"><img src="{{ config.headerImage }}" alt="Header"></div></a>
     <nav id="navigation">
       <ul>
         <li><a href="{{ url_for('index') }}">News</a></li><li><a href="{{ url_for("search") }}">Search</a></li><li><a href="{{ url_for('clubs') }}">Clubs</a></li><li><a href="/">Shops</a></li><li><a href="/">Roleplay</a></li><li><a href="/">Draw</a></li><li><a href="/">Chat</a></li><li><a href="/">DRadio</a></li><li><a href="{{ url_for('donate') }}">Donate</a></li>

@@ -89,7 +89,7 @@ h3
       <li id="general"><a href="#-general">General Settings</a></li>
       <li id="profile"><a href="#-profile">My Profile</a></li>
       <li id="layout"><a href="#-layout">Page Layout</a></li>
-      {% if config["betaKey"] %}<li id="beta"><a href="#-beta">Invites</a></li>{% endif %}
+      {% if config.betaKey %}<li id="beta"><a href="#-beta">Invites</a></li>{% endif %}
     </ul>
   </div>
   <form enctype="multipart/form-data" method="POST" action="/users/settings">
@@ -211,7 +211,7 @@ h3
           </div>
         <div style="clear: both;"></div>
       </div>
-      {% if config["betaKey"] %}
+      {% if config.betaKey %}
       <div id="tab-beta"> 
         <div class="leftCol">
           <h3>Invite a Friend to Drawrawr!</h3>
