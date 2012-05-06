@@ -65,7 +65,7 @@ noscript
 #control-panel
 {
 	float: right;
-	margin: 10px 85px;
+	margin-right: 85px;
 	overflow: hidden;
 }
 #options-tab div
