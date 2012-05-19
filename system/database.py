@@ -1,4 +1,4 @@
-import sys, pymongo, pymongo.objectid
+import sys, pymongo
 import betaGenerator
 
 # To execute a general query: 

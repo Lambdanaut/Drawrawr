@@ -21,6 +21,7 @@ def directorySetup():
     os.mkdir("uploads")
     os.mkdir(os.path.join("uploads","icons") )
     os.mkdir(os.path.join("uploads","art") )
+    os.mkdir(os.path.join("uploads","thumbs") )
 
 def javascriptSetup():
   # Compile coffeescript files
