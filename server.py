@@ -638,9 +638,34 @@ def clubsEdit():
 def clubsPage(clubName):
   return render_template("clubpage.html")
 
-@app.route('/search/')
-def search():
-  return render_template("search.html",pages=[],order=None,currentPage=0,last=0)
+@app.route('/search/', defaults={'page': 0} )
+@app.route('/search/<int:page>', methods=['GET'])
+def search(page):
+  sort  = "d"
+  order = "d"
+  if "sort" in request.args: sort = request.args["sort"]
+  if "order" in request.args: order = request.args["order"]
+  if order == "d": useOrder = -1
+  else:            useOrder = 1
+  if   sort == "t": useSort = "title"
+  elif sort == "p": useSort = "favAmount"
+  else:             useSort = "_id"
+  artLookup = db.db.art.find().skip(config.displayedWorksPerPage * page).limit( config.displayedWorksPerPage ).sort(useSort,useOrder)
+  # Create page index
+  artCount = artLookup.count()
+  if not artCount: artLookup = None
+  if artCount % config.displayedWorksPerPage: extraPage = 1
+  else:                                       extraPage = 0
+  pages = range(0,(artCount / config.displayedWorksPerPage) + extraPage)
+  pageCount = len(pages)
+  pagesLeft = len(pages[page:])
+  if pagesLeft > config.pageIndexes:
+    pages = pages[page: page + config.pageIndexes]
+    more = True
+  else:
+    pages = pages[page: page + pagesLeft]
+    more = False
+  return render_template("search.html", art=artLookup, sort=sort, order=order, currentPage=page, pages=pages, last=pageCount - 1)
 
 @app.route('/staff/')
 def staff():

@@ -33,25 +33,6 @@
 	float: left;
 	margin: 0px;
 }
-.folders div
-{
-	text-align: left;
-	border: 1px #513727 solid;
-	background-color: #93AE83;
-	padding: 2px 5px 2px 5px;
-	margin-bottom: 2px;
-	color: white;
-	font-weight: bold;
-}
-.folders a
-{
-
-	text-decoration: none;
-}
-.folders a div:hover
-{
-	background-color: #AACC99;
-}
 </style>
 {% endblock %}
 {% block content %}
@@ -75,19 +56,14 @@
       <h2 id="title">Search Drawrawr</h2>
       <div style="clear:both;"></div>
     </div>
-    <h4 style="position: absolute; right: 10%;">Folders</h4><br>
-    <div style="float: left; width: 80%;">
-      <div class="gallery">{{ drawGallery(art) }}</div>
-    </div>
-    <div class="folders" style="float: right; width: 20%; margin-top: 5px;">
-    </div>
+    <div class="gallery" style="padding: 10px;">{{ drawGallery(art) }}</div>
     <span style="clear:both;display:block;"></span>
     {% macro makeIndexLink(page,symbol) %}
-    <a href="{{ url_for("search") }}">{{ symbol }}</a> 
+    <a href="{{ url_for("search", page=page) }}">{{ symbol | safe }}</a> 
     {% endmacro %}
     {% if currentPage %}
-      {{ makeIndexLink(0,"%AB") }}
-      {{ makeIndexLink(currentPage - 1,"‹") }}
+      {{ makeIndexLink(0,"&laquo;") }}
+      {{ makeIndexLink(currentPage - 1,"&lsaquo;") }}
     {% endif %}
     {% if pages != [] %}
     {% set currentPage = pages.pop(0) %}
@@ -97,8 +73,8 @@
       {{ makeIndexLink(p,p + 1) }}
     {% endfor %}
     {% if currentPage < last %}
-      {{ makeIndexLink(currentPage + 1,"›") }}
-      {{ makeIndexLink(last,"%BB") }}
+      {{ makeIndexLink(currentPage + 1,"&rsaquo;") }}
+      {{ makeIndexLink(last,"&raquo;") }}
     {% endif %}
   </section>
 {% endblock %}

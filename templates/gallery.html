@@ -92,11 +92,11 @@
     </div>
     <span style="clear:both;display:block;"></span>
     {% macro makeIndexLink(page,symbol) %}
-    <a href="{{ url_for("viewGallery",username=author["username"],folder=folder,page=page) }}">{{ symbol }}</a> 
+    <a href="{{ url_for("viewGallery",username=author["username"],folder=folder,page=page) }}">{{ symbol | safe }}</a> 
     {% endmacro %}
     {% if currentPage %}
-      {{ makeIndexLink(0,"%AB") }}
-      {{ makeIndexLink(currentPage - 1,"‹") }}
+      {{ makeIndexLink(0,"&laquo;") }}
+      {{ makeIndexLink(currentPage - 1,"&lsaquo;") }}
     {% endif %}
     {% if pages != [] %}
     {% set currentPage = pages.pop(0) %}
@@ -106,8 +106,8 @@
       {{ makeIndexLink(p,p + 1) }}
     {% endfor %}
     {% if currentPage < last %}
-      {{ makeIndexLink(currentPage + 1,"›") }}
-      {{ makeIndexLink(last,"%BB") }}
+      {{ makeIndexLink(currentPage + 1,"&rsaquo;") }}
+      {{ makeIndexLink(last,"&raquo;") }}
     {% endif %}
   </section>
 {% endblock %}

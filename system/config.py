@@ -41,7 +41,7 @@ pageViewsRequireAlternateIP = False
 featuresBeforeConsideration = 10
 
 # Gallery
-displayedWorksPerPage = 30
+displayedWorksPerPage = 50
 pageIndexes = 15
 
 # Uploads
