@@ -30,11 +30,11 @@
     <div id="favorites">Favorites: {{ art["favAmount"] }}</div>
   </section>
   {% macro favButton() %}
-    {% if util.inList(g.loggedInUser["username"],art["favorites"]) %}{% set fav="unfav" %}{% else %}{% set fav="fav" %}{% endif %}
+    {% if g.loggedInUser["username"] in art["favorites"] %}{% set fav="unfav" %}{% else %}{% set fav="fav" %}{% endif %}
     <img src="{% if fav=="fav" %}/static/images/favoritebutton.png{% else %}/static/images/unfavoritebutton.png{% endif %}" id="favButton" data-state="{{ fav }}" class="userButton" title="Favorite Button" alt="Favorite Button">  
   {% endmacro %}
   {% macro watchButton() %}
-    {% if util.inList(g.loggedInUser["username"],author["watchers"]) %}{% set watch="unwatch" %}{% else %}{% set watch="watch" %}{% endif %}
+    {% if g.loggedInUser["username"] in author["watchers"] %}{% set watch="unwatch" %}{% else %}{% set watch="watch" %}{% endif %}
     <img src="{% if watch=="watch" %}/static/images/watchbutton.png{% else %}/static/images/unwatchbutton.png{% endif %}" id="watchButton" data-state="{{ watch }}" class="userButton" title="Watch Button" alt="Watch Button">
   {% endmacro %}
   {% macro deleteButton() %}

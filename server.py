@@ -218,7 +218,7 @@ def watch():
       watchedUser = request.form["watchedUser"]
       if g.loggedInUser["lowername"] != watchedUser.lower():
         userResult = db.db.users.find_one({"lowername" : watchedUser.lower()})
-        if util.inList(g.loggedInUser["username"], userResult["watchers"]):
+        if g.loggedInUser["username"] in userResult["watchers"]:
           db.db.users.update({"lowername" : watchedUser.lower()},{"$pull" : {"watchers" : g.loggedInUser["username"] } })
         else:
           watchers = userResult["watchers"]
@@ -409,7 +409,7 @@ def viewArt(art):
     # Increment Art Views
     incViews = True
     if g.loggedInUser: incViews = not g.loggedInUser["_id"] == authorLookup["_id"]
-    if config.pageViewsRequireAlternateIP: not util.inList(request.remote_addr,authorLookup["ip"])
+    if config.pageViewsRequireAlternateIP: not request.remote_addr in authorLookup["ip"]
     if incViews: db.db.art.update({"_id": art}, {"$inc": {"views": 1} })
     return render_template("art.html", art=artLookup, author=authorLookup )
   elif request.method == 'DELETE':
@@ -445,7 +445,7 @@ def favorite(art):
     if g.loggedInUser:
       fav = db.db.art.find_one({"_id" : art})
       if g.loggedInUser != fav["author"]:
-        if util.inList(g.loggedInUser["username"], fav["favorites"]):
+        if g.loggedInUser["username"] in fav["favorites"]:
           db.db.art.update({"_id" : art}, {"$pull" : {"favorites" : g.loggedInUser["username"] }  , "$inc" : {"favAmount": -1 } } )
         else:
           db.db.art.update({"_id" : art}, {"$addToSet" : {"favorites" : g.loggedInUser["username"] } , "$inc" : {"favAmount": 1 } } )
@@ -456,7 +456,7 @@ def favorite(art):
     # The GET method returns 1 if the user has fav'd this art, and a 0 if they're not. 
     if g.loggedInUser:
       fav = db.db.art.find_one({"_id" : art})
-      if util.inList(g.loggedInUser["username"], fav["favorites"]): return "1"
+      if g.loggedInUser["username"] in fav["favorites"]: return "1"
       else:                                                         return "0"
 
 @app.route('/users/welcome', methods=['GET'])
@@ -643,8 +643,10 @@ def clubsPage(clubName):
 def search(page):
   sort  = "d"
   order = "d"
+  keywords = []
   if "sort" in request.args: sort = request.args["sort"]
   if "order" in request.args: order = request.args["order"]
+  if "keywords" in request.args: keywords = request.args["keywords"].split()
   if order == "d": useOrder = -1
   else:            useOrder = 1
   if   sort == "t": useSort = "title"
@@ -665,7 +667,7 @@ def search(page):
   else:
     pages = pages[page: page + pagesLeft]
     more = False
-  return render_template("search.html", art=artLookup, sort=sort, order=order, currentPage=page, pages=pages, last=pageCount - 1)
+  return render_template("search.html", art=artLookup, keywords=util.unsplit(keywords), sort=sort, order=order, currentPage=page, pages=pages, last=pageCount - 1)
 
 @app.route('/staff/')
 def staff():

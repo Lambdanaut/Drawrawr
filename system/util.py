@@ -13,11 +13,9 @@ def printList(l):
       newL += ", "
   return newL
 
-def inList(v,l):
-  for item in l:
-    if v == item:
-      return True
-  return False
+def unsplit(listOfStrings):
+  if listOfStrings != []: return reduce(lambda prior, new: prior + " " + new ,listOfStrings)
+  else: return ""
 
 def dictToList(d):
   l = []
@@ -44,7 +42,6 @@ def parseCommentMap(cMap):
   int(currentObject)
   validMap += currentObject + ".r"
   return validMap  
-
 
 def compareDicts(d1,d2):
   '''

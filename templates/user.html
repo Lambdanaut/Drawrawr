@@ -159,7 +159,7 @@
 </div>
 {% if g.loggedInUser and g.loggedInUser["_id"] != user["_id"] %}
 <div id="topArea">
-  <div class="container tabButton" id="watchUserButton" data-state="{{ util.inList(loggedInUser["username"], user["watchers"]) }}"> + watch </div>
+  <div class="container tabButton" id="watchUserButton" data-state="{{ loggedInUser["username"] in user["watchers"] }}"> + watch </div>
   <div class="container tabButton" id="messageUserButton"> ~ message </div>
 </div>
 {% endif %}
