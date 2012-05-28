@@ -3,21 +3,11 @@
 {% block head %}
 <link rel="stylesheet" href="/static/css/gallery.css" media="screen">
 <style media="screen" type="text/css">
-#rightCol
-{
-  float: right;
-  width: 80%;
-}
-#leftCol
-{
-  width: 20%;
-}
 h3 { margin-top: 0px; }
 </style>
 {% endblock %}
 {% block content %}
-<div id="pw_adbox_62797_6_0" style="margin: 5px auto 5px auto; width: 234px;"></div>
-<div id="rightCol">
+<div class="grid_12">
   <section class="container gallery">
     <h3 class="moduleTitle">POPULAR ART</h3>
     <div style="width: 95%;margin-left: auto; margin-right: auto;">
@@ -34,15 +24,8 @@ h3 { margin-top: 0px; }
     <h3 class="moduleTitle">FEATURED ART</h3>
     <p>U liek em featured? it goz her</p>
   </section>
+{% if showAds %}
+  <div id="pw_adbox_62797_6_0" style="margin: 5px auto 5px auto; width: 234px;"></div>
+{% endif %}
 </div>  
-<div id="leftCol">
-  <section id="news" class="container">
-    <h3 class="moduleTitle">NEWS NEWS NEWS</h3>
-    <p>HOT FUCK. NEWS IS THE GREATEST</p>
-  </section>
-  <section class="container">
-    <h3 class="moduleTitle">RECENT JOURNALS</h3>
-    <p>Prolly like some recent journals or recent poops go here. </p>
-  </section>
-</div>
 {% endblock %}

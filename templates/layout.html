@@ -15,6 +15,7 @@
   <link href='http://fonts.googleapis.com/css?family=Ubuntu:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'> 
 
   <link rel="stylesheet" href="/static/css/normalize.css" media="screen">
+  <link rel="stylesheet" href="/static/css/grid.css" media="screen">
   <link rel="stylesheet" href="/static/css/mainstyles.css" media="screen">
 
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
@@ -121,10 +122,10 @@
     </div>
     <aside id="notice"></aside>
   </header>
-  <div id="content">
+  <div id="content" class="container_12">
     {% block content %}{% endblock %}
   </div>
-  <footer id="footer">
+  <footer id="footer" class="container_12">
     <div style="float:right;">
       &copy;2010-<span id="copyright-date"></span> DrawRawr. All rights reserved
     </div>

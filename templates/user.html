@@ -7,34 +7,16 @@
 <script src="/static/js/comment.js"></script>
 
 <style media="screen" type="text/css">
-.fullRow
-{
-	width: 100%;
-	clear: both;
-}
-#rightCol
-{
-	float: right;
-	width: 30%;
-}
-#leftCol
-{
-	width: 70%;
-}
 #userNavArea a
 {
 	color: inherit;
 	text-decoration: none;
 }
-#topArea
-{
-	margin-top: -5px;
-	margin-left: 5px;
-}
 .tabButton
 {
 	float: right;
 	padding: 3px 5px 3px 5px;
+	margin-right: 5px;
 	cursor: pointer;
         -moz-user-select: none;
         -khtml-user-select: none;
@@ -153,28 +135,26 @@
 {% block content %}
 <span id="username" data-name="{{ user["username"] }}"></span>
 {% if loggedInUser %}<span id="loggedInUsername" data-name="{{ loggedInUser["username"] }}"></span>{% endif %}
-<div style="float: left;" id="userNavArea">
-  <a href="{{ url_for("viewUserJournals", username=user["username"]) }}" class="container tabButton"><img src="/static/images/tinyCHAT.png" alt="Drawrboard icon" style="vertical-align:bottom;"> View Journals</a>
-  <a href="{{ url_for("viewGallery", username=user["username"]) }}" class="container tabButton"><img src="/static/images/tinyDRAWRBOARD.png" alt="Drawrboard icon" style="vertical-align:bottom;"> View Gallery</a>
-</div>
+<div class="grid_12">
+  <div style="float: left;" id="userNavArea">
+    <a href="{{ url_for("viewUserJournals", username=user["username"]) }}" class="container tabButton"><img src="/static/images/tinyCHAT.png" alt="Drawrboard icon" style="vertical-align:bottom;"> View Journals</a>
+    <a href="{{ url_for("viewGallery", username=user["username"]) }}" class="container tabButton"><img src="/static/images/tinyDRAWRBOARD.png" alt="Drawrboard icon" style="vertical-align:bottom;"> View Gallery</a>
+  </div>
 {% if g.loggedInUser and g.loggedInUser["_id"] != user["_id"] %}
-<div id="topArea">
-  <div class="container tabButton" id="watchUserButton" data-state="{{ loggedInUser["username"] in user["watchers"] }}"> + watch </div>
+  <div class="container tabButton" id="watchUserButton" style="margin-right:0;" data-state="{{ loggedInUser["username"] in user["watchers"] }}"> + watch </div>
   <div class="container tabButton" id="messageUserButton"> ~ message </div>
-</div>
 {% endif %}
-<div id="top" class="fullRow">
+</div>
+<div class="grid_12">
   {{ row("t") }}
 </div>
-<div id="middle" class="fullRow">
-  <div id="rightCol">
-    {{ row("r") }}
-  </div>
-  <div id="leftCol">
-    {{ row("l") }}
-  </div>
+<div class="grid_8">
+  {{ row("l") }}
 </div>
-<div id="bottom" class="fullRow">
+<div class="grid_4">
+  {{ row("r") }}
+</div>
+<div class="grid_12">
   {{ row("b") }}
 </div>
 {% endblock %}
