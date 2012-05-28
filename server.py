@@ -11,6 +11,7 @@ from system.S3 import S3
 import system.captcha as captcha
 import system.config as config
 import system.cryptography
+import system.ignoredKeywords as ignoredKeywords
 import system.setup as setup
 import system.usercode as usercode
 import system.util as util
@@ -419,6 +420,7 @@ def viewArt(art):
         storage.delete(os.path.join(config.artDir , str(artLookup['_id']) + "." + artLookup['filetype'] ) )
         # Delete From Database
         db.db.art.remove({'_id' : artLookup['_id']})
+        flash("Your artwork <b>" + artLookup["title"] + "</b> was deleted successfully! ")
         return "1"
       else: abort(401)
 
@@ -517,9 +519,13 @@ def submitArt():
     if request.form["artType"] == "image":
       image = request.files['upload']
       if not util.allowedFile(image.filename, config.imageExtensions):
-        flash(app.config.fileTypeError + "The allowed filetypes are " + util.printList(config.imageExtensions) + ". ")
+        flash(config.fileTypeError + "The allowed filetypes are " + util.printList(config.imageExtensions) + ". ")
       elif image.content_length >= config.maxImageSize:
-        flash(app.config.fileSizeError + "Your image must be at most " + config.maxImageSizeText + ". ")
+        flash(config.fileSizeError + "Your image must be at most " + config.maxImageSizeText + ". ")
+      elif not ("title" in request.form and "description" in request.form) : 
+        abort(500)
+      elif not request.form["title"]:
+        flash("Your title must not be left blank. ")
       else:
         fileType = util.fileType(request.files['upload'].filename)
         key = db.nextKey("art")
@@ -530,6 +536,7 @@ def submitArt():
         , "codeDesc"    : usercode.parse(request.form["description"])
         , "author"      : g.loggedInUser["username"]
         , "authorID"    : g.loggedInUser["_id"]
+        , "keywords"    : filter (lambda keyword: not keyword in ignoredKeywords.commonWords, map(lambda keyword: keyword.lower() , request.form["title"].split() ) )
         , "mature"      : False
         , "folder"      : "complete"
         , "favorites"   : []
@@ -652,7 +659,10 @@ def search(page):
   if   sort == "t": useSort = "title"
   elif sort == "p": useSort = "favAmount"
   else:             useSort = "_id"
-  artLookup = db.db.art.find().skip(config.displayedWorksPerPage * page).limit( config.displayedWorksPerPage ).sort(useSort,useOrder)
+  if keywords:
+    artLookup = db.db.art.find({"keywords" : {"$in": map(lambda keyword: keyword.lower(), keywords) } } ).skip(config.displayedWorksPerPage * page).limit( config.displayedWorksPerPage ).sort(useSort,useOrder)
+  else:
+    artLookup = db.db.art.find().skip(config.displayedWorksPerPage * page).limit( config.displayedWorksPerPage ).sort(useSort,useOrder)
   # Create page index
   artCount = artLookup.count()
   if not artCount: artLookup = None

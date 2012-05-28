@@ -7,10 +7,14 @@ def fileType(filename):
 
 def printList(l):
   newL = ""
-  while not len(l) == 0:
-    newL += str(l.pop(0))
-    if len(l) > 0:
-      newL += ", "
+  end = len(l)
+  for item in range(0, end):
+    if item == (end - 2):
+      spaceWord = ", and "
+    elif item == (end - 1):
+      spaceWord = ""
+    else: spaceWord = ", "
+    newL += l[item] + spaceWord
   return newL
 
 def unsplit(listOfStrings):
