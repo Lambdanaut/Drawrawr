@@ -20,12 +20,30 @@ h3 { margin-top: 0px; }
       {{ drawGallery(recentArt) }}
     </div>
   </section>
-  <section class="container">
-    <h3 class="moduleTitle">FEATURED ART</h3>
-    <p>U liek em featured? it goz her</p>
-  </section>
+</div>
+<div class="grid_3">
 {% if showAds %}
   <div id="pw_adbox_62797_6_0" style="margin: 5px auto 5px auto; width: 234px;"></div>
 {% endif %}
-</div>  
+  <section class="container gallery">
+    <h3 class="moduleTitle">New Users</h3>
+    {{ drawUsers(newUsers, smallIcon = True) }}
+  </section>
+  <section class="container gallery">
+    <h3 class="moduleTitle">Featured User</h3>
+    SOMEBODY THAT IS REALLY COOL
+  </section>
+</div>
+<div class="grid_9">
+  <section class="container gallery">
+    <h3 class="moduleTitle">FEATURED ART</h3>
+    <div style="width: 95%;margin-left: auto; margin-right: auto;">
+      {{ drawGallery(featuredArt) }}
+    </div>
+  </section>
+  <section class="container">
+    <h3 class="moduleTitle">New News</h3>
+    <p>NEWS NEWS NEWS NEWS</p>
+  </section>
+</div>
 {% endblock %}

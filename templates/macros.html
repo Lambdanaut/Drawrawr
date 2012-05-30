@@ -37,7 +37,7 @@
 {% endmacro %}
 {# Prints out a tiny user's icon #}
 {% macro tinyUserIcon(user) %}
-<a href="/{{ user }}"><img src="{{ url_for('iconFiles',filename=user.lower()) }}" alt="{{ user }}'s icon" class="tinyIcon" style="float: left;margin: 2px;" title="{{ user }}"></a>
+<a href="/{{ user }}"><img src="{{ url_for('iconFiles',filename=user.lower()) }}" alt="{{ user }}'s icon" class="tinyIcon" style="float: left;margin: 1px;" title="{{ user }}"></a>
 {% endmacro %}
 {# Take a list of arts from the database and shows them in gallery format on the page #}
 {% macro drawGallery(gallery) %}

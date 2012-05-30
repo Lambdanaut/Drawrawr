@@ -56,9 +56,18 @@ def injectUser():
 
 @app.route('/')
 def index():
+  # Get Arts
   recentArt = db.db.art.find().limit(30).sort("_id",-1)
   popularArt = db.db.art.find( {"favAmount" : {"$gt" : 0 } } ).sort("favorites",-1).limit(12)
-  return render_template("index.html",recentArt=recentArt,popularArt=popularArt)
+  featuredArt = []
+
+  # Get New Users
+  newUsersResult = db.db.users.find().sort("_id",1).limit(20)
+  newUsers = []
+  for user in newUsersResult:
+    newUsers.append(user["username"])
+
+  return render_template("index.html",recentArt=recentArt,popularArt=popularArt,featuredArt=featuredArt,newUsers=newUsers)
 
 @app.route('/<username>')
 def userpage(username):
