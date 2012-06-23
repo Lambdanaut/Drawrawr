@@ -1,0 +1,51 @@
+body
+{
+	background-image: url("/static/images/userpage/brightgreenbg.png");
+}
+
+#navigation
+{
+	background-color: #20AA00;
+	color: #FFFFFF;
+       -moz-box-shadow: #064200, inset -1px -1px #1A8A00, inset 1px 1px #28D600;
+       -webkit-box-shadow: #064200, inset -1px -1px #1A8A00, inset 1px 1px #28D600;
+       box-shadow: 0px 2px 5px #064200, inset -1px -1px #1A8A00, inset 1px 1px #28D600;
+}
+
+#navigation li
+{
+       -moz-box-shadow: inset 1px 1px #28D600, inset -1px -1px #1A8A00;
+       -webkit-box-shadow: inset 1px 1px #28D600, inset -1px -1px #1A8A00;
+       box-shadow: inset 1px 1px #28D600, inset -1px -1px #1A8A00;
+}
+
+#navigation li:hover
+{
+	background-color: #4BFF21;
+       -moz-box-shadow: inset 1px 1px #82FF65, inset -1px -1px #22B200;
+       -webkit-box-shadow: inset 1px 1px #82FF65, inset -1px -1px #22B200;
+       box-shadow: inset 1px 1px #82FF65, inset -1px -1px #22B200;
+}
+
+#navigation ul:last-child
+{
+        -moz-box-shadow: 1px 0px #28D600;
+        -webkit-box-shadow: 1px 0px #28D600;
+        box-shadow: 1px 0px #28D600;
+}
+
+#footer
+{
+	color: #187E00;
+}
+#footer a
+{
+	color: #187E00;
+}
+
+#content
+{
+	background-color: #B8FFA7;
+	color: #187E00;
+}
+

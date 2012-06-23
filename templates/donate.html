@@ -1,0 +1,109 @@
+{% extends "layout.html" %}
+{% block title %} Donate! {% endblock %}
+{% block head %}
+<style>
+.amount
+{
+       color: #376337
+}
+.gifts
+{
+       font-size: 12px;
+}
+.comment
+{
+       font-size: 10px;
+}
+#content h2
+{
+	font-size: 40px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+#content h3
+{
+	font-size: 12px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+</style>
+{% endblock %}
+{% block content %}
+
+<section class="container" style="text-align:center;">
+<img src= "/static/images/drminigreen.png" alt="GREENY" style="float: left;margin: 35px 5px 35px 60px;">
+<img src= "/static/images/drminibrown.png" alt="BROWNIE" style="float: right;margin: 35px 60px 35px 5px;">
+
+<h2> Donate! </h2>
+Donations keep Drawrawr alive! (and free)
+<br>
+So if you enjoy the site, donating any spare change is a good way to keep us up and running.
+<br>
+and of course, your generosity doesn't go unrewarded!
+<br>
+<br>
+<b>Here's some gifts you can get for donating. It's our way of saying "Thankyou"!</b>
+</section>
+
+<section class="container" style="text-align:left;">
+<br>
+<br>
+<b class="amount">$1.00 Donation:</b>
+<br>
+<span class="gifts">The "Donator" Trophy!</span>
+<br>
+<br>
+<b class="amount">$5.00 Donation:</b>
+<br>
+<span class="gifts">The "Drawrawr Supporter" Trophy and NO ADS for one month.</span>
+<br>
+<br>
+<b class="amount">$10.00 Donation:</b>
+<br>
+<span class="gifts">The "A Drawrawr's Best Friend" Trophy, NO ADS for three months, and 200 store credits!</span>
+<br>
+<br>
+<b class="amount">$20.00 Donation:</b>
+<br>
+<span class="gifts">The "Drawrawr Lover" Trophy, NO ADS for 6 months, 400 store credits, and Beta Access to incomplete features!</span>
+<br>
+<br>
+<b class="amount">$50.00 Donation:</b>
+<br>
+<span class="gifts">The "A Very Generous and Good Looking Person" Trophy, NO ADS for 8 months, 1000 store credits, Beta Access to incomplete features, +1 User Invite, +1 RP Character, and +1 Club!</span>
+<br>
+<br>
+<b class="amount">$100.00 Donation:</b>
+<br>
+<span class="gifts">The "&lt;3 Drawrawr Loves Me &lt;3" and "MR. MONEYBAGS" Trophies, NO ADS for 1 year, 1600 store credits, Beta Access to incomplete features, +1 User Invite, +1 RP Character, +1 Club, 2 Drawrawr buttons, and a handwritten letter from the very thankful Admins!</span>
+<br>
+<br>
+</section>
+
+<section class="container" style="text-align:center; margin-left: 35%; margin-right: 35%;">
+
+<span class= "comment">(Make sure we get your correct address if you're getting a gift in the mail! If we don't have your address, we can't send you anything!)</span>
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="hosted_button_id" value="SX8HGFR9L7RLC">
+<table style="margin-left:auto; margin-right: auto;">
+<tr><td><input type="hidden" name="on0" value="Donations">Donations</td></tr><tr><td><select name="os0">
+	<option value="Donation">Donation $1.00 USD</option>
+	<option value="Donation">Donation $5.00 USD</option>
+	<option value="Donation">Donation $10.00 USD</option>
+	<option value="Donation">Donation $20.00 USD</option>
+	<option value="Donation">Donation $50.00 USD</option>
+	<option value="Donation">Donation $100.00 USD</option>
+</select> </td></tr>
+<tr><td><input type="hidden" name="on1" value="Comment: (optional)">Comment: (optional)</td></tr><tr><td><input type="text" name="os1" maxlength="200"></td></tr>
+</table>
+<input type="hidden" name="currency_code" value="USD">
+<br>
+<input type="image" src="http://i43.tinypic.com/2ptt20z.png" style="border:0px;" name="submit" alt="PayPal - The safer, easier way to pay online!">
+<img alt="" style="border:0px;" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+</form>
+<img src= "/static/images/creditcards.png" alt="CARDS">
+
+  </section>
+{% endblock %}

@@ -1,29 +1,40 @@
 #tab-content {
 	border: 1px solid;
+	font-size: 14px;
 	clear: both;
 	padding: 15px;
 }
 #tabs li {
 	float: left;
 	display: inline;
-	border: 1px solid #000000;
+	border: 1px solid;
 	border-bottom-width: 0;
 	margin: -0.5em 0.5em 0 0;
 	padding: 2px;
-	color: #FFFFFF;
 	cursor: pointer;
 	background-color: #93AE83;
         -moz-border-radius-topleft: 4px;
         -moz-border-radius-topright: 4px;
         -webkit-border-radius: 4px 4px 0px 0px;
         border-radius: 4px 4px 0px 0px;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	user-select: none;
+}
+#tabs li a
+{
+	text-decoration: none;
+	color: #EEEEEE;
 }
 #tabs li:hover {
 	background-color: #AACC99;
 }
+#tabs .tab-selected a {
+	color: inherit;
+}
 #tabs .tab-selected {
 	position: relative;
-	color: inherit;
 	top: 1px;
 	background: #FFFFFF;
 }

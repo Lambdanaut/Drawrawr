@@ -1,0 +1,113 @@
+{# Maps integers to month names #}
+{% macro monthName(m) %}{% if m == 1 %}January{% elif m == 2 %}February{% elif m == 3 %}March{% elif m == 4 %}April{% elif m == 5 %}May{% elif m == 6 %}June{% elif m == 7 %}July{% elif m == 8 %}August{% elif m == 9 %}September{% elif m == 10 %}October{% elif m == 11 %}November{% else %}December{% endif %}{% endmacro %}
+{# Writes out three select boxes with names "changeYear", "changeMonth", and "changeDay" #}
+{% macro dateSelects() %}
+<select name=changeMonth>
+  <option value='1'>January</option>
+  <option value='2'>February</option>
+  <option value='3'>March</option>
+  <option value='4'>April</option>
+  <option value='5'>May</option>
+  <option value='6'>June</option>
+  <option value='7'>July</option>
+  <option value='8'>August</option>
+  <option value='9'>September</option>
+  <option value='10'>October</option>
+  <option value='11'>November</option>
+  <option value='12'>December</option>
+</select>
+<select name=changeDay >
+{% for day in range(1,32) %}
+  <option value='{{ day }}'>{{ day }}</option>
+{% endfor %}
+</select>
+<select name=changeDay >
+{% for year in range(1910,2013) %}
+  <option value='{{ year }}'>{{ year }}</option>
+{% endfor %}
+</select>
+{% endmacro %}
+{# Sets the css to fit a theme #}
+{% macro applyTheme(theme) %}
+<link rel="stylesheet" href="/static/css/userpages/{{ theme }}.css">
+{% endmacro %}
+{# Prints out a user's icon #}
+{% macro userIcon(user) %}
+<a href="{{ url_for('userpage',username=user) }}"><img src="{{ url_for('iconFiles',filename=user.lower()) }}" alt="{{ user }}'s icon" class="userIcon" style="float: left;margin: 2px;" title="{{ user }}"></a>
+{% endmacro %}
+{# Prints out a tiny user's icon #}
+{% macro tinyUserIcon(user) %}
+<a href="/{{ user }}"><img src="{{ url_for('iconFiles',filename=user.lower()) }}" alt="{{ user }}'s icon" class="tinyIcon" style="float: left;margin: 1px;" title="{{ user }}"></a>
+{% endmacro %}
+{# Take a list of arts from the database and shows them in gallery format on the page #}
+{% macro drawGallery(gallery) %}
+{% if gallery %}
+  {% for art in gallery %}
+    <div class="thumbContainer" title="{{ art["title"] }} by {{ art["author"] }}">
+      <div class="thumbCover">{{ art["title"] }}</div>
+      {% if art["type"] != "image" %}
+      <img src="/static/images/{{ art["type"] }}overlay.png" class="typeOverlay">
+      {% endif %}
+      <a href="{{ url_for('viewArt',art=art["_id"]) }}"><span class="thumbLink"></span></a>
+      <img src="{{ url_for('thumbFile',filename=art["_id"]) }}{{ config.thumbnailExtension }}" alt="{{ art["title"] }}" class="artworkImage">
+    </div>
+  {% endfor %}
+{% else %}
+<br><br><p>There isn't any art to display just yet. </p>
+{% endif %}
+{% endmacro %}
+{# Take a list of usernames and shows their clickable avatars one after another #}
+{% macro drawUsers(users, smallIcon = False) %}
+{% if users %}
+{% for user in users %}{% if smallIcon %}{{ tinyUserIcon(user) }}{% else %}{{ userIcon(user) }}{% endif %}{% endfor %}
+{% else %}
+<p>There aren't any users to display yet. </p>
+{% endif %}
+{% endmacro %}
+{# Takes a comment chain and draws it out #}
+{% macro drawCommentChain(comment, home, homeType, depthChain=[]) %}
+  {{ drawComment(comment,home,homeType,depthChain) }}
+  {% set order = 0 %}
+  {% for c in comment["r"] %}
+    {{ drawCommentChain(c, home, homeType, depthChain + [order] ) }}
+    {% set order = order + 1 %}
+  {% endfor %} 
+{% endmacro %}
+{# Takes an individual comment and draws it out #}
+{% macro drawComment(comment,home,homeType,depthChain) %}
+<div class="comment">
+  <div class="commentHeader">
+    <div style="float:right; margin-right: 140px;">
+      <span class="close"></span>
+      <span style="margin-right: 10px;"><a href="">Report</a></span>
+    </div>
+    <span style="text-align:left;">{{ comment['author'] }} says: </span>
+  </div>
+  {{ userIcon(comment['author']) }}
+  <div class="commentBubble">
+    {{ comment["content"] }}
+  </div>
+  <div class="commentHeader">
+    <div class="replyButton" style="float: right; margin-right: 140px; clear:both;">REPLY</div>
+    <div class="parentData" data-value="{{ home }}" style="display: none;"></div>
+    <div class="commentMapData" data-value="{{ util.printList(depthChain) }}" style="display: none;"></div>
+    <div class="reply">
+    </div>
+  </div>
+  <div style="clear:both;"></div>
+</div>
+{% endmacro %}
+{# Draws out a generic reply form #}
+{% macro drawReplyForm(home, homeType) %}
+  {% if   homeType == "u" %}<form method="POST" class="replyForm" action="{{ url_for("userpage", username=user["username"]) }}/comment">
+  {% elif homeType == "a" %}<form method="POST" class="replyForm" action="{{ url_for("viewArt", art=home) }}/comment">
+  {% elif homeType == "j" %}<form method="POST" class="replyForm" action="{{ url_for("viewJournal", journal=home) }}/comment">
+  {% else %}<form method="POST" class="replyForm" action="{{ url_for("userpage", username=home) }}/comment">
+  {% endif %}
+      <input type="hidden" class="parentInput" name="parent" value="">
+      <input type="hidden" class="commentMapInput" name="commentMap" value="">
+      <textarea name="content" class="textArea"></textarea><br>
+      <input type="submit" class="button">
+    </form>
+{% endmacro %}
+{% block layout %}{% endblock %}

@@ -1,0 +1,13 @@
+.draggable
+{
+	cursor: pointer;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	user-select: none;
+	list-style-type: none;
+}
+.draggable:hover
+{
+	background-color: #DAEFDA;
+}

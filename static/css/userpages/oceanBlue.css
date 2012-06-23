@@ -1,0 +1,50 @@
+body
+{
+	background-image: url("/static/images/userpage/bluebg.png");
+}
+
+#navigation
+{
+	background-color: #032287;
+	color: #FFFFFF;
+       -moz-box-shadow: #010A27, inset -1px -1px #021450, inset 1px 1px #053BEB;
+       -webkit-box-shadow: #010A27, inset -1px -1px #021450, inset 1px 1px #053BEB;
+       box-shadow: 0px 2px 5px #010A27, inset -1px -1px #021450, inset 1px 1px #053BEB;
+}
+
+#navigation li
+{
+       -moz-box-shadow: inset 1px 1px #053BEB, inset -1px -1px #021450;
+       -webkit-box-shadow: inset 1px 1px #053BEB, inset -1px -1px #021450;
+       box-shadow: inset 1px 1px #053BEB, inset -1px -1px #021450;
+}
+
+#navigation li:hover
+{
+	background-color: #053BEB;
+       -moz-box-shadow: inset 1px 1px #436EFB, inset -1px -1px #032287;
+       -webkit-box-shadow: inset 1px 1px #436EFB, inset -1px -1px #032287;
+       box-shadow: inset 1px 1px #436EFB, inset -1px -1px #032287;
+}
+
+#navigation ul:last-child
+{
+        -moz-box-shadow: 1px 0px #053BEB;
+        -webkit-box-shadow: 1px 0px #053BEB;
+        box-shadow: 1px 0px #053BEB;
+}
+#footer
+{
+	color: #000082;
+}
+#footer a
+{
+	color: #000082;
+}
+
+#content
+{
+	background-color: #053AE5;
+	color: #000082;
+}
+

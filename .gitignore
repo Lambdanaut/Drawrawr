@@ -1,8 +1,10 @@
 *.swp
 *.swn
 *.swo
-*.js
 *.pyc
-static/artwork/
 sessions/
-uploads/
+uploads/icons/*
+uploads/art/*
+uploads/thumbs/*
+system/secrets.py
+venv

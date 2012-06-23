@@ -1,0 +1,50 @@
+body
+{
+	background-image: url("/static/images/userpage/darkbluebg.png");
+}
+
+#navigation
+{
+	background-color: #000040;
+	color: #FFFFFF;
+       -moz-box-shadow: #000000, inset -1px -1px #000000, inset 1px 1px #0B0B87;
+       -webkit-box-shadow: #000000, inset -1px -1px #000000, inset 1px 1px #0B0B87;
+       box-shadow: 0px 2px 5px #000000, inset -1px -1px #000000, inset 1px 1px #0B0B87;
+}
+
+#navigation li
+{
+       -moz-box-shadow: inset 1px 1px #0B0B87, inset -1px -1px #000000;
+       -webkit-box-shadow: inset 1px 1px #0B0B87, inset -1px -1px #000000;
+       box-shadow: inset 1px 1px #0B0B87, inset -1px -1px #000000;
+}
+
+#navigation li:hover
+{
+	background-color: #141C6A;
+       -moz-box-shadow: inset 1px 1px #5562DF, inset -1px -1px #11185D;
+       -webkit-box-shadow: inset 1px 1px #5562DF, inset -1px -1px #11185D;
+       box-shadow: inset 1px 1px #5562DF, inset -1px -1px #11185D;
+}
+
+#navigation ul:last-child
+{
+        -moz-box-shadow: 1px 0px #0B0B87;
+        -webkit-box-shadow: 1px 0px #0B0B87;
+        box-shadow: 1px 0px #0B0B87;
+}
+
+#footer
+{
+	color: #FFFFFF;
+}
+#footer a
+{
+	color: #FFFFFF;
+}
+
+#content
+{
+	background-color: #020926;
+	color: #0D1259;
+}

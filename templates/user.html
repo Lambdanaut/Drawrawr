@@ -1,97 +1,160 @@
 {% extends "layout.html" %}
 {% block title %} {{ user["username"] }} @ DrawRawr  {% endblock %}
 {% block head %}
-<script src="/static/js/userpage.js"></script>
+<link rel="stylesheet" href="/static/css/gallery.css" media="screen">
+<link rel="stylesheet" href="/static/css/comment.css" media="screen">
+<script src="/static/js/user.js"></script>
+<script src="/static/js/comment.js"></script>
+
 <style media="screen" type="text/css">
-.fullRow
+#userNavArea a
 {
-	width: 100%;
-	clear: both;
+	color: inherit;
+	text-decoration: none;
 }
-#rightCol
+.tabButton
 {
 	float: right;
-	width: 30%;
+	padding: 3px 5px 3px 5px;
+	margin-right: 5px;
+	cursor: pointer;
+        -moz-user-select: none;
+        -khtml-user-select: none;
+        -webkit-user-select: none;
+        user-select: none;
+        list-style-type: none;
 }
-#leftCol
+.tabButton:hover
 {
-	width: 70%;
+        background: none;
+	background-color: #DDDDDD;
 }
+</style>
 
 {# Color Theme Settings #}
-{% if user["theme"] == "blue" %}
-#content
-{
-	background-color: blue;
-	color: green;
-}
-{% else %}
-#content
-{
-	background-color: default;
-	color: inherit;
-}
-{% endif %}
+{{ applyTheme(user["theme"]) }}
 
-{# Background Image Settings #}
-{% if user["bground"] != "" %}
-body
-{
-	background-image: url("{{ user["bground"] }}");
-}
-{% endif %}
-
-</style>
-{% endblock %}
+{% endblock %}	
 
 {% macro profile() %}
   <section class="container">
-    <h1>Profile</h1>
-    <p>{{ user["profile"] }}</p>
+  <div style="float:left;height:100%;margin-right:5px;">
+  {{ userIcon(user['username']) }}
+  </div>
+  <div>
+    <h3 style="display: inline;margin-top:0px;">{{ user['username'] }}</h3> 
+    {% if user["gender"] == "m"   %} <img src='/static/images/male.png' alt='Male'>
+    {% elif user["gender"] == "f" %} <img src='/static/images/female.png' alt='Female'> 
+    {% endif %}
+    {% if user["dob"] != None %}
+      <span style="font-size:12px;">
+	Birthday: {{ monthName(user["dob"].month) }} {{ user["dob"].day }}, {{ user["dob"].year }}
+      </span>
+    {% endif %}
+    <div style=" margin-left: 80px;">{{ user["codeProfile"] | safe }}</div>
+  </div>
+  <div style="clear: both;"></div>
   </section>
 {% endmacro %}
 
 {% macro gallery() %}
-  <section class="container">
-    <h1>Gallery</h1>
-    <p>Gallery Goes Here</p>
+  <section class="container gallery" style="max-height: 260px;min-height:140px;">
+    <span class="moduleTitle">Gallery</span>
+    <span style="clear:both;"></span>
+    {{ drawGallery(userGallery) }}
   </section>
 {% endmacro %}
 
 {% macro watches() %}
-  <section class="container">
-    <h1>Watches</h1>
-    <p>Watches Go Here</p>
+  <section class="container gallery" style="max-height: 260px;">
+    <span class="moduleTitle">Watchers</span>
+    <div id="watchers">
+    {{ drawUsers( user["watchers"][:25], smallIcon=True ) }}
+    </div>
   </section>
 {% endmacro %}
 
 {% macro comments() %}
   <section class="container">
-    <h1>Comments</h1>
-    <p>Comments Go Here</p>
+    <span class="moduleTitle">Comments</span>
+    <div id="replyFormTemplate">{{ drawReplyForm(user["_id"], "u") }}</div>
+    {% if commentResult %}
+      {% for comment in commentResult %}
+        {{ drawCommentChain(comment,user["_id"],"u") }}
+      {% endfor %}
+    {% endif %}
+    <div class="leaveCommentButton">Leave a Comment</div>
+    <div class="comment" id="leaveCommentForm"></div>
   </section>
 {% endmacro %}
 
-{% macro row(rowName) %}
-  {% if user["layout"]["profile" ] == rowName %} {{ profile () }} {% endif %}
-  {% if user["layout"]["gallery" ] == rowName %} {{ gallery () }} {% endif %}
-  {% if user["layout"]["watches" ] == rowName %} {{ watches () }} {% endif %}
-  {% if user["layout"]["comments"] == rowName %} {{ comments() }} {% endif %}
+{% macro nearby() %}
+  <section class="container gallery" style="max-height: 260px;">
+    <span class="moduleTitle">Nearby Artists</span>
+    {{ drawUsers( nearbyUsers, smallIcon=True ) }}
+  </section>
+{% endmacro %}
+
+{% macro journal() %}
+  <section class="container">
+    <span class="moduleTitle">Journal</span>
+    {% if journalResult %}
+      {{ journalResult["title"] }}
+      <p>{{ journalResult["content"] }}</p>
+    {% else %}
+      <p style="text-align:center;">There aren't any journals to display just yet! </p>
+    {% endif %}
+  </section>
+{% endmacro %}
+
+{% macro modToFunc(m) %}
+  {% if   m == "profile"  %}{{ profile() }}
+  {% elif m == "gallery"  %}{{ gallery() }}
+  {% elif m == "watches"  %}{{ watches() }}
+  {% elif m == "comments" %}{{ comments() }}
+  {% elif m == "nearby"   %}{{ nearby() }}
+  {% elif m == "journal"  %}{{ journal() }}
+  {% endif %}
+{% endmacro %}
+
+{% macro drawModule(module,loc,order) %}
+  {% if user["layout"][module][0] == loc and user["layout"][module][1] == order %} {{ modToFunc(module) }} {% endif %}
+{% endmacro %}
+
+{% macro row(l) %}
+  {% for o in range(0,5) %}
+    {{ drawModule("profile",l,o) }}
+    {{ drawModule("gallery",l,o) }}
+    {{ drawModule("watches",l,o) }}
+    {{ drawModule("comments",l,o) }}
+    {{ drawModule("nearby",l,o) }}
+    {{ drawModule("journal",l,o) }}
+  {% endfor %}
 {% endmacro %}
 
 {% block content %}
-<div id="top" class="fullRow">
+<span id="username" data-name="{{ user["username"] }}"></span>
+{% if loggedInUser %}<span id="loggedInUsername" data-name="{{ loggedInUser["username"] }}"></span>{% endif %}
+<div class="grid_12">
+  <div style="float: left;" id="userNavArea">
+    <a href="{{ url_for("viewUserJournals", username=user["username"]) }}" class="container tabButton"><img src="/static/images/tinyCHAT.png" alt="Drawrboard icon" style="vertical-align:bottom;"> View Journals</a>
+    <a href="{{ url_for("viewGallery", username=user["username"]) }}" class="container tabButton"><img src="/static/images/tinyDRAWRBOARD.png" alt="Drawrboard icon" style="vertical-align:bottom;"> View Gallery</a>
+  </div>
+{% if g.loggedInUser and g.loggedInUser["_id"] != user["_id"] %}
+  <div class="container tabButton" id="watchUserButton" style="margin-right:0;" data-state="{{ loggedInUser["username"] in user["watchers"] }}"> + watch </div>
+  <div class="container tabButton" id="messageUserButton"> ~ message </div>
+{% endif %}
+</div>
+<div class="grid_12">
   {{ row("t") }}
 </div>
-<div id="middle">
-  <div id="rightCol">
-    {{ row("r") }}
-  </div>
-  <div id="leftCol">
-    {{ row("l") }}
-  </div>
+<div class="grid_8">
+  {{ row("l") }}
 </div>
-<div id="bottom" class="fullRow">
+<div class="grid_4">
+  {{ row("r") }}
+</div>
+<div class="grid_12">
   {{ row("b") }}
 </div>
 {% endblock %}

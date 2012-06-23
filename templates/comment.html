@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block title %}Comment by {{ comment["author"] }}{% endblock %}
+{% block head %}
+
+<link rel="stylesheet" href="/static/css/comment.css" media="screen">
+
+<script src="/static/js/comment.js"></script>
+
+{% endblock %}
+{% block content %}
+<section class="container">
+{{ drawCommentChain(comment,comment["home"],comment["homeType"],[]) }}
+</section>
+{% endblock %}

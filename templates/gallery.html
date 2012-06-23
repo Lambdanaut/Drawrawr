@@ -1,0 +1,112 @@
+{% extends "layout.html" %}
+{% block title %}{{ author["username"] }}'s Gallery - {{ folder }}{% endblock %}
+{% block head %}
+<script src="/static/js/gallery.js"></script>
+<link rel="stylesheet" href="/static/css/gallery.css" media="screen">
+<style>
+#titleBar a
+{
+	color: inherit;
+}
+#orderForm
+{
+	float: right;
+}
+#orderForm button
+{
+	background:none!important;
+	border:none; 
+	margin: 0px;
+	margin-left: 5px;
+	padding:0!important;
+	vertical-align:middle;
+	/*border is optional*/
+}
+#orderForm button img
+{
+	width: 29px;
+	height: 29px;
+	margin: 0px;
+}
+#title
+{
+	float: left;
+	margin: 0px;
+}
+.folders div
+{
+	text-align: left;
+	border: 1px #513727 solid;
+	background-color: #93AE83;
+	padding: 2px 5px 2px 5px;
+	margin-bottom: 2px;
+	color: white;
+	font-weight: bold;
+}
+.folders a
+{
+
+	text-decoration: none;
+}
+.folders a div:hover
+{
+	background-color: #AACC99;
+}
+</style>
+{% endblock %}
+{% block content %}
+  <section class="container" style="text-align:center;">
+    <div class="roundBox greenContainer">
+      <form method="GET" id="orderForm">
+        <b>Sort by: </b>
+        <select id="sort" name="sort">
+          <option value="d"{% if sort == "d" %} selected="selected"{% endif %}>Date</option>
+          <option value="p"{% if sort == "p" %} selected="selected"{% endif %}>Popularity</option>
+          <option value="t"{% if sort == "t" %} selected="selected"{% endif %}>Title</option>
+        </select>
+        In
+        <select id="order" name="order">
+          <option value="d"{% if order == "d" %} selected="selected"{% endif %}>Descending</option>
+          <option value="a"{% if order == "a" %} selected="selected"{% endif %}>Ascending</option>
+        </select>
+        order. 
+        <button type="submit" value="Go" class="button"><img src="/static/images/searchbutton.png" alt="Order Button"></button>
+      </form>
+      <h2 id="title"><a href="/{{ author["username"] }}">{{ author["username"] }}'s</a> Gallery</h2>
+      <div style="clear:both;"></div>
+    </div>
+    <div style="float: left; width: 80%;">
+      <div class="gallery">{{ drawGallery(art) }}</div>
+    </div>
+    {% macro makeFolder(folder,symbol) %}
+    <a href="{{ url_for("viewGallery",username=author["username"],folder=folder) }}"><div class="roundBox">{{ symbol }}</div></a>
+    {% endmacro %}
+    <div class="folders" style="float: right; width: 20%; margin-top: 5px;">
+      {{ makeFolder("all","All Artwork") }}
+      {{ makeFolder("complete","Completed Works") }}
+      {{ makeFolder("wip","Works in Progress") }}
+      {{ makeFolder("scraps","Scraps") }}
+      {{ makeFolder("mature","Mature Works") }}
+      {{ makeFolder("favorites","Favorites") }}
+    </div>
+    <span style="clear:both;display:block;"></span>
+    {% macro makeIndexLink(page,symbol) %}
+    <a href="{{ url_for("viewGallery",username=author["username"],folder=folder,page=page) }}">{{ symbol | safe }}</a> 
+    {% endmacro %}
+    {% if currentPage %}
+      {{ makeIndexLink(0,"&laquo;") }}
+      {{ makeIndexLink(currentPage - 1,"&lsaquo;") }}
+    {% endif %}
+    {% if pages != [] %}
+    {% set currentPage = pages.pop(0) %}
+      <b>{{ currentPage + 1 }}</b>
+    {% endif %}
+    {% for p in pages %}
+      {{ makeIndexLink(p,p + 1) }}
+    {% endfor %}
+    {% if currentPage < last %}
+      {{ makeIndexLink(currentPage + 1,"&rsaquo;") }}
+      {{ makeIndexLink(last,"&raquo;") }}
+    {% endif %}
+  </section>
+{% endblock %}

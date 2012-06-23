@@ -1,41 +1,49 @@
 {% extends "layout.html" %}
-{% block title %} DrawRawr Home Page{% endblock %}
+{% block title %}Drawrawr Home Page{% endblock %}
 {% block head %}
+<link rel="stylesheet" href="/static/css/gallery.css" media="screen">
 <style media="screen" type="text/css">
-#rightCol
-{
-  float: right;
-  width: 80%;
-}
-#leftCol
-{
-  width: 20%;
-}
+h3 { margin-top: 0px; }
 </style>
 {% endblock %}
 {% block content %}
-<div id="rightCol">
-  <section class="container">
-    <h1>POPULAR ART</h1>
-      <p>HERE GOES THE BEST ARTS</p>
+<div class="grid_12">
+  <section class="container gallery">
+    <h3 class="moduleTitle">POPULAR ART</h3>
+    <div style="width: 95%;margin-left: auto; margin-right: auto;">
+      {{ drawGallery(popularArt) }}
+    </div>
+  </section>
+  <section class="container gallery" style="max-height:500px;">
+    <h3 class="moduleTitle">RECENT ART</h3>
+    <div style="width: 95%;margin-left: auto; margin-right: auto;">
+      {{ drawGallery(recentArt) }}
+    </div>
+  </section>
+</div>
+<div class="grid_3">
+{% if showAds %}
+  <div id="pw_adbox_62797_6_0" style="margin: 5px auto 5px auto; width: 234px;"></div>
+{% endif %}
+  <section class="container gallery">
+    <h3 class="moduleTitle">New Users</h3>
+    {{ drawUsers(newUsers, smallIcon = True) }}
+  </section>
+  <section class="container gallery">
+    <h3 class="moduleTitle">Featured User</h3>
+    SOMEBODY THAT IS REALLY COOL
+  </section>
+</div>
+<div class="grid_9">
+  <section class="container gallery">
+    <h3 class="moduleTitle">FEATURED ART</h3>
+    <div style="width: 95%;margin-left: auto; margin-right: auto;">
+      {{ drawGallery(featuredArt) }}
+    </div>
   </section>
   <section class="container">
-    <h1>RECENT ART</h1>
-    <p>HERE GOES THE NEW ART</p>
-  </section>
-  <section class="container">
-    <h1>FEATURED ART</h1>
-    <p>U liek em featured? it goz her</p>
-  </section>
-</div>  
-<div id="leftCol">
-  <section id="news" class="container">
-    <h1>NEWS NEWS NEWS</h1>
-    <p>HOT FUCK. NEWS IS THE GREATEST</p>
-  </section>
-  <section class="container">
-    <h1>RECENT JOURNALS</h1>
-    <p>Prolly like some recent journals or recent poops go here. </p>
+    <h3 class="moduleTitle">New News</h3>
+    <p>NEWS NEWS NEWS NEWS</p>
   </section>
 </div>
 {% endblock %}

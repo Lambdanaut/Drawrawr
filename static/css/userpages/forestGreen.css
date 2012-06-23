@@ -1,0 +1,50 @@
+body
+{
+	background-image: url("/static/images/userpage/greenbg.png");
+}
+
+#navigation
+{
+	background-color: #042800;
+	color: #FFFFFF;
+       -moz-box-shadow: #021600, inset -1px -1px #021600, inset 1px 1px #085000;
+       -webkit-box-shadow: #021600, inset -1px -1px #021600, inset 1px 1px #085000;
+       box-shadow: 0px 2px 5px #021600, inset -1px -1px #021600, inset 1px 1px #085000;
+}
+
+#navigation li
+{
+       -moz-box-shadow: inset 1px 1px #085000, inset -1px -1px #021600;
+       -webkit-box-shadow: inset 1px 1px #085000, inset -1px -1px #021600;
+       box-shadow: inset 1px 1px #085000, inset -1px -1px #021600;
+}
+
+#navigation li:hover
+{
+	background-color: #085000;
+       -moz-box-shadow: inset 1px 1px #0C7E00, inset -1px -1px #063E00;
+       -webkit-box-shadow: inset 1px 1px #0C7E00, inset -1px -1px #063E00;
+       box-shadow: inset 1px 1px #0C7E00, inset -1px -1px #063E00;
+}
+
+#navigation ul:last-child
+{
+        -moz-box-shadow: 1px 0px #085000;
+        -webkit-box-shadow: 1px 0px #085000;
+        box-shadow: 1px 0px #085000;
+}
+
+#footer
+{
+	color: #042800;
+}
+#footer a
+{
+	color: #042800;
+}
+
+#content
+{
+	background-color: #0D7F01;
+	color: #042800;
+}

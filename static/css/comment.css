@@ -1,0 +1,88 @@
+/* Link this file in pages that utilize comments */
+
+.comment {
+	margin-bottom: 10px;
+}
+
+.leaveCommentButton {
+	text-align: center;
+	margin: 40px 0 30px;
+	text-decoration: underline;
+	cursor: pointer; 	
+}
+
+.comment .userIcon {
+	padding-top: 10px;
+}
+
+.comment .commentHeader .deleteComment {
+	background: url("/static/images/XUnclick.png");
+}
+
+.comment .commentHeader {
+	position: relative;
+	top: 10px;
+	left: 120px;
+	font-weight: bold;
+}
+
+.comment .replyButton {
+	cursor: pointer;
+}
+
+#replyFormTemplate {
+	display: none;
+}
+
+.comment form {
+	margin-bottom: 5px;
+}
+
+.comment .reply {
+	display: none;
+}
+
+.comment .textArea {
+	width: 700px;
+	margin-bottom: 5px;
+}
+
+.comment .commentBubble {
+	position: relative;
+	min-height: 60px;
+	margin: 10px 10px 0 110px;
+	margin-left: 110px;
+	padding: 10px 15px 10px 15px;
+	background-color: #fff;
+	border: 1px solid #BBBBBB;
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	border-radius: 8px;
+	-webkit-box-shadow: 2px 3px 2px #888;
+	-moz-box-shadow: 2px 3px 2px #888;
+	box-shadow: 1px 2px 2px #CCC;
+}
+
+/* Border of Pointer */
+.comment .commentBubble:before {
+	content: ' ';
+	position: absolute;
+	width: 0;
+	height:  0;
+	left: -50px;
+	top: 8px;
+	border: 25px solid;
+	border-color: transparent #CCCCCC transparent transparent;
+}
+/* White Insides of Pointer */
+.comment .commentBubble:after {
+	content: ' ';
+	position: absolute;
+	width: 0;
+	height: 0;
+	left: -46px;
+	top: 10px;
+	border: 23px solid;
+	border-color: transparent #fff transparent transparent;
+}
+

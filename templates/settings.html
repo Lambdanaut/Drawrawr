@@ -1,56 +1,250 @@
 {% extends "layout.html" %}
 {% block title %}Settings{% endblock %}
 {% block head %}
+<script src="/static/js/jquery-ui-1.8.18.custom.min.js"></script>
 <script src="/static/js/tabs.js"></script>
+<script src="/static/js/settings.js"></script>
 <link rel="stylesheet" href="/static/css/tabs.css" media="screen">
+<link rel="stylesheet" href="/static/css/draggable.css" media="screen">
+<link rel="stylesheet" href="/" media="screen" id="colorThemeStyle">
 <style media="screen" type="text/css">
 h3
 {
-  margin: 2px;
+	margin: 2px;
 }
-#leftCol
+.leftCol
 {
-  float: left;
-  width: 33%;
+	float: left;
+	width: 33%;
 }
-#middleCol
+.middleCol
 {
-  float: left;
-  width: 33%
+	float: left;
+	width: 33%
 }
-#rightCol
+.rightCol
 {
-  float: left;
-  width: 33%;
+	float: left;
+	width: 33%;
+}
+#contentMimic
+{
+	float: left;
+	width: 60%;
+	background-color: #f1e3d1;
+}
+.container
+{
+	margin: 5px;
+}
+.profileFullRow
+{
+	width: 100%;
+	clear: both;
+	padding-top: 5px;
+}
+#profileTop
+{
+	min-height: 75px;
+	border-bottom: dashed 1px #513727;
+}
+#profileRightCol
+{
+	float: right;
+	min-height: 75px;
+	width: 35%;
+}
+#profileLeftCol
+{
+	width: 65%;
+	min-height: 75px;
+}
+#profileBottom
+{
+	border-top: dashed 1px #513727;
+	min-height: 75px;
+}
+#profileHiddenDivider
+{
+	text-align:center;
+	border-top: double 1px #513727;	
+}
+#profileHidden
+{
+	min-height: 150px;
+}
+#profileHidden .draggable
+{
+        float: left;
+        display: inline;
+        color: #cccccc;
+        background-color: #637e63;
+        width: 20%;
+}
+#profileHidden .draggable:hover
+{
+	background-color: #70CD71;
 }
 </style>
 {% endblock %}
 {% block content %}
   <div id="tabs">
     <ul>
-      <li id="general">General Settings</li>
-      <li id="profile">My Profile</li>
-      <li id="layout">Page Layout</li>
+      <li id="general"><a href="#-general">General Settings</a></li>
+      <li id="profile"><a href="#-profile">My Profile</a></li>
+      <li id="layout"><a href="#-layout">Page Layout</a></li>
+      {% if config.betaKey %}<li id="beta"><a href="#-beta">Invites</a></li>{% endif %}
     </ul>
   </div>
   <form enctype="multipart/form-data" method="POST" action="/users/settings">
-    <section id="tab-content" class="container"></section>
-    <div style="text-align:center;"><input type="submit" value="Update Profile"></div>
+    <section id="tab-content" class="container">
+      <div id="tab-general"> 
+        <div class="leftCol">
+          <h3>Upload a New Icon: </h3>
+          <img src = '/icons/{{ loggedInUser["lowername"] }}' style='float:left;' class='userIcon' alt='Current User Icon'>
+          <input type="file" name="iconUpload" id="iconUpload"><br style="clear: both;"><br>
+          <h3>Change your Password: </h3>
+          Current Password: <br>
+          <input type="password" name="changePassCurrent" class="textInput"><br>
+          New Password: <br>
+          <input type="password" name="changePassNew1" class="textInput"><br>
+          New Password(Repeat): <br>
+          <input type="password" name="changePassNew2" class="textInput"><br>
+        </div>
+        <div class="middleCol">
+          <h3>Gender: </h3>
+          <select name="changeGender" id="changeGender">
+            <option value="h"{% if loggedInUser['gender'] == 'h' %} id='defaultGender'{% endif %}>Hide Gender</option>
+            <option value="m"{% if loggedInUser['gender'] == 'm' %} id='defaultGender'{% endif %}>Male</option>
+            <option value="f"{% if loggedInUser['gender'] == 'f' %} id='defaultGender'{% endif %}>Female</option>
+          </select><br><br>
+        </div>
+        <div class="rightCol">
+          <div id="whyHelp" style="display: none; top: 4px;">
+            <p> Drawrawr uses your location to help you find artists near you! Your exact latitude and longitude is not shared, only your general distance from other users is shown. </p>
+          </div>
+          <h3 style="display:inline; ">Location: </h3> <span id="whyLocation" style="cursor:pointer;font-size: 12px;font-weight: bold;text-decoration:underline">(why?)</span> <br>
+          Latitude: <br>
+          <input type="text" name="changeLatitude" id="latitude" class="textInput" value="{{ loggedInUser["latitude"] }}"><br>
+          Longitude: <br>
+          <input type="text" name="changeLongitude" id="longitude" class="textInput" value="{{ loggedInUser["longitude"] }}"><br>
+          <button type="button" id="getLocation" class="button" style="margin-top: 5px;" >Automatically Get Location</button>
+          <div id="noLocationBrowser" style="display:none; font-size: 12px;"> You can find your location at <a href="http://itouchmap.com/latlong.html">itouchmap.com</a></div>
+        </div>
+        <div style="clear: both;"></div>
+      </div>
+      <div id="tab-profile">
+        <h3>Profile Text: </h3>
+        <textarea name="changeProfile" style="width: 100%;" class="textArea">{{ loggedInUser["profile"] }}</textarea>
+      </div>
+      <div id="tab-layout"> 
+        <p>
+          <div style='float:left; width: 40%;'>
+            <div class='layoutSection'>
+              <p>This is where you can customize the layout and design of your userpage! Drag and Drop "sections" to add them to your page or change their placement.</p>
+              <ul>
+                <li>Drag sections to the "Hidden" area to remove them from your page.</li>
+                <li>Some sections can only be placed in certain areas of your userpage.</li>
+                <li>Mouse over the sections to see where they can be placed.</li>
+                <li>Click the "?" button on a section to learn more about it!</li>
+              </ul>
+            </div>
+            <div class='layoutSection'>
+              <h2>Color Theme: </h2>
+              <span id="defaultTheme" data-theme="{{ loggedInUser["theme"] }}" ></span>
+              <select name="changeColorTheme" id="changeColorTheme">
+                <option value="default">DR Default</option>
+                <option value="cocoaBrown">Cocoa Brown</option>
+                <option value="winterWhite">Winter White</option>
+                <option value="pinkBerry">Pink Berry</option>
+                <option value="cherryRed">Cherry Red</option>
+                <option value="orangeCream">Orange Cream</option>
+                <option value="bananaYellow">Banana Yellow</option>
+                <option value="limeGreen">Lime Green</option>
+                <option value="forestGreen">Forest Green</option>
+                <option value="turquoise">Turquoise</option>
+                <option value="skyBlue">Sky Blue</option>
+                <option value="oceanBlue">Ocean Blue</option>
+                <option value="blueInk">Blue Ink</option>
+                <option value="purpleGrape">Purple Grape</option>
+                <option value="royalPurple">Royal Purple</option>
+                <option value="stoneGray">Stone Gray</option>
+                <option value="pitchBlack">Pitch Black</option>
+                <option value="rainbowrific">Rainbowrific</option>
+              </select>
+            <h2>Font Type:</h2>
+          
+            </div>
+          </div>
+{% macro drawModule(module,loc,order) %}
+  {% if loggedInUser["layout"][module][0] == loc and loggedInUser["layout"][module][1] == order %} <div id="{{ module }}" class="draggable container">{{ module }}</div> {% endif %}
+{% endmacro %}
+{% macro drawModules(l) %}
+  {% for o in range(0,6) %}
+    {{ drawModule("profile",l,o) }}
+    {{ drawModule("gallery",l,o) }}
+    {{ drawModule("watches",l,o) }}
+    {{ drawModule("comments",l,o) }}
+    {{ drawModule("nearby",l,o) }}
+    {{ drawModule("journal",l,o) }}
+  {% endfor %}
+{% endmacro %}
+          <div id="contentMimic" class='roundBox'>
+            <div class='layoutSection'>
+              <div id="visibleArea">
+                <div id="profileTop" class="profileFullRow dragBox" data-loc="t">
+                  {{ drawModules("t") }}
+                </div>
+                <div id="profileMiddle" class="profileFullRow">
+                  <div id="profileRightCol" class="dragBox" data-loc="r">
+                    {{ drawModules("r") }}
+                  </div>
+                  <div id="profileLeftCol" class="dragBox" data-loc="l">
+                    {{ drawModules("l") }}
+                  </div>
+                </div>
+                <div id="profileBottom" class="profileFullRow dragBox" data-loc="b">
+                  {{ drawModules("b") }}
+                </div>
+                <div id="profileHiddenDivider"><h3>Hidden Modules</h3></div>
+		<div id="profileHidden" class="profileFullRow dragBox" data-loc="h">
+                  {{ drawModules("h") }}
+		</div>
+              </div>
+            </div>
+          </div>
+        <div style="clear: both;"></div>
+      </div>
+      {% if config.betaKey %}
+      <div id="tab-beta"> 
+        <div class="leftCol">
+          <h3>Invite a Friend to Drawrawr!</h3>
+          <p>This is where you can redeem your <b>invites</b> for Beta Pass codes!
+Each time you click the "Get Invite" button, a random 8-letter code will be generated for you. 
+This code can be given to friends and used to make a new account on Drawrawr, but <b>each code can only be used once</b>.
+Once it is used, it is gone. So use them wisely!</p>
+        </div>
+	<div class="middleCol">
+          <h3>Invites Left: <span style="color: #CD7300; text-decoration: underline;">{{ loggedInUser["betaKeys"] }}</span></h3>
+          <button type="button" id="generateNewInvite" class="button"> Generate a New Invite </button>
+        </div>
+	<div class="rightCol">
+          <ul id="betaKeyList">
+          {% if betaKeys.count() != 0 %}
+            <strong>Your Beta Keys: </strong>
+            {% for key in betaKeys %}
+            <li>{{ key["password"] }}</li>
+            {% endfor %}
+          {% endif %}
+          </ul>
+          <img src="/static/images/loader.gif" id="betaLoader" alt="LOADING" style="display:none;">
+        </div>
+        <div style="clear: both;"></div>
+      </div>
+      {% endif %}
+    </section>
+    <input type = "hidden" id="changeLayout" name="changeLayout">
+    <input type = "hidden" id="changeLayoutOrder" name="changeLayoutOrder">
+    <div style="text-align:center;"><input type="submit" id="submitButton" value="Update Settings" class="button"></div>
   </form>
-  <div id="tab-general"> 
-    <div id="leftCol">
-      <h3>Upload a New Icon: </h3>
-        <img src = '/icons/{{ user["lowername"] }}' style='float:left;' class='userIcon'>
-        <input name="iconUpload" id="iconUpload" type=file><br>
-    </div>
-    <div id="middleCol">
-      middle
-    </div>
-    <div id="rightCol">
-       right
-    </div>
-    <div style="clear: both;"></div>
-  </div>
-  <div id="tab-profile"> PROFILE </div>
-  <div id="tab-layout"> LAYOUT </div>
 {% endblock %}

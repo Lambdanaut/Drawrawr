@@ -1,0 +1,50 @@
+body
+{
+	background-image: url("/static/images/userpage/cyanbg.png");
+}
+
+#navigation
+{
+	background-color: #0CAAFC;
+	color: #FFFFFF;
+       -moz-box-shadow: #013E5D, inset -1px -1px #0288CE, inset 1px 1px #49C0FD;
+       -webkit-box-shadow: #013E5D, inset -1px -1px #0288CE, inset 1px 1px #49C0FD;
+       box-shadow: 0px 2px 5px #013E5D, inset -1px -1px #0288CE, inset 1px 1px #49C0FD;
+}
+
+#navigation li
+{
+       -moz-box-shadow: inset 1px 1px #49C0FD, inset -1px -1px #0288CE;
+       -webkit-box-shadow: inset 1px 1px #49C0FD, inset -1px -1px #0288CE;
+       box-shadow: inset 1px 1px #49C0FD, inset -1px -1px #0288CE;
+}
+
+#navigation li:hover
+{
+	background-color: #71CDFD;
+       -moz-box-shadow: inset 1px 1px #A2DFFE, inset -1px -1px #28B4FC;
+       -webkit-box-shadow: inset 1px 1px #A2DFFE, inset -1px -1px #28B4FC;
+       box-shadow: inset 1px 1px #A2DFFE, inset -1px -1px #28B4FC;
+}
+
+#navigation ul:last-child
+{
+        -moz-box-shadow: 1px 0px #49C0FD;
+        -webkit-box-shadow: 1px 0px #49C0FD;
+        box-shadow: 1px 0px #49C0FD;
+}
+
+#footer
+{
+	color: #01676D;
+}
+#footer a
+{
+	color: #01676D;
+}
+
+#content
+{
+	background-color: #8EF8FE;
+	color: #0CAAFC;
+}

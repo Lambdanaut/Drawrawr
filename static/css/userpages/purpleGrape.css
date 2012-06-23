@@ -1,0 +1,51 @@
+body
+{
+	background-image: url("/static/images/userpage/brightpurplebg.png");
+}
+
+#navigation
+{
+	background-color: #A753FD;
+	color: #FFFFFF;
+       -moz-box-shadow: #320165, inset -1px -1px #952FFD, inset 1px 1px #B773FD;
+       -webkit-box-shadow: #320165, inset -1px -1px #952FFD, inset 1px 1px #B773FD;
+       box-shadow: 0px 2px 5px #320165, inset -1px -1px #952FFD, inset 1px 1px #B773FD;
+}
+
+#navigation li
+{
+       -moz-box-shadow: inset 1px 1px #B773FD, inset -1px -1px #952FFD;
+       -webkit-box-shadow: inset 1px 1px #B773FD, inset -1px -1px #952FFD;
+       box-shadow: inset 1px 1px #B773FD, inset -1px -1px #952FFD;
+}
+
+#navigation li:hover
+{
+	background-color: #B773FD;
+       -moz-box-shadow: inset 1px 1px #CA98FE, inset -1px -1px #A753FD;
+       -webkit-box-shadow: inset 1px 1px #CA98FE, inset -1px -1px #A753FD;
+       box-shadow: inset 1px 1px #CA98FE, inset -1px -1px #A753FD;
+}
+
+#navigation ul:last-child
+{
+        -moz-box-shadow: 1px 0px #B773FD;
+        -webkit-box-shadow: 1px 0px #B773FD;
+        box-shadow: 1px 0px #B773FD;
+}
+
+#footer
+{
+	color: #661ED2;
+}
+#footer a
+{
+	color: #661ED2;
+}
+
+#content
+{
+	background-color: #D6AEFE;
+	color: #661ED2;
+}
+

@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block title %} Staff Center {% endblock %}
+{% block head %}
+{% endblock %}
+{% block content %}
+  <img src="/static/images/staffbadge.png" alt="Staff Badge" style="float: left; margin: 5px;">
+  <p style="font-size: 14px; font-weight: bold; vertical-align: bottom;">Welcome to the Staff Center. Here you can vote on and create Voting Propositions, review and resolve User Reports, Observe Recent Actions taken by the staff, etc. You should put aside at least a short amount of time DAILY to vote. If something goes wrong and there are no higher level Staff members online, You can call the Admins at: 1-910-471-5067 If you have any other questions, ask an Admin.</p>
+  <div style="clear: both;"></div>
+  <div style="float: left; width: 70%;">
+    <section class="container">
+      arf
+    </section>
+  </div>
+  <div style="float: right; width: 30%;">
+    <section class="container">
+      <h3> Site Stats</h3>
+      <ul>
+        <li><strong>Users: </strong>{{ userCount }}</li>
+        <li><strong>Arts: </strong>{{ artCount }}</li>
+      </ul>
+    </section>
+  </div>
+  <div style="clear: both;"></div>
+{% endblock %}

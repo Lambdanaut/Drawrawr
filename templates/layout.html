@@ -1,92 +1,139 @@
+{% extends "macros.html" %}
+{% block layout %}
 <!doctype html>
 <head>
   <meta charset="utf-8">
+  <meta name="description" content="DrawRawr is a social utility that allows artists to collaborate, communicate, and show off their galleries online. ">
+  <meta name="author" content="Josh Thomas and Catherine Kern">
+  <meta name="keywords" content="free community conventions comics art comic artists commission video games artwork game review josh audio animation flash music cullinary craft crafts cat anime social creative paint paintings gallery">
 
   <title>{% block title %}{% endblock %}</title>
-  <meta name="description" content="DrawRawr is a social utility that allows artists to collaborate, communicate, and show off their galleries online. ">
-  <meta name="author" content="Personette Labs">
   
   <link rel="shortcut icon" href="/static/favicon.ico" type="image/x-icon">
   <link rel="apple-touch-icon" href="/static/apple-touch-icon.png">
 
   <link href='http://fonts.googleapis.com/css?family=Ubuntu:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'> 
 
+  <link rel="stylesheet" href="/static/css/normalize.css" media="screen">
+  <link rel="stylesheet" href="/static/css/grid.css" media="screen">
   <link rel="stylesheet" href="/static/css/mainstyles.css" media="screen">
 
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
-  <script src="/static/js/modernizr-1.6.min.js"></script>
+  <script src="/static/js/modernizr.geo.js"></script>
   <script src="/static/js/main.js"></script>
-
+  {% if config.captchaPublicKey and config.captchaSecretKey %}
+  <script type="text/javascript" src="http://www.google.com/recaptcha/api/js/recaptcha_ajax.js"></script>
+  {% endif %}
+  {% if showAds %}
+  <script type="text/javascript" src="/static/js/bottomAd.js"></script>
+  {% endif %}
   {% block head %}{% endblock %}
 
 </head>
 <body>
+  <noscript class="container"><b>Warning:</b> You are browsing with Javascript disabled. Drawrawr requires Javascript to function correctly. Please either enable it, or upgrade your browser.</noscript>
+    {% with messages = get_flashed_messages() -%}
+      {% if messages %}
+        <ul id = "flashed">
+        {% for message in messages %} 
+          <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {%- endwith -%}
   <header>
     <div id="header">
-      <div id="set-header">↑</div>
-      {% if session['username'] %}
+      <span id="glued" data-glued="{{ loggedInUser["glued"] }}"></span>
+      {% if loggedInUser['username'] %}<div id="set-header">↑</div>{% endif %}
+      {% if loggedInUser['username'] %}
         <aside id="control-panel">
           <div style="float:right;">
-            <b><a href='/{{ session['username'] }}'>{{ session['username'] }}</a></b><br>
+            <b><a href='{{ url_for("userpage", username=loggedInUser['username']) }}'>{{ loggedInUser['username'] }}</a></b><br>
             <a>Updates</a><br>
             <div id="options-tab">
               <u style="cursor:pointer;">Options</u>
               <div class="roundBox">
-                <a href="/art/submit">Submit Art</a><br>
-                <a href="/journals/view">Journals</a><br>
-                <a href="/users/settings">Settings</a><br>
+                <a href="{{ url_for('submitArt') }}">Submit Art</a><br>
+                <a href="{{ url_for('manageJournal') }}">Journals</a><br>
+                <a href="{{ url_for('settings') }}">Settings</a><br>
+                {% if any(util.dictToList(loggedInUser["permissions"]) ) %} <a href="{{ url_for('staff') }}">Staff</a><br>{% endif %}
                 <a id="logout-button">Logout</a>
               </div>
             </div>
           </div>
-          <a href = '/{{ session['username'] }}'>
-            <img src='/icons/{{ session["username"].lower() }}' class='tinyIcon'  style='margin-right: 5px;'>
+          <a href = "{{ url_for("userpage", username=loggedInUser['username']) }}">
+            <img src='/icons/{{ loggedInUser["lowername"] }}' class='userIcon'  style='margin-right: 5px;' alt='User Icon'>
           </a>
         </aside>
       {% else %}
         <aside id="control-panel">
           <br><b><a id="login-button">Login</a></b> or <b><a id="register-button">Register</a></b> in seconds!
         </aside>
-        <aside id='register-form' style='display:none;'>
-          <form>
-            <h6>USERNAME:</h6> <input type='text' class='textInput' name='username'>
-            <div style='height:0px; width:0px; position:relative; top:30px; left:-311px;"'><img src='/static/images/leftRegisterMascot.png' alt='Green Mascot'></div>
-            <div style='height:0px; width:0px; position:relative; top:-5px; left:105px;"'><img src='/static/images/rightRegisterMascot.png' alt='Brown Mascot'></div>
-            <h6>EMAIL: (<i>optional</i>)</h6> <input type = 'text' class='textInput' name = 'email'>
-            <h6>PASSWORD:</h6> <input type='password' class='textInput' name='password1'>
-            <h6>VERIFY PASSWORD:</h6> <input type='password' class='textInput' name='password2'> <br>
-            <input type='checkbox' name='rememberMe'>Remember Me<br>
-          </form>
-          <button class='button'>Register</button><br>
-        </aside>
-        <aside id='login-form' style='display:none;'>
-          <form>
-            <h6>USERNAME:</h6> <input type='text' class='textInput' name='username'> <br>
-            <h6>PASSWORD:</h6> <input type='password' class='textInput' name='password'> <br><br>
-            <input type='checkbox' name='rememberMe'>Remember Me<br>
-          </form>
-          <button class='button'>Log In</button>
+        <aside id="modal">
+          <aside id='register-form' class='container inner'>
+            <span class="close"></span>
+            <form>
+              <h4>CREATE A NEW ACCOUNT</h4>
+              <h6>USERNAME:</h6> <input type='text' class='textInputNoRecoil' name='username'>
+              <!-- <h6>EMAIL: (<i>optional</i>)</h6> <input type = 'text' class='textInputNoRecoil' name = 'email'> -->
+              <h6>PASSWORD:</h6> <input type='password' class='textInputNoRecoil' name='password1'>
+              <h6>VERIFY PASSWORD:</h6> <input type='password' class='textInputNoRecoil' name='password2'> <br>
+              {% if config.betaKey %}
+              <h6>BETA CODE:</h6> <input type='text' class='textInputNoRecoil' name='betaCode'> <br>
+              {% endif %}
+              <div id="registerCaptcha" data-publicKey="{{ config.captchaPublicKey }}">
+                <div id="recaptcha_image" style="margin-left: auto; margin-right: auto; margin-top: 5px;"></div>
+                <div class="recaptcha_only_if_incorrect_sol" style="color:red">Incorrect please try again</div>
+
+                <h6 class="marginless"><span class="recaptcha_only_if_image">Enter the words above:</span></h6>
+                <h6 class="marginless"><span class="recaptcha_only_if_audio">Enter the numbers you hear:</span></h6>
+
+                <input type="text" id="recaptcha_response_field" name="recaptcha_response_field" class='textInputNoRecoil'>
+
+                <div><h6 class="marginless"><a href="javascript:Recaptcha.reload()">Get another CAPTCHA</a></h6></div>
+                <div class="recaptcha_only_if_image"><h6 class="marginless"><a href="javascript:Recaptcha.switch_type('audio')">Get an audio CAPTCHA</a></h6></div>
+                <div class="recaptcha_only_if_audio"><h6 class="marginless"><a href="javascript:Recaptcha.switch_type('image')">Get an image CAPTCHA</a></h6></div>
+
+                <div><a href="javascript:Recaptcha.showhelp()"><h6 class="marginless">Help</h6></a></div>
+              </div>
+              <input type='checkbox' name='tosAgree' value='true'><span style="font-size:12px;">You Agree to Our <a href="/meta/terms-of-service">Terms of Service</a></span><br>
+              <div style='bottom: 165px; left:-336px;' class='mascot'><img src='/static/images/leftRegisterMascot.png' alt='Green Mascot'></div>
+              <div style='bottom: 200px; left:135px;' class='mascot'><img src='/static/images/rightRegisterMascot.png' alt='Brown Mascot'></div>
+              <input type='submit' id="register-submit" class='button' value='Register'>
+            </form>
+          </aside>
+          <aside id='login-form' class='container inner'>
+            <span class="close"></span>
+            <form>
+              <h4>Log In</h4>
+              <h6>USERNAME:</h6> <input type='text' class='textInputNoRecoil' name='username'> <br>
+              <h6>PASSWORD:</h6> <input type='password' class='textInputNoRecoil' name='password'> <br><br>
+              <input type='submit' id="login-submit" class='button' value='Log In'>
+            </form>
+          </aside>
         </aside>
       {% endif %}
-      <a href="/"><div id="header-image"><img src="/static/images/regheader.png" alt="Header"></div></a>
-    </div>
-    <aside id="notice"></aside>
-    <aside id="modal"><div class="container"></div></aside>
-    <nav id="navigation" class="roundBox">
+      <a href="{{ url_for('index') }}"><div id="header-image"><img src="{{ config.headerImage }}" alt="Header"></div></a>
+    <nav id="navigation">
       <ul>
-        <li><a href="#"><img src='/static/images/tinyCLUBS.png' alt="News">News</a></li><li><a href="#"><img src='/static/images/tinySEARCH.png' alt="Search">Search</a></li><li><a href="#"><img src='/static/images/tinyDRAWRBOARD.png' alt="DrawrBoard">Draw</a></li><li><a href="#"><img src='/static/images/tinyCHAT.png' alt="Chat">Chat</a></li><li class='final'><a href="#"><img src='/static/images/tinyDONATE.png' alt="Donate">Donate</a></li>
+        <li><a href="{{ url_for('index') }}">News</a></li><li><a href="{{ url_for("search") }}">Search</a></li><li><a href="{{ url_for('clubs') }}">Clubs</a><li><a href="/">DRadio</a></li><li><a href="{{ url_for('donate') }}">Donate</a></li>
       </ul>
     </nav>
+    </div>
+    <aside id="notice"></aside>
   </header>
-  <div id="content" class="roundBox">
+  <div id="content" class="container_12">
     {% block content %}{% endblock %}
   </div>
-  <footer id="footer">
-    <span style="float:right;">copyright &copy; DrawRawr, <span id="copyright-date"></span></span>
-    <a href="/meta/terms-of-service">Terms of Service</a> ·
-    <a href="/meta/staff">Staff</a> ·
-    <a href="">DrawRawr API</a> ·
-    <a href="">Something Else</a> 
+  <footer id="footer" class="container_12">
+    <div style="float:right;">
+      &copy;2010-<span id="copyright-date"></span> DrawRawr. All rights reserved
+    </div>
+    <a href="{{ url_for('policy') }}">Terms of Service</a> &middot;
+    <a href="{{ url_for('about') }}">About</a> &middot;
+    <a href="/">Cast</a> &middot;
+    <a href="/">Something Else</a> 
   </footer>
 </body>
 </html>
+{% endblock %}

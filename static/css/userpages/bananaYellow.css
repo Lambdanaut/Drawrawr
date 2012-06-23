@@ -1,0 +1,51 @@
+body
+{
+	background-image: url("/static/images/userpage/yellowbg.png");
+}
+
+#navigation
+{
+	background-color: #C0891E;
+	color: #FFFFFF;
+       -moz-box-shadow: #777777, inset -1px -1px #896115, inset 1px 1px #ECCA88;
+       -webkit-box-shadow: #777777, inset -1px -1px #896115, inset 1px 1px #ECCA88;
+       box-shadow: 0px 2px 5px #777777, inset -1px -1px #896115, inset 1px 1px #ECCA88;
+}
+
+#navigation li
+{
+       -moz-box-shadow: inset 1px 1px #ECCA88, inset -1px -1px #896115;
+       -webkit-box-shadow: inset 1px 1px #ECCA88, inset -1px -1px #896115;
+       box-shadow: inset 1px 1px #ECCA88, inset -1px -1px #896115;
+}
+
+#navigation li:hover
+{
+	background-color: #E2AC44;
+       -moz-box-shadow: inset 1px 1px #EECF92, inset -1px -1px #996C17;
+       -webkit-box-shadow: inset 1px 1px #EECF92, inset -1px -1px #996C17;
+       box-shadow: inset 1px 1px #EECF92, inset -1px -1px #996C17;
+}
+
+#navigation ul:last-child
+{
+        -moz-box-shadow: 1px 0px #ECCA88;
+        -webkit-box-shadow: 1px 0px #ECCA88;
+        box-shadow: 1px 0px #ECCA88;
+}
+
+#footer
+{
+	color: #7B5005;
+}
+#footer a
+{
+	color: #7B5005;
+}
+
+#content
+{
+	background-color: #FEFFB1;
+	color: #C0891E;
+}
+
