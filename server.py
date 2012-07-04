@@ -126,11 +126,9 @@ def login():
 
 @app.route('/users/logout', methods=['POST'])
 def logout():
-  if "username" and "password" in session:
-    session.pop('username')
-    session.pop('password')
-    return "1"
-  else: return "0"
+  session.pop('username', None)
+  session.pop('password', None)
+  return "1"
 
 @app.route('/users/signup', methods=['GET', 'POST'])
 def signup(): 

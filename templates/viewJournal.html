@@ -2,29 +2,18 @@
 {% block title %}Manage Journals{% endblock %}
 {% block head %}
 <link rel="stylesheet" href="/static/css/jquery-ui-1.8.18.custom.css" media="screen">
-<style media="screen" type="text/css">
-#rightCol
-{
-	float: right;
-	width: 25%;
-}
-#leftCol
-{
-	width: 75%;
-}
-</style>
 <script src="/static/js/jquery-ui-1.8.18.custom.min.js"></script>
 <script src="/static/js/manageJournals.js"></script>
 {% endblock %}
 {% block content %}
-<div id="rightCol">
-  <section class="roundBox greenContainer" style="margin:5px; padding: 3px 15px 3px 15px;"><strong>Journals</strong></section>
-  <section class="container"></section>
-</div>  
-<div id="leftCol">
-  <section class="roundBox greenContainer" style="margin:5px;padding: 3px 15px 3px 15px;"><strong><a href="{{ url_for("userpage",username=journal["author"]) }}">{{ journal["author"] }}</a>: {{ journal["title"] }}</strong></section>
+<div class="grid_9">
+  <section class="roundBox greenContainer" style="padding: 4px 15px 5px 15px;"><strong><a href="{{ url_for("userpage",username=journal["author"]) }}">{{ journal["author"] }}</a>: {{ journal["title"] }}</strong></section>
   <section class="container" style="padding: 15px;">
     {{ journal["codeContent"] | safe }}
   </section>
+</div>
+<div class="grid_3">
+  <section class="roundBox greenContainer" style="padding: 4px 15px 5px 15px;"><strong>Journals</strong></section>
+  <section class="container"></section>
 </div>
 {% endblock %}

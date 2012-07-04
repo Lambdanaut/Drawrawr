@@ -1,9 +1,7 @@
 import re
-try:
-  import markdown
-  def parse(text):
-    t = text.replace("\r\n","<br>")
-    return markdown.markdown(t,output_format="html4")
-except:
-  def parse(text):
-    return text
+import jinja2
+import markdown
+
+def parse(text):
+  t = jinja2.escape(text.replace("\r\n","<br>"))
+  return markdown.markdown(t,output_format="html4")
