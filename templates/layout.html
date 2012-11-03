@@ -41,6 +41,46 @@
         </ul>
       {% endif %}
     {%- endwith -%}
+  <aside id="modal">
+    <aside id='register-form' class='container inner'>
+      <span class="close"></span>
+      <form>
+        <h4>CREATE A NEW ACCOUNT</h4>
+        <label><h6>USERNAME:</h6> <input type='text' class='textInputNoRecoil' name='username'></label>
+        <!-- <h6>EMAIL: (<i>optional</i>)</h6> <input type = 'text' class='textInputNoRecoil' name = 'email'> -->
+        <label><h6>PASSWORD:</h6> <input type='password' class='textInputNoRecoil' name='password1'></label>
+        <label><h6>VERIFY PASSWORD:</h6> <input type='password' class='textInputNoRecoil' name='password2'></label><br>
+        {% if config.betaKey %}
+        <label><h6>BETA CODE:</h6> <input type='text' class='textInputNoRecoil' name='betaCode'></label><br>
+        {% endif %}
+        <div id="registerCaptcha" data-publicKey="{{ config.captchaPublicKey }}">
+          <div id="recaptcha_image" style="margin-left: auto; margin-right: auto; margin-top: 5px;"></div>
+          <div class="recaptcha_only_if_incorrect_sol" style="color:red">Incorrect please try again</div>
+
+          <h6 class="marginless"><span class="recaptcha_only_if_image">Enter the words above:</span></h6>
+          <h6 class="marginless"><span class="recaptcha_only_if_audio">Enter the numbers you hear:</span></h6>
+          <input type="text" id="recaptcha_response_field" name="recaptcha_response_field" class='textInputNoRecoil'>
+          <div><h6 class="marginless"><a href="javascript:Recaptcha.reload()">Get another CAPTCHA</a></h6></div>
+          <div class="recaptcha_only_if_image"><h6 class="marginless"><a href="javascript:Recaptcha.switch_type('audio')">Get an audio CAPTCHA</a></h6></div>
+          <div class="recaptcha_only_if_audio"><h6 class="marginless"><a href="javascript:Recaptcha.switch_type('image')">Get an image CAPTCHA</a></h6></div>
+          <div><a href="javascript:Recaptcha.showhelp()"><h6 class="marginless">Help</h6></a></div>
+        </div>
+        <label><input type='checkbox' name='tosAgree' value='true'><span style="font-size:12px;">You Agree to Our <a href="/meta/terms-of-service">Terms of Service</a></span></label><br>
+        <div style='bottom: 165px; left:-336px;' class='mascot'><img src='/static/images/leftRegisterMascot.png' alt='Green Mascot'></div>
+        <div style='bottom: 200px; left:135px;' class='mascot'><img src='/static/images/rightRegisterMascot.png' alt='Brown Mascot'></div>
+        <input type='submit' id="register-submit" class='button' value='Register'>
+      </form>
+    </aside>
+    <aside id='login-form' class='container inner'>
+      <span class="close"></span>
+      <form>
+        <h4>Log In</h4>
+        <h6>USERNAME:</h6> <input type='text' class='textInputNoRecoil' name='username'> <br>
+        <h6>PASSWORD:</h6> <input type='password' class='textInputNoRecoil' name='password'> <br><br>
+        <input type='submit' id="login-submit" class='button' value='Log In'>
+      </form>
+    </aside>
+  </aside>
   <header>
     <div id="header">
       <span id="glued" data-glued="{{ loggedInUser["glued"] }}"></span>
@@ -68,49 +108,6 @@
       {% else %}
         <aside id="control-panel">
           <br><b><a id="login-button">Login</a></b> or <b><a id="register-button">Register</a></b> in seconds!
-        </aside>
-        <aside id="modal">
-          <aside id='register-form' class='container inner'>
-            <span class="close"></span>
-            <form>
-              <h4>CREATE A NEW ACCOUNT</h4>
-              <h6>USERNAME:</h6> <input type='text' class='textInputNoRecoil' name='username'>
-              <!-- <h6>EMAIL: (<i>optional</i>)</h6> <input type = 'text' class='textInputNoRecoil' name = 'email'> -->
-              <h6>PASSWORD:</h6> <input type='password' class='textInputNoRecoil' name='password1'>
-              <h6>VERIFY PASSWORD:</h6> <input type='password' class='textInputNoRecoil' name='password2'> <br>
-              {% if config.betaKey %}
-              <h6>BETA CODE:</h6> <input type='text' class='textInputNoRecoil' name='betaCode'> <br>
-              {% endif %}
-              <div id="registerCaptcha" data-publicKey="{{ config.captchaPublicKey }}">
-                <div id="recaptcha_image" style="margin-left: auto; margin-right: auto; margin-top: 5px;"></div>
-                <div class="recaptcha_only_if_incorrect_sol" style="color:red">Incorrect please try again</div>
-
-                <h6 class="marginless"><span class="recaptcha_only_if_image">Enter the words above:</span></h6>
-                <h6 class="marginless"><span class="recaptcha_only_if_audio">Enter the numbers you hear:</span></h6>
-
-                <input type="text" id="recaptcha_response_field" name="recaptcha_response_field" class='textInputNoRecoil'>
-
-                <div><h6 class="marginless"><a href="javascript:Recaptcha.reload()">Get another CAPTCHA</a></h6></div>
-                <div class="recaptcha_only_if_image"><h6 class="marginless"><a href="javascript:Recaptcha.switch_type('audio')">Get an audio CAPTCHA</a></h6></div>
-                <div class="recaptcha_only_if_audio"><h6 class="marginless"><a href="javascript:Recaptcha.switch_type('image')">Get an image CAPTCHA</a></h6></div>
-
-                <div><a href="javascript:Recaptcha.showhelp()"><h6 class="marginless">Help</h6></a></div>
-              </div>
-              <input type='checkbox' name='tosAgree' value='true'><span style="font-size:12px;">You Agree to Our <a href="/meta/terms-of-service">Terms of Service</a></span><br>
-              <div style='bottom: 165px; left:-336px;' class='mascot'><img src='/static/images/leftRegisterMascot.png' alt='Green Mascot'></div>
-              <div style='bottom: 200px; left:135px;' class='mascot'><img src='/static/images/rightRegisterMascot.png' alt='Brown Mascot'></div>
-              <input type='submit' id="register-submit" class='button' value='Register'>
-            </form>
-          </aside>
-          <aside id='login-form' class='container inner'>
-            <span class="close"></span>
-            <form>
-              <h4>Log In</h4>
-              <h6>USERNAME:</h6> <input type='text' class='textInputNoRecoil' name='username'> <br>
-              <h6>PASSWORD:</h6> <input type='password' class='textInputNoRecoil' name='password'> <br><br>
-              <input type='submit' id="login-submit" class='button' value='Log In'>
-            </form>
-          </aside>
         </aside>
       {% endif %}
       <a href="{{ url_for('index') }}"><div id="header-image"><img src="{{ config.headerImage }}" alt="Header"></div></a>

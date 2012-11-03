@@ -31,6 +31,8 @@
 }
 
 .comment .replyButton {
+	margin-top: -10px;
+	text-decoration: underline;
 	cursor: pointer;
 }
 
