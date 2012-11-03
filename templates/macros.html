@@ -79,9 +79,9 @@
   <div class="commentHeader">
     <div style="float:right; margin-right: 140px;">
       <span class="close"></span>
-      <span style="margin-right: 10px;"><a href="">Report</a></span>
+      <span style="margin-right: 10px;"><a href="" class="reportComment">Report</a></span>
     </div>
-    <span style="text-align:left;">{{ comment['author'] }} says: </span>
+    <span style="text-align:left;"><strong>{{ comment['author'] }}</strong> says: </span>
   </div>
   {{ userIcon(comment['author']) }}
   <div class="commentBubble">
@@ -91,8 +91,7 @@
     <div class="replyButton" style="float: right; margin-right: 140px; clear:both;">REPLY</div>
     <div class="parentData" data-value="{{ home }}" style="display: none;"></div>
     <div class="commentMapData" data-value="{{ util.printList(depthChain) }}" style="display: none;"></div>
-    <div class="reply">
-    </div>
+    <div class="reply"></div>
   </div>
   <div style="clear:both;"></div>
 </div>
@@ -106,7 +105,8 @@
   {% endif %}
       <input type="hidden" class="parentInput" name="parent" value="">
       <input type="hidden" class="commentMapInput" name="commentMap" value="">
-      <textarea name="content" class="textArea"></textarea><br>
+      Send a Reply: <br> 
+      <textarea name="content" class="textAreaNoRecoil"></textarea><br>
       <input type="submit" class="button">
     </form>
 {% endmacro %}

@@ -20,7 +20,7 @@
       form = reply.find("form");
       form.find(".parentInput").val($(this).parent().find(".parentData").attr("data-value"));
       form.find(".commentMapInput").val($(this).parent().find(".commentMapData").attr("data-value"));
-      return $(this).fadeOut("fast", function() {
+      return $(this).hide(0, function() {
         reply.fadeIn("fast");
         return reply.find("textarea").focus();
       });

@@ -14,6 +14,6 @@ $(document).ready ->
 		form.find(".parentInput").val $(this).parent().find(".parentData").attr("data-value")
 		form.find(".commentMapInput").val $(this).parent().find(".commentMapData").attr("data-value")
 
-		$(this).fadeOut "fast", =>
+		$(this).hide 0, () =>
 			reply.fadeIn("fast")
 			reply.find("textarea").focus()
