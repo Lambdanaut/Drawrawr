@@ -40,7 +40,7 @@
             $("#watchers p").remove();
             loggedInUsername = $("#loggedInUsername").attr("data-name");
             loggedInLowername = loggedInUsername.toLowerCase();
-            $("#watchers").prepend('<a href="/{{ user }}"><img src="/icons/' + loggedInLowername + '" alt="' + loggedInUsername + '\'s icon" class="tinyIcon" style="float: left;margin: 2px; display: none;" title="' + loggedInUsername + '"></a>');
+            $("#watchers").prepend('<a href="/' + loggedInLowername + '"><img src="/icons/' + loggedInLowername + '" alt="' + loggedInUsername + '\'s icon" class="tinyIcon" style="float: left;margin: 2px; display: none;" title="' + loggedInUsername + '"></a>');
             return $('#watchers img[title="' + $("#loggedInUsername").attr("data-name") + '"]').fadeIn("slow");
           }
         }

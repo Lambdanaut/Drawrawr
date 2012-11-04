@@ -14,9 +14,6 @@ debug           = True
 betaKey         = True
 randomSecretKey = False
 
-# Display
-headerImage = "/static/images/headers/regheader.png"
-
 # Database
 if production and usingSecrets:
   dbHost = "ds029817.mongolab.com"

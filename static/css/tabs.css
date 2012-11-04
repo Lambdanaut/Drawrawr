@@ -13,10 +13,10 @@
 	padding: 2px;
 	cursor: pointer;
 	background-color: #93AE83;
-        -moz-border-radius-topleft: 4px;
-        -moz-border-radius-topright: 4px;
-        -webkit-border-radius: 4px 4px 0px 0px;
-        border-radius: 4px 4px 0px 0px;
+    -moz-border-radius-topleft: 4px;
+    -moz-border-radius-topright: 4px;
+    -webkit-border-radius: 4px 4px 0px 0px;
+    border-radius: 4px 4px 0px 0px;
 	-moz-user-select: none;
 	-khtml-user-select: none;
 	-webkit-user-select: none;
