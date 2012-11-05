@@ -5,33 +5,57 @@ body
 
 #navigation
 {
-	background-color: #1C1C1C;
+	background-color: #000000;
 	color: #FFFFFF;
-       -moz-box-shadow: #000000, inset -1px -1px #0C0C0C, inset 1px 1px #333333;
-       -webkit-box-shadow: #000000, inset -1px -1px #0C0C0C, inset 1px 1px #333333;
-       box-shadow: 0px 2px 5px #000000, inset -1px -1px #0C0C0C, inset 1px 1px #333333;
-}
 
-#navigation li
-{
-       -moz-box-shadow: inset 1px 1px #333333, inset -1px -1px #0C0C0C;
-       -webkit-box-shadow: inset 1px 1px #333333, inset -1px -1px #0C0C0C;
-       box-shadow: inset 1px 1px #333333, inset -1px -1px #0C0C0C;
+ background: #000; /* Old browsers */
+  background: -moz-linear-gradient(top, #171717 0%, #000 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#171717), color-stop(100%,#000)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, #171717 0%,#000 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, #171717 0%,#000 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, #171717 0%,#000 100%); /* IE10+ */
+  background: linear-gradient(to bottom, #171717 0%,#000 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#171717', endColorstr='#000',GradientType=0 ); /* IE6-9 */
 }
 
 #navigation li:hover
 {
-	background-color: #3D3D3D;
-       -moz-box-shadow: inset 1px 1px #6B6B6B, inset -1px -1px #292929;
-       -webkit-box-shadow: inset 1px 1px #6B6B6B, inset -1px -1px #292929;
-       box-shadow: inset 1px 1px #6B6B6B, inset -1px -1px #292929;
+background-color: #313131;
 }
 
-#navigation ul:last-child
+#control-panel a
 {
-        -moz-box-shadow: 1px 0px #333333;
-        -webkit-box-shadow: 1px 0px #333333;
-        box-shadow: 1px 0px #333333;
+  color: #CACACA;
+}
+
+#header a:hover
+{
+  color: #CACACA;
+}
+
+#control-panel
+{
+  color: #FFF;
+}
+
+#options-tab .roundBox
+{
+  background-color: white;
+}
+
+#header {
+  /* Header Gradient */
+  background: #FFF; /* Old browsers */
+  background: -moz-linear-gradient(top, #808080 0%, #444444 99%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#808080), color-stop(99%,#444444)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, #808080 0%,#444444 99%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, #808080 0%,#444444 99%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, #808080 0%,#444444 99%); /* IE10+ */
+  background: linear-gradient(to bottom, #808080 0%,#444444 99%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#808080', endColorstr='#444444',GradientType=0 ); /* IE6-9 */
+}
+#header-image {
+  background-image: url('/static/images/headers/greyheader.png');
 }
 
 #footer

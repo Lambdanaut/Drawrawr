@@ -390,6 +390,7 @@ select
 .moduleTitle                                                        
 {
 	display: block;
+	font-weight: bold;
 	text-align: left;
 	padding-bottom: 2px;
 	margin-bottom: 2px;

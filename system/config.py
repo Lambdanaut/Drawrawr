@@ -29,6 +29,12 @@ iconSize = 75,75
 maxNearbyUserDistance = 5
 startingBetaKeys = 3
 
+# Passwords
+shortSalt1 = "SDDG$##@Hfa"
+shortSalt2 = "3r#$^&2andgjngds"
+longSalt1  = "#%!DD"
+longSalt2  = "$#&#N%JN323##)(#@#fmmhsppf{s}{[|11^^^43n4jfw@-"
+
 # Comments
 minimumCommentLengthInCharacters = 1
 maxCommentsOnUserpages = 5

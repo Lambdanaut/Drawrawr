@@ -615,13 +615,32 @@ def viewJournal(journal):
   journalResult = db.db.journals.find_one({"_id" : journal })
   if not journalResult: abort(404)
   db.db.journals.update({"_id": journal}, {"$inc": {"views": 1} })
-  return render_template("viewJournal.html", journal=journalResult)
+  allJournals = db.db.journals.find({"authorID" : journalResult['authorID'] }).sort("_id",-1)
+  return render_template("viewJournal.html", journal=journalResult, allJournals=allJournals)
+
+@app.route('/journal/edit/<int:journal>', methods=['GET', 'POST'])
+def editJournal(journal):
+  if g.loggedInUser:
+    journalResult = db.db.journals.find_one({"_id" : journal })
+    if not journalResult: abort(404)
+    if request.method == 'GET':
+      allJournals = db.db.journals.find({"authorID" : g.loggedInUser['_id'] }).sort("_id",-1)
+      return render_template("editJournal.html", journal=journalResult, allJournals=allJournals)
+    elif request.method == 'POST':
+      if g.loggedInUser["_id"] == journalResult['authorID']:
+        if "journalTitle" in request.form and "journalContent" in request.form and "journalMood" in request.form:
+          db.db.journals.update({"_id": journal}, {"$set": {"title": request.form["journalTitle"], "content": request.form["journalContent"], "codeContent": usercode.parse(request.form["journalContent"]), "mood": request.form["journalMood"] }})
+          return redirect(url_for('viewJournal', journal = journal) )
+      abort(401)
+
+  else: abort(401)
 
 @app.route('/journal/manage', methods=['GET','POST'])
 def manageJournal():
   if g.loggedInUser:
     if request.method == 'GET':
-      return render_template("manageJournals.html")
+      allJournals = db.db.journals.find({"authorID" : g.loggedInUser['_id'] }).sort("_id",-1)
+      return render_template("manageJournals.html", allJournals = allJournals)
     else:
       if not "journalTitle" in request.form or not "journalContent" in request.form: abort(500)
       key = db.nextKey("journals")

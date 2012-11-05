@@ -23,6 +23,7 @@
   -webkit-user-select: none;
   user-select: none;
   list-style-type: none;
+  font-size: 0.9em;
 }
 .tabButton:hover
 {
@@ -137,8 +138,8 @@
 {% if loggedInUser %}<span id="loggedInUsername" data-name="{{ loggedInUser["username"] }}"></span>{% endif %}
 <div class="grid_12">
   <div style="float: left;" id="userNavArea">
-    <a href="{{ url_for("viewUserJournals", username=user["username"]) }}" class="container tabButton"><img src="/static/images/tinyCHAT.png" alt="Drawrboard icon" style="vertical-align:bottom;"> View Journals</a>
-    <a href="{{ url_for("viewGallery", username=user["username"]) }}" class="container tabButton"><img src="/static/images/tinyDRAWRBOARD.png" alt="Drawrboard icon" style="vertical-align:bottom;"> View Gallery</a>
+    <a href="{{ url_for("viewUserJournals", username=user["username"]) }}" class="container tabButton"><!--<img src="/static/images/tinyCHAT.png" alt="Drawrboard icon" style="vertical-align:bottom;">--> View Journals</a>
+    <a href="{{ url_for("viewGallery", username=user["username"]) }}" class="container tabButton"><!--<img src="/static/images/tinyDRAWRBOARD.png" alt="Drawrboard icon" style="vertical-align:bottom;">--> View Gallery</a>
   </div>
 {% if g.loggedInUser and g.loggedInUser["_id"] != user["_id"] %}
   <div class="container tabButton" id="watchUserButton" style="margin-right:0;" data-state="{{ loggedInUser["username"] in user["watchers"] }}"> + watch </div>

@@ -31,11 +31,11 @@ li {
   <section class="container" style="padding: 15px; margin-top: 10px;">
     <form method="POST">
       <b>Title:</b> <br>
-      <input type="text" name="journalTitle" class="textInput"> <br><br>
+      <input type="text" name="journalTitle" value="{{ journal['title'] }}" class="textInput"> <br><br>
       <b>Journal:</b> <br>
-      <textarea class="textArea" name="journalContent" style="width: 100%;" cols=50></textarea> <br><br>
+      <textarea class="textArea" name="journalContent" style="width: 100%;" cols=50>{{ journal['content'] }}</textarea> <br><br>
       <b>Mood:</b> <br>
-      <input type="text" name="journalMood" id="moods" class="textInput"><br><br>
+      <input type="text" name="journalMood" id="moods" value="{{ journal['mood'] }}" class="textInput"><br><br>
       <input type="submit" class="button">
     </form>
   </section>

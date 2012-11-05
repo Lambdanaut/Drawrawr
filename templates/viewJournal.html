@@ -1,19 +1,35 @@
 {% extends "layout.html" %}
-{% block title %}Manage Journals{% endblock %}
+{% block title %}{{ journal['author'] }}: {{ journal['title'] }}{% endblock %}
 {% block head %}
 <link rel="stylesheet" href="/static/css/jquery-ui-1.8.18.custom.css" media="screen">
 <script src="/static/js/jquery-ui-1.8.18.custom.min.js"></script>
 <script src="/static/js/manageJournals.js"></script>
+<style>
+ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+li {
+	margin-bottom: 5px;
+}
+</style>
 {% endblock %}
 {% block content %}
+<div class="grid_3">
+  <section class="roundBox greenContainer" style="padding: 4px 15px 5px 15px;"><strong>Journals</strong></section>
+  <section class="container">
+    <ul>
+  	{% for j in allJournals %}
+	  <li><a href="{{ url_for("viewJournal", journal=j['_id']) }}">{{ j["title"] }}</a></li>
+  	{% endfor %}
+    </ul>
+  </section>
+</div>
 <div class="grid_9">
   <section class="roundBox greenContainer" style="padding: 4px 15px 5px 15px;"><strong><a href="{{ url_for("userpage",username=journal["author"]) }}">{{ journal["author"] }}</a>: {{ journal["title"] }}</strong></section>
   <section class="container" style="padding: 15px;">
     {{ journal["codeContent"] | safe }}
   </section>
-</div>
-<div class="grid_3">
-  <section class="roundBox greenContainer" style="padding: 4px 15px 5px 15px;"><strong>Journals</strong></section>
-  <section class="container"></section>
 </div>
 {% endblock %}

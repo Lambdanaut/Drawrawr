@@ -120,6 +120,7 @@ availableMoods = [
 	,"Paralyzed"
 	,"Peaceful"
 	,"Perfect"
+	,"Petrified"
 	,"Pessimistic"
 	,"Petulant"
 	,"Pissed"

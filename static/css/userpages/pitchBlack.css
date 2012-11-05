@@ -7,31 +7,55 @@ body
 {
 	background-color: #000000;
 	color: #FFFFFF;
-       -moz-box-shadow: #202020, inset -1px -1px #000000, inset 1px 1px #313131;
-       -webkit-box-shadow: #202020, inset -1px -1px #000000, inset 1px 1px #313131;
-       box-shadow: 0px 2px 5px #202020, inset -1px -1px #000000, inset 1px 1px #313131;
-}
 
-#navigation li
-{
-       -moz-box-shadow: inset 1px 1px #313131, inset -1px -1px #000000;
-       -webkit-box-shadow: inset 1px 1px #313131, inset -1px -1px #000000;
-       box-shadow: inset 1px 1px #313131, inset -1px -1px #000000;
+ background: #000; /* Old browsers */
+  background: -moz-linear-gradient(top, #171717 0%, #000 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#171717), color-stop(100%,#000)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, #171717 0%,#000 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, #171717 0%,#000 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, #171717 0%,#000 100%); /* IE10+ */
+  background: linear-gradient(to bottom, #171717 0%,#000 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#171717', endColorstr='#000',GradientType=0 ); /* IE6-9 */
 }
 
 #navigation li:hover
 {
-	background-color: #313131;
-       -moz-box-shadow: inset 1px 1px #5B5B5B, inset -1px -1px #000000;
-       -webkit-box-shadow: inset 1px 1px #5B5B5B, inset -1px -1px #000000;
-       box-shadow: inset 1px 1px #5B5B5B, inset -1px -1px #000000;
+background-color: #313131;
 }
 
-#navigation ul:last-child
+#control-panel a
 {
-        -moz-box-shadow: 1px 0px #313131;
-        -webkit-box-shadow: 1px 0px #313131;
-        box-shadow: 1px 0px #313131;
+  color: #CACACA;
+}
+
+#header a:hover
+{
+  color: #CACACA;
+}
+
+#control-panel
+{
+  color: #FFF;
+}
+
+#options-tab .roundBox
+{
+  background-color: white;
+}
+
+#header {
+  /* Header Gradient */
+  background: #FFF; /* Old browsers */
+  background: -moz-linear-gradient(top, #171717 0%, #000 99%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#171717), color-stop(99%,#000)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, #171717 0%,#000 99%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, #171717 0%,#000 99%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, #171717 0%,#000 99%); /* IE10+ */
+  background: linear-gradient(to bottom, #171717 0%,#000 99%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#171717', endColorstr='#000',GradientType=0 ); /* IE6-9 */
+}
+#header-image {
+  background-image: url('/static/images/headers/blackheader.png');
 }
 
 #footer
