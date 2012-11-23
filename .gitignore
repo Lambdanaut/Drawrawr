@@ -6,5 +6,6 @@ sessions/
 uploads/icons/*
 uploads/art/*
 uploads/thumbs/*
+logs/
 system/secrets.py
 venv
