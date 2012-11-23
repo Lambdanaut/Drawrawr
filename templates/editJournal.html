@@ -27,16 +27,16 @@ li {
   </section>
 </div>  
 <div class="grid_9">
-  <section class="roundBox greenContainer" style="padding: 4px 15px 5px 15px;"><strong>Create Journal</strong></section>
+  <section class="roundBox greenContainer" style="padding: 4px 15px 5px 15px;"><strong>Edit Journal</strong></section>
   <section class="container" style="padding: 15px; margin-top: 10px;">
     <form method="POST">
       <b>Title:</b> <br>
       <input type="text" name="journalTitle" value="{{ journal['title'] }}" class="textInput"> <br><br>
       <b>Journal:</b> <br>
-      <textarea class="textArea" name="journalContent" style="width: 100%;" cols=50>{{ journal['content'] }}</textarea> <br><br>
+      <textarea name="journalContent" style="width: 100%;" cols=50 rows=17>{{ journal['content'] }}</textarea> <br><br>
       <b>Mood:</b> <br>
       <input type="text" name="journalMood" id="moods" value="{{ journal['mood'] }}" class="textInput"><br><br>
-      <input type="submit" class="button">
+      <input type="submit" value="Save Your Edit" class="button">
     </form>
   </section>
 </div>

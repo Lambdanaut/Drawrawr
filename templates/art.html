@@ -26,8 +26,11 @@
       {{ art["description"] }}
     </div>
     <div style="clear:both;"></div>
-    <div id="views">Views: {{ art["views"] }}</div>
-    <div id="favorites">Favorites: {{ art["favAmount"] }}</div>
+    <small>
+      Submitted <abbr title="{{ art["date"] }}">{{ util.pretty_date(art["date"]) }}</abbr>
+      <div id="views">Views: {{ art["views"] }}</div>
+      <div id="favorites">Favorites: {{ art["favAmount"] }}</div>
+    </small>
   </section>
   {% macro favButton() %}
     {% if g.loggedInUser["username"] in art["favorites"] %}{% set fav="unfav" %}{% else %}{% set fav="fav" %}{% endif %}

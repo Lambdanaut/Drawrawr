@@ -246,14 +246,12 @@ def welcome():
 # Optimize Settings by building up one single dictionary to push to the database, rather than running multiple queries. 
 @app.route('/users/settings', methods=['GET','POST'])
 def settings():
-  if request.method == 'GET':
-    if g.loggedInUser:
+  if g.loggedInUser:
+    if request.method == 'GET':
       if config.betaKey: betaKeys = db.db.betaPass.find({"owner" : g.loggedInUser["username"] })
       else: betaKeys = None
       return render_template("settings.html", betaKeys = betaKeys)
-    else: abort(401)
-  elif request.method == 'POST':
-    if g.loggedInUser:
+    elif request.method == 'POST':
       # User Messages
       messages = []
       # User Icon
@@ -325,7 +323,7 @@ def settings():
           db.db.users.update({"lowername": g.loggedInUser['lowername']}, {"$set": layoutToPush })
           messages.append("Layout")
       return render_template("settingsSuccess.html",messages=messages,len=len)
-    else: abort(401)
+  else: abort(401)
 
 @app.route('/<username>/comment/<int:commentID>', methods=['GET'])
 @app.route('/art/<int:art>/comment/<int:commentID>', methods=['GET'])
@@ -450,8 +448,8 @@ def featureArt(art):
 
 @app.route('/art/<int:art>/favorite', methods=['POST','GET'])
 def favorite(art):
-  if request.method == 'POST':
-    if g.loggedInUser:
+  if g.loggedInUser:
+    if request.method == 'POST':
       fav = db.db.art.find_one({"_id" : art})
       if g.loggedInUser != fav["author"]:
         if g.loggedInUser["username"] in fav["favorites"]:
@@ -460,13 +458,12 @@ def favorite(art):
           db.db.art.update({"_id" : art}, {"$addToSet" : {"favorites" : g.loggedInUser["username"] } , "$inc" : {"favAmount": 1 } } )
         return "1"
       else: return "0"
-    else: abort(401)
-  else:
-    # The GET method returns 1 if the user has fav'd this art, and a 0 if they're not. 
-    if g.loggedInUser:
+    else:
+      # The GET method returns 1 if the user has fav'd this art, and a 0 if they're not. 
       fav = db.db.art.find_one({"_id" : art})
       if g.loggedInUser["username"] in fav["favorites"]: return "1"
-      else:                                                         return "0"
+      else:                                              return "0"
+  else: abort(401)
 
 @app.route('/users/welcome', methods=['GET'])
 def welcome():
@@ -514,56 +511,54 @@ def viewGallery(username,folder,page):
 
 @app.route('/art/do/submit', methods=['GET','POST'])
 def submitArt():
-  if request.method == 'GET':
-    if g.loggedInUser:
-      return render_template("submit.html")
-    else: abort(401)
-  else:
-    if not g.loggedInUser:
-      abort(401)
-    messages = []
-    # Image
-    if request.form["artType"] == "image":
-      image = request.files['upload']
-      if not util.allowedFile(image.filename, config.imageExtensions):
-        flash(config.fileTypeError + "The allowed filetypes are " + util.printList(config.imageExtensions) + ". ")
-      elif image.content_length >= config.maxImageSize:
-        flash(config.fileSizeError + "Your image must be at most " + config.maxImageSizeText + ". ")
-      elif not ("title" in request.form and "description" in request.form) : 
-        abort(500)
-      elif not request.form["title"]:
-        flash("Your title must not be left blank. ")
-      else:
-        fileType = util.fileType(request.files['upload'].filename)
-        key = db.nextKey("art")
-        db.db.art.insert({
-          "_id"         : key
-        , "title"       : request.form["title"]
-        , "description" : request.form["description"]
-        , "codeDesc"    : usercode.parse(request.form["description"])
-        , "author"      : g.loggedInUser["username"]
-        , "authorID"    : g.loggedInUser["_id"]
-        , "keywords"    : filter (lambda keyword: not keyword in ignoredKeywords.commonWords, map(lambda keyword: keyword.lower() , request.form["title"].split() ) )
-        , "mature"      : False
-        , "folder"      : "complete"
-        , "favorites"   : []
-        , "favAmount"   : 0
-        , "views"       : 0
-        , "date"        : datetime.datetime.today()
-        , "filetype"    : fileType
-        , "type"        : "image"
-        })
-        fileLocation = os.path.join(config.artDir, str(key) + "." + fileType)
-        image.save(fileLocation)
-        storage.push(fileLocation, fileLocation)
-        autocrop(key)
-        return redirect(url_for('crop',art=key))
-  # Audio
-  # Literature
-  # Craft
-  # Cullinary
-  # Performance
-  return redirect(url_for('submitArt'))
+  if g.loggedInUser:
+    if request.method == 'GET':
+        return render_template("submit.html")
+    else:
+      messages = []
+      # Image
+      if request.form["artType"] == "image":
+        image = request.files['upload']
+        if not util.allowedFile(image.filename, config.imageExtensions):
+          flash(config.fileTypeError + "The allowed filetypes are " + util.printList(config.imageExtensions) + ". ")
+        elif image.content_length >= config.maxImageSize:
+          flash(config.fileSizeError + "Your image must be at most " + config.maxImageSizeText + ". ")
+        elif not ("title" in request.form and "description" in request.form) : 
+          abort(500)
+        elif not request.form["title"]:
+          flash("Your title must not be left blank. ")
+        else:
+          fileType = util.fileType(request.files['upload'].filename)
+          key = db.nextKey("art")
+          db.db.art.insert({
+            "_id"         : key
+          , "title"       : request.form["title"]
+          , "description" : request.form["description"]
+          , "codeDesc"    : usercode.parse(request.form["description"])
+          , "author"      : g.loggedInUser["username"]
+          , "authorID"    : g.loggedInUser["_id"]
+          , "keywords"    : filter (lambda keyword: not keyword in ignoredKeywords.commonWords, map(lambda keyword: keyword.lower() , request.form["title"].split() ) )
+          , "mature"      : False
+          , "folder"      : "complete"
+          , "favorites"   : []
+          , "favAmount"   : 0
+          , "views"       : 0
+          , "date"        : datetime.datetime.today()
+          , "filetype"    : fileType
+          , "type"        : "image"
+          })
+          fileLocation = os.path.join(config.artDir, str(key) + "." + fileType)
+          image.save(fileLocation)
+          storage.push(fileLocation, fileLocation)
+          autocrop(key)
+          return redirect(url_for('crop',art=key))
+    # Audio
+    # Literature
+    # Craft
+    # Cullinary
+    # Performance
+    return redirect(url_for('submitArt'))
+  else: abort(401)
 
 @app.route('/art/do/autocrop/<int:art>',methods=['POST'])
 def autocrop(art):
@@ -623,15 +618,16 @@ def editJournal(journal):
   if g.loggedInUser:
     journalResult = db.db.journals.find_one({"_id" : journal })
     if not journalResult: abort(404)
+    if g.loggedInUser["_id"] != journalResult['authorID']:
+      abort(401)
     if request.method == 'GET':
       allJournals = db.db.journals.find({"authorID" : g.loggedInUser['_id'] }).sort("_id",-1)
       return render_template("editJournal.html", journal=journalResult, allJournals=allJournals)
     elif request.method == 'POST':
-      if g.loggedInUser["_id"] == journalResult['authorID']:
         if "journalTitle" in request.form and "journalContent" in request.form and "journalMood" in request.form:
-          db.db.journals.update({"_id": journal}, {"$set": {"title": request.form["journalTitle"], "content": request.form["journalContent"], "codeContent": usercode.parse(request.form["journalContent"]), "mood": request.form["journalMood"] }})
-          return redirect(url_for('viewJournal', journal = journal) )
-      abort(401)
+          if request.form["journalTitle"].strip() != "":
+            db.db.journals.update({"_id": journal}, {"$set": {"title": request.form["journalTitle"], "content": request.form["journalContent"], "codeContent": usercode.parse(request.form["journalContent"]), "mood": request.form["journalMood"] }})
+            return redirect(url_for('viewJournal', journal = journal) )
 
   else: abort(401)
 
@@ -642,20 +638,22 @@ def manageJournal():
       allJournals = db.db.journals.find({"authorID" : g.loggedInUser['_id'] }).sort("_id",-1)
       return render_template("manageJournals.html", allJournals = allJournals)
     else:
-      if not "journalTitle" in request.form or not "journalContent" in request.form: abort(500)
-      key = db.nextKey("journals")
-      db.db.journals.insert({
-        "_id"         : key
-      , "title"       : request.form["journalTitle"]
-      , "content"     : request.form["journalContent"]
-      , "codeContent" : usercode.parse(request.form["journalContent"])
-      , "mood"        : request.form["journalMood"]
-      , "author"      : g.loggedInUser["username"]
-      , "authorID"    : g.loggedInUser["_id"]
-      , "views"       : 0
-      , "date"        : datetime.datetime.today()
-      })
-      return redirect(url_for('viewJournal',journal=key))
+      if not "journalTitle" in request.form or not "journalContent" in request.form or not "journalMood" in request.form: abort(500)
+      if request.form["journalTitle"].strip() != "":
+        key = db.nextKey("journals")
+        db.db.journals.insert({
+          "_id"         : key
+        , "title"       : request.form["journalTitle"]
+        , "content"     : request.form["journalContent"]
+        , "codeContent" : usercode.parse(request.form["journalContent"])
+        , "mood"        : request.form["journalMood"]
+        , "author"      : g.loggedInUser["username"]
+        , "authorID"    : g.loggedInUser["_id"]
+        , "views"       : 0
+        , "date"        : datetime.datetime.today()
+        })
+        return redirect(url_for('viewJournal',journal=key))
+      else: return 0
       
   else: abort(401)    
 

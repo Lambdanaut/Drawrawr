@@ -87,8 +87,9 @@
   <div class="commentBubble">
     {{ comment["content"] }}
   </div>
-  <div class="commentHeader">
-    <div class="replyButton" style="float: right; margin-right: 140px; clear:both;">REPLY</div>
+  <div class="commentFooter">
+    <div class="replyButton">REPLY</div>
+    <div class="datePosted">Posted <abbr title="{{ comment["date"] }}">{{ util.pretty_date(comment["date"]) }}</abbr></div>
     <div class="parentData" data-value="{{ home }}" style="display: none;"></div>
     <div class="commentMapData" data-value="{{ util.printList(depthChain) }}" style="display: none;"></div>
     <div class="reply"></div>

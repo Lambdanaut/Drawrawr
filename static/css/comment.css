@@ -26,14 +26,23 @@
 	font-size: 0.85em;
 }
 
+.comment .commentFooter {
+	margin-left: 125px;
+}
+
 .comment .reportComment {
 	color: #FE4422;
 }
 
 .comment .replyButton {
-	margin-top: -10px;
 	text-decoration: underline;
 	cursor: pointer;
+	float: right;
+	margin-right: 15px;
+}
+
+.comment .datePosted {
+	font-size: smaller;
 }
 
 #replyFormTemplate {
