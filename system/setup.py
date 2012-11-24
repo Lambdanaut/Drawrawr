@@ -1,6 +1,6 @@
 import config, os, commands
 
-def databaseSetup(db):
+def database_setup(db):
   # Incremental Key Setup
   art      = db.db.seq.find_one({"_id" : "art"})
   users    = db.db.seq.find_one({"_id" : "users"})
@@ -15,7 +15,7 @@ def databaseSetup(db):
   if not comments:
     db.db.seq.insert({"_id" : "comments", "next" : 0})  
 
-def directorySetup():
+def directory_setup():
   # /uploads/ setup
   if not os.path.exists("uploads"):
     os.mkdir("uploads")
@@ -23,13 +23,13 @@ def directorySetup():
     os.mkdir(os.path.join("uploads","art") )
     os.mkdir(os.path.join("uploads","thumbs") )
 
-def javascriptSetup():
+def javascript_setup():
   # Compile coffeescript files
   jsPath = os.path.join("static","js")
   if not os.path.exists(os.path.join(jsPath,"main.js")):
     commands.getoutput("coffee -c " + os.path.join(jsPath,"main.coffee") + " " + os.path.join(jsPath,"tabs.coffee") + " " + os.path.join(jsPath,"submit.coffee") + " " + os.path.join(jsPath,"settings.coffee") )
 
 def main(db):
-  databaseSetup(db)
-  directorySetup()
-  javascriptSetup()
+  database_setup(db)
+  directory_setup()
+  javascript_setup()

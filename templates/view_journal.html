@@ -20,7 +20,7 @@ li {
   <section class="round_box green_container" style="padding: 4px 15px 5px 15px;"><strong>Journals</strong></section>
   <section class="container">
     <ul>
-  	{% for j in allJournals %}
+  	{% for j in all_journals %}
 	  <li><a href="{{ url_for("view_journal", journal=j['_id']) }}">{{ j["title"] }}</a></li>
   	{% endfor %}
     </ul>

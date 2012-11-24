@@ -27,6 +27,27 @@ class Users:
       return False
     else: return True
 
+class Art:
+  def __init__ (self, db):
+    self.con = db
+    self.db = self.con.db
+    self.art = db.art
+
+  def get (self, series = {}):
+    return self.art.find(series)
+
+  def get_one (self, series = {}):
+    return self.art.find_one(series)
+
+  def insert (self, data):
+    return self.art.insert(data)
+
+  def update (self, series, data):
+    return self.art.update(series, data)
+
+  def delete(self, series):
+    return self.art.remove(series)
+
 class Keys:
   def __init__ (self, db):
     self.con = db
@@ -50,8 +71,7 @@ class Beta_Pass:
     self.con = db
     self.db = self.con.db
     self.beta_pass = db.beta_pass
-
-  def generate_beta_pass(self, length=8, owner_name=None):
+ def generate_beta_pass(self, length=8, owner_name=None):
     password = beta_generator.generate_password(length)
     if not self.beta_pass.find_one({"password": password}):
       self.beta_pass.insert({"owner": owner_name, "password": password})

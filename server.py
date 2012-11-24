@@ -23,7 +23,7 @@ app.jinja_env.trim_blocks = True
 
 # Secret Key
 if config.random_secret_key: app.secret_key = os.urandom(24)
-else                     : app.secret_key = "0"
+else                       : app.secret_key = "0"
 
 # Add Config
 app.config['MAX_CONTENT_LENGTH'] = config.max_file_size
@@ -37,9 +37,10 @@ db_con = pymongo.Connection(config.dbHost,config.dbPort)
 db     = db_con.heroku_app2925802
 db.authenticate(config.dbUsername, config.dbPassword)
 
-users_model = models.Users(db)
-keys_model  = models.Keys(db)
-beta_pass_model  = models.Beta_Pass(db)
+users_model     = models.Users(db)
+art_model       = models.Art(db)
+keys_model      = models.Keys(db)
+beta_pass_model = models.Beta_Pass(db)
 
 def main():
   # First Start Setup
@@ -51,30 +52,30 @@ def main():
 @app.before_request
 def before_request():
   if "username" and "password" in session:
-    user = db.db.users.find_one({'lowername' : session["username"].lower(), 'password' : session["password"] }) 
+    user = users_model.get_one({'lowername' : session["username"].lower(), 'password' : session["password"] }) 
     g.logged_in_user = user
   else: g.logged_in_user = None
 
 @app.context_processor
 def inject_user():
   if g.logged_in_user: show_ads = g.logged_in_user["show_ads"]
-  else:              show_ads = True
+  else:                show_ads = True
   return dict (logged_in_user = g.logged_in_user, show_ads = show_ads, util = util, config=config, any = any, str = str)
 
 @app.route('/')
 def index():
   # Get Arts
-  recentArt = db.db.art.find().limit(30).sort("_id",-1)
-  popular_art = db.db.art.find( {"fav_amount" : {"$gt" : 0 } } ).sort("favorites",-1).limit(12)
+  recent_art = art_model.get().limit(30).sort("_id",-1)
+  popular_art = art_model.get( {"fav_amount" : {"$gt" : 0 } } ).sort("favorites",-1).limit(12)
   featured_art = []
 
   # Get New Users
-  new_users_result = db.db.users.find().sort("_id",1).limit(20)
+  new_users_result = users_model.find().sort("_id",1).limit(20)
   new_users = []
   for user in new_users_result:
     new_users.append(user["username"])
 
-  return render_template("index.html",recentArt=recentArt,popular_art=popular_art,featured_art=featured_art,new_users=new_users)
+  return render_template("index.html",recent_art=recent_art,popular_art=popular_art,featured_art=featured_art,new_users=new_users)
 
 @app.route('/<username>')
 def userpage(username):
@@ -139,12 +140,12 @@ def logout():
 
 @app.route('/users/signup', methods=['GET', 'POST'])
 def signup(): 
-  if db.user_exists(request.form['username']) or len(request.form['username']) == 0 or request.form['password1'] != request.form['password2'] or request.form['tosAgree'] != 'true':
+  if db.user_exists(request.form['username']) or len(request.form['username']) == 0 or request.form['password1'] != request.form['password2'] or request.form['tos_agree'] != 'true':
     return "0" #ERROR, User doesn't exist or username is too small
   if captcha.check(request.form['recaptcha_challenge_field'], request.form['recaptcha_response_field'],config.captcha_secret_key,request.remote_addr):
     return "2" #ERROR, Captcha Fail
   if config.beta_key:
-    beta_key = db.checkBetaPass(request.form["beta_code"])
+    beta_key = beta_pass_model.check_beta_pass(request.form["beta_code"])
     if not beta_key:
       return "3" #ERROR, Beta Code Fail
   else: beta_key = None
@@ -159,10 +160,10 @@ def signup():
   , "email"       : None #request.form['email']
   , "ip"          : [request.remote_addr]
   , "dob"         : None
-  , "beta_key"     : beta_key
-  , "beta_keys"    : config.starting_beta_keys
-  , "date_joined"  : datetime.datetime.today()
-  , "show_ads"     : True
+  , "beta_key"    : beta_key
+  , "beta_keys"   : config.starting_beta_keys
+  , "date_joined" : datetime.datetime.today()
+  , "show_ads"    : True
   , "layout"      : {
       # [CARDINAL LOCATION, ORDERING]
       # t == top; l == left; r == right; b == bottom; h == hidden
@@ -182,27 +183,27 @@ def signup():
     , "playlist"  : ["h",0]
     }
   , "permissions" : {
-      "delete_comments"    : True
-    , "edit_art"           : True
-    , "delete_art"         : True
+      "delete_comments"     : True
+    , "edit_art"            : True
+    , "delete_art"          : True
     , "ban_users"           : True
     , "make_props"          : True
-    , "vote"               : True
-    , "generate_beta_pass" : True
+    , "vote"                : True
+    , "generate_beta_pass"  : True
     , "crop_art"            : True
     }
-  , "latitude"    : None
-  , "longitude"   : None
-  , "theme"       : "default"
-  , "profile"     : ""
+  , "latitude"     : None
+  , "longitude"    : None
+  , "theme"        : "default"
+  , "profile"      : ""
   , "code_profile" : ""
   , "page_views"   : 0
-  , "watchers"    : []
-  , "bground"     : None
-  , "icon"        : "png"
-  , "glued"       : 1
+  , "watchers"     : []
+  , "bground"      : None
+  , "icon"         : "png"
+  , "glued"        : 1
     # m == Male; f == Female; h == Hide Gender
-  , "gender"      : "h"
+  , "gender"       : "h"
   }) 
   session['username'] = request.form['username']
   session['password'] = hashed
@@ -359,11 +360,11 @@ def comment(username=None,art=None,journal=None,commentID=None):
         db.db.comments.update( { "_id" : parent }, {
           "$push" : { comment_map : {
             "author_ID"    : g.logged_in_user["_id"]
-          , "author"      : g.logged_in_user["username"]
-          , "content"     : request.form["content"]
+          , "author"       : g.logged_in_user["username"]
+          , "content"      : request.form["content"]
           , "code_content" : usercode.parse(request.form["content"])
-          , "r"           : []
-          , "date"        : datetime.datetime.today()
+          , "r"            : []
+          , "date"         : datetime.datetime.today()
           } }
         })
         return "1"
@@ -383,15 +384,15 @@ def comment(username=None,art=None,journal=None,commentID=None):
         else         : abort(500)
         key = keys_model.next("comments")
         db.db.comments.insert({
-          "_id"         : key
+          "_id"          : key
         , "author_ID"    : g.logged_in_user["_id"]
-        , "author"      : g.logged_in_user["username"]
-        , "content"     : request.form["content"]
+        , "author"       : g.logged_in_user["username"]
+        , "content"      : request.form["content"]
         , "code_content" : usercode.parse(request.form["content"])
-        , "r"           : []
-        , "home"        : home
+        , "r"            : []
+        , "home"         : home
         , "home_type"    : location
-        , "date"        : datetime.datetime.today()
+        , "date"         : datetime.datetime.today()
         })
         return "1"
 
@@ -445,7 +446,7 @@ def feature_art(art):
   if not "featured_text" in request.form: abort(500)
   db.db.feature.insert({
     "author"  : g.logged_in_user["username"]
-  , "art_ID"   : art
+  , "art_ID"  : art
   , "content" : request.form["featured_text"]
   , "date"    : datetime.datetime.today()
   })
@@ -487,19 +488,19 @@ def view_gallery(username,folder,page):
     order = "d"
     if "sort" in request.args: sort = request.args["sort"]
     if "order" in request.args: order = request.args["order"]
-    if order == "d": useOrder = -1
-    else:            useOrder = 1
-    if   sort == "t": useSort = "title"
-    elif sort == "p": useSort = "fav_amount"
-    else:             useSort = "_id"
+    if order == "d": user_order = -1
+    else:            user_order = 1
+    if   sort == "t": user_sort = "title"
+    elif sort == "p": user_sort = "fav_amount"
+    else:             user_sort = "_id"
     if folder=="all":
-      art_lookup = db.db.art.find({'author' : author_lookup["username"]}).skip(config.displayed_works_per_page * page).limit( config.displayed_works_per_page ).sort(useSort,useOrder)
+      art_lookup = db.db.art.find({'author' : author_lookup["username"]}).skip(config.displayed_works_per_page * page).limit( config.displayed_works_per_page ).sort(user_sort,user_order)
     elif folder=="mature":
-      art_lookup = db.db.art.find({'author' : author_lookup["username"], 'mature' : True}).skip(config.displayed_works_per_page * page).limit( config.displayed_works_per_page ).sort(useSort,useOrder)
+      art_lookup = db.db.art.find({'author' : author_lookup["username"], 'mature' : True}).skip(config.displayed_works_per_page * page).limit( config.displayed_works_per_page ).sort(user_sort,user_order)
     elif folder=="favorites":
-      art_lookup = db.db.art.find({'favorites' : {"$in" : [author_lookup["username"] ] } } ).skip(config.displayed_works_per_page * page).limit( config.displayed_works_per_page ).sort(useSort,useOrder)
+      art_lookup = db.db.art.find({'favorites' : {"$in" : [author_lookup["username"] ] } } ).skip(config.displayed_works_per_page * page).limit( config.displayed_works_per_page ).sort(user_sort,user_order)
     else:
-      art_lookup = db.db.art.find({'author' : author_lookup["username"], 'folder' : folder}).skip(config.displayed_works_per_page * page).limit( config.displayed_works_per_page ).sort(useSort,useOrder)
+      art_lookup = db.db.art.find({'author' : author_lookup["username"], 'folder' : folder}).skip(config.displayed_works_per_page * page).limit( config.displayed_works_per_page ).sort(user_sort,user_order)
     # Create page index
     art_count = art_lookup.count()
     if not art_count: art_lookup = None
@@ -541,14 +542,14 @@ def submit_art():
             "_id"         : key
           , "title"       : request.form["title"]
           , "description" : request.form["description"]
-          , "code_desc"    : usercode.parse(request.form["description"])
+          , "code_desc"   : usercode.parse(request.form["description"])
           , "author"      : g.logged_in_user["username"]
-          , "author_ID"    : g.logged_in_user["_id"]
+          , "author_ID"   : g.logged_in_user["_id"]
           , "keywords"    : filter (lambda keyword: not keyword in ignored_keywords.commonWords, map(lambda keyword: keyword.lower() , request.form["title"].split() ) )
           , "mature"      : False
           , "folder"      : "complete"
           , "favorites"   : []
-          , "fav_amount"   : 0
+          , "fav_amount"  : 0
           , "views"       : 0
           , "date"        : datetime.datetime.today()
           , "filetype"    : fileType
@@ -596,8 +597,8 @@ def crop(art):
       image_location = os.path.join(config.art_dir, str(art_lookup["_id"]) + "." + art_lookup["filetype"] )
       storage.download(image_location)
       image = Image.open(image_location)
-      cropArea = int(request.form["x"]),int(request.form["y"]),int(request.form["x"]) + int(request.form["w"]), int(request.form["y"]) + int(request.form["h"])
-      cropped = image.crop(cropArea).resize(config.thumbnail_dimensions,Image.ANTIALIAS)
+      crop_area = int(request.form["x"]),int(request.form["y"]),int(request.form["x"]) + int(request.form["w"]), int(request.form["y"]) + int(request.form["h"])
+      cropped = image.crop(crop_area).resize(config.thumbnail_dimensions,Image.ANTIALIAS)
       cropped_location = os.path.join(config.thumb_dir, str(art_lookup["_id"]) + config.thumbnail_extension)
       cropped.save(cropped_location, config.thumbnail_format, quality=100)
       storage.push(cropped_location, cropped_location)
@@ -617,8 +618,8 @@ def view_journal(journal):
   journal_result = db.db.journals.find_one({"_id" : journal })
   if not journal_result: abort(404)
   db.db.journals.update({"_id": journal}, {"$inc": {"views": 1} })
-  allJournals = db.db.journals.find({"author_ID" : journal_result['author_ID'] }).sort("_id",-1)
-  return render_template("view_journal.html", journal=journal_result, allJournals=allJournals)
+  all_journals = db.db.journals.find({"author_ID" : journal_result['author_ID'] }).sort("_id",-1)
+  return render_template("view_journal.html", journal=journal_result, all_journals=all_journals)
 
 @app.route('/journal/edit/<int:journal>', methods=['GET', 'POST'])
 def edit_journal(journal):
@@ -628,8 +629,8 @@ def edit_journal(journal):
     if g.logged_in_user["_id"] != journal_result['author_ID']:
       abort(401)
     if request.method == 'GET':
-      allJournals = db.db.journals.find({"author_ID" : g.logged_in_user['_id'] }).sort("_id",-1)
-      return render_template("edit_journal.html", journal=journal_result, allJournals=allJournals)
+      all_journals = db.db.journals.find({"author_ID" : g.logged_in_user['_id'] }).sort("_id",-1)
+      return render_template("edit_journal.html", journal=journal_result, all_journals=all_journals)
     elif request.method == 'POST':
         if "journal_title" in request.form and "journal_content" in request.form and "journal_mood" in request.form:
           if request.form["journal_title"].strip() != "":
@@ -642,8 +643,8 @@ def edit_journal(journal):
 def manage_journal():
   if g.logged_in_user:
     if request.method == 'GET':
-      allJournals = db.db.journals.find({"author_ID" : g.logged_in_user['_id'] }).sort("_id",-1)
-      return render_template("manage_journals.html", allJournals = allJournals)
+      all_journals = db.db.journals.find({"author_ID" : g.logged_in_user['_id'] }).sort("_id",-1)
+      return render_template("manage_journals.html", all_journals = all_journals)
     else:
       if not "journal_title" in request.form or not "journal_content" in request.form or not "journal_mood" in request.form: abort(500)
       if request.form["journal_title"].strip() != "":
@@ -685,15 +686,15 @@ def search(page):
   if "sort" in request.args: sort = request.args["sort"]
   if "order" in request.args: order = request.args["order"]
   if "keywords" in request.args: keywords = request.args["keywords"].split()
-  if order == "d": useOrder = -1
-  else:            useOrder = 1
-  if   sort == "t": useSort = "title"
-  elif sort == "p": useSort = "fav_amount"
-  else:             useSort = "_id"
+  if order == "d": user_order = -1
+  else:            user_order = 1
+  if   sort == "t": user_sort = "title"
+  elif sort == "p": user_sort = "fav_amount"
+  else:             user_sort = "_id"
   if keywords:
-    art_lookup = db.db.art.find({"keywords" : {"$in": map(lambda keyword: keyword.lower(), keywords) } } ).skip(config.displayed_works_per_page * page).limit( config.displayed_works_per_page ).sort(useSort,useOrder)
+    art_lookup = db.db.art.find({"keywords" : {"$in": map(lambda keyword: keyword.lower(), keywords) } } ).skip(config.displayed_works_per_page * page).limit( config.displayed_works_per_page ).sort(user_sort,user_order)
   else:
-    art_lookup = db.db.art.find().skip(config.displayed_works_per_page * page).limit( config.displayed_works_per_page ).sort(useSort,useOrder)
+    art_lookup = db.db.art.find().skip(config.displayed_works_per_page * page).limit( config.displayed_works_per_page ).sort(user_sort,user_order)
   # Create page index
   art_count = art_lookup.count()
   if not art_count: art_lookup = None
@@ -729,7 +730,7 @@ def thumb_file(filename):
   return redirect( storage.get(os.path.join(config.thumb_dir,filename ) ) )
 
 @app.route('/icons/<filename>')
-def iconFiles(filename):
+def icon_files(filename):
   return redirect( storage.get(os.path.join(config.icons_dir,filename ) ) )
   '''
   filename = filename.lower()
@@ -743,8 +744,8 @@ def iconFiles(filename):
   else: abort(404)
   '''
 
-@app.route('/util/parseUsercode/<text>')
-def parseUsercode(text):
+@app.route('/util/parse_usercode/<text>')
+def parse_usercode(text):
   return usercode.parse(text)
 
 @app.route('/admin/generate_beta_pass',methods=['POST'])
@@ -758,8 +759,8 @@ def generate_beta_pass():
     else: abort(401)
   else: abort(401)
 
-@app.route('/api/updateCount',methods=['GET'])
-def updateCount():
+@app.route('/api/update_count',methods=['GET'])
+def update_count():
   try:
     username = request.args.get('username')
     password = request.args.get('password')

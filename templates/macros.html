@@ -1,8 +1,8 @@
 {# Maps integers to month names #}
 {% macro month_name(m) %}{% if m == 1 %}January{% elif m == 2 %}February{% elif m == 3 %}March{% elif m == 4 %}April{% elif m == 5 %}May{% elif m == 6 %}June{% elif m == 7 %}July{% elif m == 8 %}August{% elif m == 9 %}September{% elif m == 10 %}October{% elif m == 11 %}November{% else %}December{% endif %}{% endmacro %}
-{# Writes out three select boxes with names "changeYear", "changeMonth", and "changeDay" #}
-{% macro dateSelects() %}
-<select name=changeMonth>
+{# Writes out three select boxes with names "changeYear", "change_month", and "change_day" #}
+{% macro date_selects() %}
+<select name=change_month>
   <option value='1'>January</option>
   <option value='2'>February</option>
   <option value='3'>March</option>
@@ -16,12 +16,12 @@
   <option value='11'>November</option>
   <option value='12'>December</option>
 </select>
-<select name=changeDay >
+<select name=change_day >
 {% for day in range(1,32) %}
   <option value='{{ day }}'>{{ day }}</option>
 {% endfor %}
 </select>
-<select name=changeDay >
+<select name=change_year >
 {% for year in range(1910,2013) %}
   <option value='{{ year }}'>{{ year }}</option>
 {% endfor %}
@@ -33,11 +33,11 @@
 {% endmacro %}
 {# Prints out a user's icon #}
 {% macro user_icon(user) %}
-<a href="{{ url_for('userpage',username=user) }}"><img src="{{ url_for('iconFiles',filename=user.lower()) }}" alt="{{ user }}'s icon" class="user_icon" style="float: left;margin: 2px;" title="{{ user }}"></a>
+<a href="{{ url_for('userpage',username=user) }}"><img src="{{ url_for('icon_files',filename=user.lower()) }}" alt="{{ user }}'s icon" class="user_icon" style="float: left;margin: 2px;" title="{{ user }}"></a>
 {% endmacro %}
 {# Prints out a tiny user's icon #}
 {% macro tinyUserIcon(user) %}
-<a href="/{{ user }}"><img src="{{ url_for('iconFiles',filename=user.lower()) }}" alt="{{ user }}'s icon" class="tiny_icon" style="float: left;margin: 1px;" title="{{ user }}"></a>
+<a href="/{{ user }}"><img src="{{ url_for('icon_files',filename=user.lower()) }}" alt="{{ user }}'s icon" class="tiny_icon" style="float: left;margin: 1px;" title="{{ user }}"></a>
 {% endmacro %}
 <!-- {# Take a list of arts from the database and shows them in gallery format on the page #} -->
 {% macro draw_gallery(gallery) %}
