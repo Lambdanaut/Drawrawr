@@ -12,6 +12,7 @@ import system.captcha as captcha
 import system.config as config
 import system.cryptography
 import system.ignoredKeywords as ignoredKeywords
+import system.models as models
 import system.setup as setup
 import system.usercode as usercode
 import system.util as util
@@ -27,12 +28,17 @@ else                     : app.secret_key = "0"
 # Add Config
 app.config['MAX_CONTENT_LENGTH'] = config.maxFileSize
 
-if config.production: db = Database(config.dbHost,config.dbPort,config.dbUsername,config.dbPassword)
-else: db = Database(config.dbHost,config.dbPort)
-
 storage = S3()
 
 if config.logging: logging.basicConfig(filename='logs/DR.log',level=logging.DEBUG)
+
+# Database
+db_con = pymongo.Connection(config.dbHost,config.dbPort)
+db     = db_con.heroku_app2925802
+db.authenticate(config.dbUsername, config.dbPassword)
+
+users_model = models.Users(db)
+keys_model  = models.Keys(db)
 
 def main():
   # First Start Setup
@@ -71,7 +77,7 @@ def index():
 
 @app.route('/<username>')
 def userpage(username):
-  user = db.getUser(username)
+  user = users_model.get_one({"lowername": user['lowername']})
   if user:
     # Increment Page Views
     db.db.users.update({"lowername": user['lowername']}, {"$inc": {"pageViews": 1} })
@@ -759,7 +765,7 @@ def updateCount():
   except KeyError:
     return "Error: Invalid request"
   if username and password:
-    if db.userPassCheck(username,password):
+    if users_model.userPassCheck(username,password):
       pass
     else: return "Error: Invalid Username/Password combo"
   else: return "Error: Invalid request"
