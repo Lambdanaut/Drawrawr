@@ -6,11 +6,11 @@ $(document).ready ->
 			"max-width": "80%"
 			"cursor": "pointer"
 			"max-height": "1000px"
-		$("#previewText").text "Click Image to Full View"
+		$("#preview_text").text "Click Image to Full View"
 
 		art.click ->
 			if art.attr("data-size") == "small"
-				$("#previewText").slideUp(200)
+				$("#preview_text").slideUp(200)
 				art.fadeOut 100, ->
 					art.css
 						"max-width": "None"
@@ -18,7 +18,7 @@ $(document).ready ->
 					art.fadeIn 100, ->
 						art.attr "data-size","full"
 			else
-				$("#previewText").slideDown(200)
+				$("#preview_text").slideDown(200)
 				art.fadeOut 100, ->
 					art.css
 						"max-width": "80%"
@@ -27,18 +27,18 @@ $(document).ready ->
 						art.attr "data-size","small"
 
 	### Favorites ###
-	favButton = $("#favButton")
-	favButton.click ->
+	fav_button = $("#fav_button")
+	fav_button.click ->
 		$.ajax
-			url: "/art/" + $("#artID").attr("data-state") + "/favorite",
+			url: "/art/" + $("#art_ID").attr("data-state") + "/favorite",
 			type: "POST"
 			complete: (msg) ->
-				if favButton.attr("data-state") == "fav"
-					favButton.attr "src","/static/images/unfavoritebutton.png"
-					favButton.attr "data-state", "unfav"
+				if fav_button.attr("data-state") == "fav"
+					fav_button.attr "src","/static/images/unfavorite_button.png"
+					fav_button.attr "data-state", "unfav"
 				else
-					favButton.attr "src", "/static/images/favoritebutton.png"
-					favButton.attr "data-state", "fav"
+					fav_button.attr "src", "/static/images/favorite_button.png"
+					fav_button.attr "data-state", "fav"
 
 	### Watch Button ###
 	watchButton = $("#watchButton")
@@ -49,10 +49,10 @@ $(document).ready ->
 			data: "watchedUser=" + $("#author").attr("data-name"),
 			complete: (msg) ->
 				if watchButton.attr("data-state") == "watch"
-					watchButton.attr "src","/static/images/unwatchbutton.png"
+					watchButton.attr "src","/static/images/unwatch_button.png"
 					watchButton.attr "data-state","unwatch"
 				else
-					watchButton.attr "src","/static/images/watchbutton.png"
+					watchButton.attr "src","/static/images/watch_button.png"
 					watchButton.attr "data-state","watch"
 
 	### Feature Button ###
@@ -60,7 +60,7 @@ $(document).ready ->
 		featureModal = new Modal "modal"
 
 	### Delete Button ###
-	$("#deleteButton").click ->
+	$("#delete_button").click ->
 		conf = confirm "Are you sure you want to delete this artwork? "
 		if conf
 			$.ajax

@@ -1,13 +1,13 @@
-import datetime
+# import datetime
 
-def allowedFile(filename,extensions):
+def allowed_file(filename,extensions):
   return '.' in filename and \
     filename.rsplit('.', 1)[1].lower() in extensions
 
 def fileType(filename):
   return filename.rsplit('.', 1)[1]
 
-def printList(l):
+def print_list(l):
   newL = ""
   end = len(l)
   for item in range(0, end):
@@ -23,13 +23,13 @@ def unsplit(listOfStrings):
   if listOfStrings != []: return reduce(lambda prior, new: prior + " " + new ,listOfStrings)
   else: return ""
 
-def dictToList(d):
+def dict_to_list(d):
   l = []
   for k in d:
     l.append(d[k])
   return l
 
-def parseCommentMap(cMap):
+def parse_comment_map(cMap):
   '''
   Returns a string that can be used in mongodb to find a comment reply
 
@@ -49,7 +49,7 @@ def parseCommentMap(cMap):
   validMap += currentObject + ".r"
   return validMap  
 
-def compareDicts(d1,d2):
+def compare_dicts(d1,d2):
   '''
   Despite the name, this just checks to make sure every key in d1 has a counterpart in d2 that's value is the same. 
   '''
@@ -59,7 +59,7 @@ def compareDicts(d1,d2):
     else: return False
   return True
 
-def compareDictKeys(d1,d2):
+def compare_dict_keys(d1,d2):
   '''
   Same as above, but compares the key names rather than the key values. 
   '''
@@ -67,18 +67,18 @@ def compareDictKeys(d1,d2):
     if not key in d2: return False
   return True
 
-def concDictValues(d1,d2):
-  ''' Takes two dicts with the same keys and puts the key's values together like this: concDictValues({1:"o",2:"tw"},{1:"ne",2:"o"}) == {1:["o","ne"],2:["tw","o"]} '''
+def conc_dict_values(d1,d2):
+  ''' Takes two dicts with the same keys and puts the key's values together like this: conc_dict_values({1:"o",2:"tw"},{1:"ne",2:"o"}) == {1:["o","ne"],2:["tw","o"]} '''
   newD = {}
   for key in d1:
     if key in d2:
       newD[key] = [d1[key], d2[key] ]
   return newD
 
-def urlDecode(string):
+def url_decode(string):
   '''
   Decodes a URL string to a dict of strings
-  Example: urlDecode("name=lambdanaut&age=20&") = {"name" : "lambdanaut", "age" : "20"}
+  Example: url_decode("name=lambdanaut&age=20&") = {"name" : "lambdanaut", "age" : "20"}
   Note: Last character in string must be ampersand
   '''
   result = {}

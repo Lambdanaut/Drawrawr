@@ -27,7 +27,7 @@
 */
 
 (function() {
-  var allowedIn, getLocation, inSet, serializeLayout, serializeLayoutOrder, sets, updateLocation;
+  var allowed_in, get_location, inSet, serialize_layout, serialize_layout_order, sets, update_location;
 
   sets = {
     a: ['t', 'l', 'r', 'b', 'h'],
@@ -58,15 +58,15 @@
     interactions: 'g'
   };
 
-  allowedIn = function() {};
+  allowed_in = function() {};
 
   /* Returns a serialized version of the layout
   */
 
-  serializeLayout = function() {
+  serialize_layout = function() {
     var data;
     data = "";
-    $("#profileTop, #profileLeftCol, #profileRightCol, #profileBottom, #profileHidden").each(function(idx, elem) {
+    $("#profile_top, #profile_left_col, #profile_right_col, #profile_bottom, #profile_hidden").each(function(idx, elem) {
       return $(elem).children(".draggable").each(function(idx2, elem2) {
         return data += $(elem2).attr("id") + "=" + $(elem).attr("data-loc") + "&";
       });
@@ -74,10 +74,10 @@
     return data;
   };
 
-  serializeLayoutOrder = function() {
+  serialize_layout_order = function() {
     var data;
     data = "";
-    $("#profileTop, #profileLeftCol, #profileRightCol, #profileBottom, #profileHidden").each(function(idx, elem) {
+    $("#profile_top, #profile_left_col, #profile_right_col, #profile_bottom, #profile_hidden").each(function(idx, elem) {
       return $(elem).children(".draggable").each(function(idx2, elem2) {
         return data += $(elem2).attr("id") + "=" + idx2 + "&";
       });
@@ -85,7 +85,7 @@
     return data;
   };
 
-  updateLocation = function(position) {
+  update_location = function(position) {
     var lat, lon;
     lat = position.coords.latitude;
     lon = position.coords.longitude;
@@ -93,58 +93,58 @@
     return $("#longitude").val(lon);
   };
 
-  getLocation = function() {
-    return navigator.geolocation.getCurrentPosition(updateLocation);
+  get_location = function() {
+    return navigator.geolocation.getCurrentPosition(update_location);
   };
 
   $(document).ready(function() {
     /* Gender
-    */    $("#changeGender").val($("#defaultGender").val());
+    */    $("#change_gender").val($("#default_gender").val());
     /* Geolocation
     */
     if (Modernizr.geolocation) {
-      $("#getLocation").click(getLocation);
+      $("#get_location").click(get_location);
     } else {
-      $("#getLocation").attr("disabled", "disabled");
-      $("#getLocation").css("display", "none");
-      $("#noLocationBrowser").css("display", "block");
+      $("#get_location").attr("disabled", "disabled");
+      $("#get_location").css("display", "none");
+      $("#no_location_browser").css("display", "block");
     }
-    $("#whyLocation").click(function() {
+    $("#why_location").click(function() {
       var box;
-      return box = new Helpbox("#whyHelp");
+      return box = new Help_Box("#whyHelp");
     });
     /* Color Theme
     */
-    $("#changeColorTheme").change(function() {
+    $("#change_color_theme").change(function() {
       return $("#colorThemeStyle").attr("href", "/static/css/userpages/" + $(this).val() + ".css");
     });
-    $("#changeColorTheme").val($("#defaultTheme").attr("data-theme"));
-    $("#changeColorTheme").trigger("change");
+    $("#change_color_theme").val($("#default_theme").attr("data-theme"));
+    $("#change_color_theme").trigger("change");
     /* Userpage Layout
     */
-    $("#profileTop, #profileLeftCol, #profileRightCol, #profileBottom, #profileHidden").sortable({
-      connectWith: ".dragBox",
+    $("#profile_top, #profile_left_col, #profile_right_col, #profile_bottom, #profile_hidden").sortable({
+      connectWith: ".drag_box",
       update: function() {
-        $("#changeLayout").val(serializeLayout());
-        return $("#changeLayoutOrder").val(serializeLayoutOrder());
+        $("#change_layout").val(serialize_layout());
+        return $("#change_layout_order").val(serialize_layout_order());
       }
     }).disableSelection();
     /* Beta Keys
     */
-    return $("#generateNewInvite").click(function() {
+    return $("#generate_new_invite").click(function() {
       var conf;
       conf = confirm("Are you sure you want to spend one of your invites? ");
       if (conf) {
         return $.ajax({
-          url: "/admin/generateBetaPass",
+          url: "/admin/generate_beta_pass",
           type: "POST",
           beforeSend: function() {
-            return $("#betaLoader").css("display", "inline");
+            return $("#beta_loader").css("display", "inline");
           },
           success: function(data) {
-            $("#betaKeyList").append("<li style='display:none'>" + data + "</li>");
-            return $("#betaKeyList li:last-child").fadeIn("slow", function() {
-              return $("#betaLoader").css("display", "none");
+            $("#beta_key_list").append("<li style='display:none'>" + data + "</li>");
+            return $("#beta_key_list li:last-child").fadeIn("slow", function() {
+              return $("#beta_loader").css("display", "none");
             });
           }
         });

@@ -7,12 +7,12 @@
 <script src="/static/js/comment.js"></script>
 
 <style media="screen" type="text/css">
-#userNavArea a
+#user_nav_area a
 {
 	color: inherit;
 	text-decoration: none;
 }
-.tabButton
+.tab_button
 {
 	float: right;
 	padding: 3px 5px 3px 5px;
@@ -25,7 +25,7 @@
   list-style-type: none;
   font-size: 0.9em;
 }
-.tabButton:hover
+.tab_button:hover
 {
   background: none;
   background-color: #DDDDDD;
@@ -33,14 +33,14 @@
 </style>
 
 {# Color Theme Settings #}
-{{ applyTheme(user["theme"]) }}
+{{ apply_theme(user["theme"]) }}
 
 {% endblock %}	
 
 {% macro profile() %}
   <section class="container">
   <div style="float:left;height:100%;margin-right:5px;">
-  {{ userIcon(user['username']) }}
+  {{ user_icon(user['username']) }}
   </div>
   <div>
     <h3 style="display: inline;margin-top:0px;">{{ user['username'] }}</h3> 
@@ -49,10 +49,10 @@
     {% endif %}
     {% if user["dob"] != None %}
       <span style="font-size:12px;">
-	Birthday: {{ monthName(user["dob"].month) }} {{ user["dob"].day }}, {{ user["dob"].year }}
+	Birthday: {{ month_name(user["dob"].month) }} {{ user["dob"].day }}, {{ user["dob"].year }}
       </span>
     {% endif %}
-    <div style=" margin-left: 80px;">{{ user["codeProfile"] | safe }}</div>
+    <div style=" margin-left: 80px;">{{ user["code_profile"] | safe }}</div>
   </div>
   <div style="clear: both;"></div>
   </section>
@@ -60,55 +60,55 @@
 
 {% macro gallery() %}
   <section class="container gallery" style="max-height: 264px;min-height:140px;">
-    <span class="moduleTitle">Gallery</span>
+    <span class="module_title">Gallery</span>
     <span style="clear:both;"></span>
-    {{ drawGallery(userGallery) }}
+    {{ draw_gallery(userGallery) }}
   </section>
 {% endmacro %}
 
 {% macro watches() %}
   <section class="container gallery" style="max-height: 260px;">
-    <span class="moduleTitle">Watchers</span>
+    <span class="module_title">Watchers</span>
     <div id="watchers">
-    {{ drawUsers( user["watchers"][:25], smallIcon=True ) }}
+    {{ draw_users( user["watchers"][:25], small_icon=True ) }}
     </div>
   </section>
 {% endmacro %}
 
 {% macro comments() %}
   <section class="container">
-    <span class="moduleTitle">Comments</span>
-    <div id="replyFormTemplate">{{ drawReplyForm(user["_id"], "u") }}</div>
-    {% if commentResult %}
-      {% for comment in commentResult %}
-        {{ drawCommentChain(comment,user["_id"],"u") }}
+    <span class="module_title">Comments</span>
+    <div id="reply_form_template">{{ draw_reply_form(user["_id"], "u") }}</div>
+    {% if comment_result %}
+      {% for comment in comment_result %}
+        {{ draw_comment_chain(comment,user["_id"],"u") }}
       {% endfor %}
     {% endif %}
-    <div class="leaveCommentButton">Leave a Comment</div>
-    <div class="comment" id="leaveCommentForm"></div>
+    <div class="leave_comment_button">Leave a Comment</div>
+    <div class="comment" id="leave_comment_form"></div>
   </section>
 {% endmacro %}
 
 {% macro nearby() %}
   <section class="container gallery" style="max-height: 260px;">
-    <span class="moduleTitle">Nearby Artists</span>
-    {{ drawUsers( nearbyUsers, smallIcon=True ) }}
+    <span class="module_title">Nearby Artists</span>
+    {{ draw_users( nearby_users, small_icon=True ) }}
   </section>
 {% endmacro %}
 
 {% macro journal() %}
   <section class="container">
-  {% if journalResult %}
-    <span class="moduleTitle">Journal :: <a href="{{ url_for("viewJournal", journal = journalResult['_id']) }}">{{ journalResult["title"] }}</a></span>
-    <p>{{ journalResult["codeContent"] | safe }}</p>
+  {% if journal_result %}
+    <span class="module_title">Journal :: <a href="{{ url_for("view_journal", journal = journal_result['_id']) }}">{{ journal_result["title"] }}</a></span>
+    <p>{{ journal_result["code_content"] | safe }}</p>
   {% else %}
-    <span class="moduleTitle">Journal</span>
+    <span class="module_title">Journal</span>
     <p style="text-align:center;">There aren't any journals to display just yet! </p>
   {% endif %}
   </section>
 {% endmacro %}
 
-{% macro modToFunc(m) %}
+{% macro mod_to_func(m) %}
   {% if   m == "profile"  %}{{ profile() }}
   {% elif m == "gallery"  %}{{ gallery() }}
   {% elif m == "watches"  %}{{ watches() }}
@@ -119,7 +119,7 @@
 {% endmacro %}
 
 {% macro drawModule(module,loc,order) %}
-  {% if user["layout"][module][0] == loc and user["layout"][module][1] == order %} {{ modToFunc(module) }} {% endif %}
+  {% if user["layout"][module][0] == loc and user["layout"][module][1] == order %} {{ mod_to_func(module) }} {% endif %}
 {% endmacro %}
 
 {% macro row(l) %}
@@ -135,15 +135,15 @@
 
 {% block content %}
 <span id="username" data-name="{{ user["username"] }}"></span>
-{% if loggedInUser %}<span id="loggedInUsername" data-name="{{ loggedInUser["username"] }}"></span>{% endif %}
+{% if logged_in_user %}<span id="logged_in_username" data-name="{{ logged_in_user["username"] }}"></span>{% endif %}
 <div class="grid_12">
-  <div style="float: left;" id="userNavArea">
-    <a href="{{ url_for("viewUserJournals", username=user["username"]) }}" class="container tabButton"><!--<img src="/static/images/tinyCHAT.png" alt="Drawrboard icon" style="vertical-align:bottom;">--> View Journals</a>
-    <a href="{{ url_for("viewGallery", username=user["username"]) }}" class="container tabButton"><!--<img src="/static/images/tinyDRAWRBOARD.png" alt="Drawrboard icon" style="vertical-align:bottom;">--> View Gallery</a>
+  <div style="float: left;" id="user_nav_area">
+    <a href="{{ url_for("viewUserJournals", username=user["username"]) }}" class="container tab_button"><!--<img src="/static/images/tinyCHAT.png" alt="Drawrboard icon" style="vertical-align:bottom;">--> View Journals</a>
+    <a href="{{ url_for("view_gallery", username=user["username"]) }}" class="container tab_button"><!--<img src="/static/images/tinyDRAWRBOARD.png" alt="Drawrboard icon" style="vertical-align:bottom;">--> View Gallery</a>
   </div>
-{% if g.loggedInUser and g.loggedInUser["_id"] != user["_id"] %}
-  <div class="container tabButton" id="watchUserButton" style="margin-right:0;" data-state="{{ loggedInUser["username"] in user["watchers"] }}"> + watch </div>
-  <div class="container tabButton" id="messageUserButton"> ~ message </div>
+{% if g.logged_in_user and g.logged_in_user["_id"] != user["_id"] %}
+  <div class="container tab_button" id="watch_user_button" style="margin-right:0;" data-state="{{ logged_in_user["username"] in user["watchers"] }}"> + watch </div>
+  <div class="container tab_button" id="message_user_button"> ~ message </div>
 {% endif %}
 </div>
 <div class="grid_12">

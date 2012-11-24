@@ -1,18 +1,18 @@
 $(document).ready ->
 	### Comment Button ###
-	$(".leaveCommentButton").click () ->
-		$("#leaveCommentForm").html $("#replyFormTemplate").clone().html()
+	$(".leave_comment_button").click () ->
+		$("#leave_comment_form").html $("#reply_form_template").clone().html()
 		$(this).fadeOut "fast", =>
-			$("#leaveCommentForm").fadeIn("fast")
-			$("#leaveCommentForm").find("textarea").focus()	
+			$("#leave_comment_form").fadeIn("fast")
+			$("#leave_comment_form").find("textarea").focus()	
 
 	### Reply Button ###
-	$(".comment .replyButton").click () ->
+	$(".comment .reply_button").click () ->
 		reply = $(this).parent().find(".reply")
-		reply.html $("#replyFormTemplate").clone().html()
+		reply.html $("#reply_form_template").clone().html()
 		form = reply.find("form")
-		form.find(".parentInput").val $(this).parent().find(".parentData").attr("data-value")
-		form.find(".commentMapInput").val $(this).parent().find(".commentMapData").attr("data-value")
+		form.find(".parent_input").val $(this).parent().find(".parentData").attr("data-value")
+		form.find(".comment_map_input").val $(this).parent().find(".comment_map_data").attr("data-value")
 
 		$(this).hide 0, () =>
 			reply.fadeIn("fast")

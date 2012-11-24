@@ -8,7 +8,7 @@ body
 	background-color: #000000;
 	color: #FFFFFF;
 
- background: #000; /* Old browsers */
+  background: #000; /* Old browsers */
   background: -moz-linear-gradient(top, #171717 0%, #000 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#171717), color-stop(100%,#000)); /* Chrome,Safari4+ */
   background: -webkit-linear-gradient(top, #171717 0%,#000 100%); /* Chrome10+,Safari5.1+ */
@@ -38,7 +38,7 @@ background-color: #313131;
   color: #FFF;
 }
 
-#options-tab .roundBox
+#options-tab .round_box
 {
   background-color: white;
 }

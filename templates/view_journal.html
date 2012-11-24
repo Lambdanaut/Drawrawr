@@ -3,7 +3,7 @@
 {% block head %}
 <link rel="stylesheet" href="/static/css/jquery-ui-1.8.18.custom.css" media="screen">
 <script src="/static/js/jquery-ui-1.8.18.custom.min.js"></script>
-<script src="/static/js/manageJournals.js"></script>
+<script src="/static/js/manage_journals.js"></script>
 <style>
 ul {
 	list-style: none;
@@ -17,20 +17,20 @@ li {
 {% endblock %}
 {% block content %}
 <div class="grid_3">
-  <section class="roundBox greenContainer" style="padding: 4px 15px 5px 15px;"><strong>Journals</strong></section>
+  <section class="round_box green_container" style="padding: 4px 15px 5px 15px;"><strong>Journals</strong></section>
   <section class="container">
     <ul>
   	{% for j in allJournals %}
-	  <li><a href="{{ url_for("viewJournal", journal=j['_id']) }}">{{ j["title"] }}</a></li>
+	  <li><a href="{{ url_for("view_journal", journal=j['_id']) }}">{{ j["title"] }}</a></li>
   	{% endfor %}
     </ul>
   </section>
 </div>
 <div class="grid_9">
-  <section class="roundBox greenContainer" style="padding: 4px 15px 5px 15px;"><span style="float:right;">Posted <abbr title="{{ journal["date"] }}">{{ util.pretty_date(journal["date"]) }}</abbr></span>
+  <section class="round_box green_container" style="padding: 4px 15px 5px 15px;"><span style="float:right;">Posted <abbr title="{{ journal["date"] }}">{{ util.pretty_date(journal["date"]) }}</abbr></span>
   <strong><a href="{{ url_for("userpage",username=journal["author"]) }}">{{ journal["author"] }}</a>: {{ journal["title"] }}</strong></section>
   <section class="container" style="padding: 15px;">
-    {{ journal["codeContent"] | safe }}
+    {{ journal["code_content"] | safe }}
   </section>
 </div>
 {% endblock %}

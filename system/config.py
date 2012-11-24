@@ -1,23 +1,23 @@
-import os
-usingSecrets=True
+# import os
+using_secrets=True
 try: import secrets
-except ImportError: usingSecrets=False
+except ImportError: using_secrets=False
 
 # Server
 host = '0.0.0.0'
 port = int(os.environ.get("PORT", 80))
 
 # Production
-production      = True
-logging         = False
-debug           = True
-betaKey         = True
-randomSecretKey = False
+production        = True
+logging           = False
+debug             = True
+beta_key           = True
+random_secret_key = False
 
 # Database
-if production and usingSecrets:
-  dbHost = "ds029817.mongolab.com"
-  dbPort = 29817
+if production and using_secrets:
+  dbHost     = "ds029817.mongolab.com"
+  dbPort     = 29817
   dbUsername = secrets.dbUsername
   dbPassword = secrets.dbPassword
 else:
@@ -26,58 +26,58 @@ else:
 
 # Users
 iconSize = 75,75
-maxNearbyUserDistance = 5
-startingBetaKeys = 3
+max_nearby_user_distance = 5
+starting_beta_keys = 3
 
 # Passwords
-shortSalt1 = "SDDG$##@Hfa"
-shortSalt2 = "3r#$^&2andgjngds"
-longSalt1  = "#%!DD"
-longSalt2  = "$#&#N%JN323##)(#@#fmmhsppf{s}{[|11^^^43n4jfw@-"
+short_salt_1 = "SDDG$##@Hfa"
+short_salt_2 = "3r#$^&2andgjngds"
+long_salt_1  = "#%!DD"
+long_salt_2  = "$#&#N%JN323##)(#@#fmmhsppf{s}{[|11^^^43n4jfw@-"
 
 # Comments
-minimumCommentLengthInCharacters = 1
-maxCommentsOnUserpages = 5
+minimum_comment_length_in_characters = 1
+max_comments_on_userpages = 5
 
 # Art
-pageViewsRequireAlternateIP = False
-featuresBeforeConsideration = 10
+page_views_require_alternate_IP = False
+features_before_consideration = 10
 
 # Gallery
-displayedWorksPerPage = 50
-pageIndexes = 15
+displayed_works_per_page = 50
+page_indexes = 15
 
 # Uploads
-usingS3 = True
+using_S3 = True
 
-uploadsDir      = "uploads"
-iconsDir        = os.path.join(uploadsDir, "icons")
-artDir          = os.path.join(uploadsDir, "art")
-thumbDir        = os.path.join(uploadsDir, "thumbs")
+uploads_dir      = "uploads"
+icons_dir        = os.path.join(uploads_dir, "icons")
+art_dir          = os.path.join(uploads_dir, "art")
+thumb_dir        = os.path.join(uploads_dir, "thumbs")
 
-imageExtensions = ['png', 'jpg', 'jpeg', 'gif', 'tif', 'svg']
-iconExtensions  = imageExtensions
+image_extensions = ['png', 'jpg', 'jpeg', 'gif', 'tif', 'svg']
+icon_extensions  = image_extensions
 
-thumbnailDimensions = 135,110
-thumbnailFormat     = "PNG"
-thumbnailExtension  = ".thumbnail.png"
+thumbnail_dimensions = 135,110
+thumbnail_format     = "PNG"
+thumbnail_extension  = ".thumbnail.png"
 
-maxFileSize      = 20 * 1024**2
-maxFileSizeText  = "Twenty Megabytes"
+max_file_size       = 20 * 1024**2
+max_file_size_text  = "Twenty Megabytes"
 
-maxIconSize      = 2 * 1024**2
-maxIconSizeText  = "Two Megabytes"
-maxImageSize     = 8 * 1024**2
-maxImageSizeText = "Eight Megabytes"
+max_icon_size       = 2 * 1024**2
+max_icon_size_text  = "Two Megabytes"
+max_image_size      = 8 * 1024**2
+max_image_size_text = "Eight Megabytes"
 
 # Error Messages
-fileTypeError = "The file you uploaded had an incorrect filetype. "
-fileSizeError = "The file you uploaded was too large. "
+file_type_error = "The file you uploaded had an incorrect filetype. "
+file_size_error = "The file you uploaded was too large. "
 
 # Captcha API
-if usingSecrets:
-  captchaPublicKey = secrets.captchaPublic
-  captchaSecretKey = secrets.captchaSecret
+if using_secrets:
+  captcha_public_key = secrets.captcha_public
+  captcha_secret_key = secrets.captcha_secret
 else:
-  captchaPublicKey = None
-  captchaSecretKey = None
+  captcha_public_key = None
+  captcha_secret_key = None

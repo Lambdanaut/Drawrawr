@@ -6,7 +6,7 @@
   <section class="container" style="text-align:center;">
     <!--<img src='/static/images/' alt='401 DrawRawrs'>-->
     <h1>401 - Unauthorized</h1>
-    {% if g.loggedInUser %}
+    {% if g.logged_in_user %}
       <p>You don't have permission to view this page! </p>
     {% else %}
       <p>You must be logged in to view this page! </p>

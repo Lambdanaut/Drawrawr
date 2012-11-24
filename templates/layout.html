@@ -21,10 +21,10 @@
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
   <script src="/static/js/modernizr.geo.js"></script>
   <script src="/static/js/main.js"></script>
-  {% if config.captchaPublicKey and config.captchaSecretKey %}
+  {% if config.captcha_public_key and config.captcha_secret_key %}
   <script type="text/javascript" src="http://www.google.com/recaptcha/api/js/recaptcha_ajax.js"></script>
   {% endif %}
-  {% if showAds %}
+  {% if show_ads %}
   <script type="text/javascript" src="/static/js/bottomAd.js"></script>
   {% endif %}
   {% block head %}{% endblock %}
@@ -46,28 +46,28 @@
       <span class="close"></span>
       <form>
         <h4>CREATE A NEW ACCOUNT</h4>
-        <label><h6>USERNAME:</h6> <input type='text' class='textInputNoRecoil' name='username'></label>
-        <!-- <h6>EMAIL: (<i>optional</i>)</h6> <input type = 'text' class='textInputNoRecoil' name = 'email'> -->
-        <label><h6>PASSWORD:</h6> <input type='password' class='textInputNoRecoil' name='password1'></label>
-        <label><h6>VERIFY PASSWORD:</h6> <input type='password' class='textInputNoRecoil' name='password2'></label><br>
-        {% if config.betaKey %}
-        <label><h6>BETA CODE:</h6> <input type='text' class='textInputNoRecoil' name='betaCode'></label><br>
+        <label><h6>USERNAME:</h6> <input type='text' class='text_input_no_recoil' name='username'></label>
+        <!-- <h6>EMAIL: (<i>optional</i>)</h6> <input type = 'text' class='text_input_no_recoil' name = 'email'> -->
+        <label><h6>PASSWORD:</h6> <input type='password' class='text_input_no_recoil' name='password1'></label>
+        <label><h6>VERIFY PASSWORD:</h6> <input type='password' class='text_input_no_recoil' name='password2'></label><br>
+        {% if config.beta_key %}
+        <label><h6>BETA CODE:</h6> <input type='text' class='text_input_no_recoil' name='beta_code'></label><br>
         {% endif %}
-        <div id="registerCaptcha" data-publicKey="{{ config.captchaPublicKey }}">
+        <div id="register_captcha" data-publicKey="{{ config.captcha_public_key }}">
           <div id="recaptcha_image" style="margin-left: auto; margin-right: auto; margin-top: 5px;"></div>
           <div class="recaptcha_only_if_incorrect_sol" style="color:red">Incorrect please try again</div>
 
           <h6 class="marginless"><span class="recaptcha_only_if_image">Enter the words above:</span></h6>
           <h6 class="marginless"><span class="recaptcha_only_if_audio">Enter the numbers you hear:</span></h6>
-          <input type="text" id="recaptcha_response_field" name="recaptcha_response_field" class='textInputNoRecoil'>
+          <input type="text" id="recaptcha_response_field" name="recaptcha_response_field" class='text_input_no_recoil'>
           <div><h6 class="marginless"><a href="javascript:Recaptcha.reload()">Get another CAPTCHA</a></h6></div>
           <div class="recaptcha_only_if_image"><h6 class="marginless"><a href="javascript:Recaptcha.switch_type('audio')">Get an audio CAPTCHA</a></h6></div>
           <div class="recaptcha_only_if_audio"><h6 class="marginless"><a href="javascript:Recaptcha.switch_type('image')">Get an image CAPTCHA</a></h6></div>
           <div><a href="javascript:Recaptcha.showhelp()"><h6 class="marginless">Help</h6></a></div>
         </div>
-        <label><input type='checkbox' name='tosAgree' value='true'><span style="font-size:12px;">You Agree to Our <a href="/meta/terms-of-service">Terms of Service</a></span></label><br>
-        <div style='bottom: 165px; left:-336px;' class='mascot'><img src='/static/images/leftRegisterMascot.png' alt='Green Mascot'></div>
-        <div style='bottom: 200px; left:135px;' class='mascot'><img src='/static/images/rightRegisterMascot.png' alt='Brown Mascot'></div>
+        <label><input type='checkbox' name='tosAgree' value='true'><span style="font-size:12px;">You Agree to Our <a href="{{ url_for("terms_of_service")}}">Terms of Service</a></span></label><br>
+        <div style='bottom: 165px; left:-336px;' class='mascot'><img src='/static/images/left_register_mascot.png' alt='Green Mascot'></div>
+        <div style='bottom: 200px; left:135px;' class='mascot'><img src='/static/images/right_register_mascot.png' alt='Brown Mascot'></div>
         <input type='submit' id="register-submit" class='button' value='Register'>
       </form>
     </aside>
@@ -75,34 +75,34 @@
       <span class="close"></span>
       <form>
         <h4>Log In</h4>
-        <h6>USERNAME:</h6> <input type='text' class='textInputNoRecoil' name='username'> <br>
-        <h6>PASSWORD:</h6> <input type='password' class='textInputNoRecoil' name='password'> <br><br>
+        <h6>USERNAME:</h6> <input type='text' class='text_input_no_recoil' name='username'> <br>
+        <h6>PASSWORD:</h6> <input type='password' class='text_input_no_recoil' name='password'> <br><br>
         <input type='submit' id="login-submit" class='button' value='Log In'>
       </form>
     </aside>
   </aside>
   <header>
     <div id="header">
-      <span id="glued" data-glued="{{ loggedInUser["glued"] }}"></span>
-      {% if loggedInUser['username'] %}<div id="set-header">↑</div>{% endif %}
-      {% if loggedInUser['username'] %}
+      <span id="glued" data-glued="{{ logged_in_user["glued"] }}"></span>
+      {% if logged_in_user['username'] %}<div id="set-header">↑</div>{% endif %}
+      {% if logged_in_user['username'] %}
         <aside id="control-panel">
           <div style="float:right;">
-            <b><a href='{{ url_for("userpage", username=loggedInUser['username']) }}'>{{ loggedInUser['username'] }}</a></b><br>
+            <b><a href='{{ url_for("userpage", username=logged_in_user['username']) }}'>{{ logged_in_user['username'] }}</a></b><br>
             <a>Updates</a><br>
             <div id="options-tab">
               <u style="cursor:pointer;">Options</u>
-              <div class="roundBox">
-                <a href="{{ url_for('submitArt') }}">Submit Art</a><br>
-                <a href="{{ url_for('manageJournal') }}">Journals</a><br>
+              <div class="round_box">
+                <a href="{{ url_for('submit_art') }}">Submit Art</a><br>
+                <a href="{{ url_for('manage_journal') }}">Journals</a><br>
                 <a href="{{ url_for('settings') }}">Settings</a><br>
-                {% if any(util.dictToList(loggedInUser["permissions"]) ) %} <a href="{{ url_for('staff') }}">Staff</a><br>{% endif %}
+                {% if any(util.dict_to_list(logged_in_user["permissions"]) ) %} <a href="{{ url_for('staff') }}">Staff</a><br>{% endif %}
                 <a id="logout-button">Logout</a>
               </div>
             </div>
           </div>
-          <a href = "{{ url_for("userpage", username=loggedInUser['username']) }}">
-            <img src='/icons/{{ loggedInUser["lowername"] }}' class='userIcon'  style='margin-right: 5px;' alt='User Icon'>
+          <a href = "{{ url_for("userpage", username=logged_in_user['username']) }}">
+            <img src='/icons/{{ logged_in_user["lowername"] }}' class='user_icon'  style='margin-right: 5px;' alt='User Icon'>
           </a>
         </aside>
       {% else %}

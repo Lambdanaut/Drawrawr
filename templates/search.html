@@ -4,15 +4,15 @@
 <script src="/static/js/gallery.js"></script>
 <link rel="stylesheet" href="/static/css/gallery.css" media="screen">
 <style>
-#titleBar a
+#title_bar a
 {
 	color: inherit;
 }
-#orderForm
+#order_form
 {
 	float: right;
 }
-#orderForm button
+#order_form button
 {
 	background:none!important;
 	border:none; 
@@ -22,7 +22,7 @@
 	vertical-align:middle;
 	/*border is optional*/
 }
-#orderForm button img
+#order_form button img
 {
 	width: 29px;
 	height: 29px;
@@ -37,8 +37,8 @@
 {% endblock %}
 {% block content %}
   <section class="container" style="text-align:center;">
-    <div class="roundBox greenContainer">
-      <form method="GET" id="orderForm">
+    <div class="round_box green_container">
+      <form method="GET" id="order_form">
         <b>Sort by: </b>
         <select id="sort" name="sort">
           <option value="d"{% if sort == "d" %} selected="selected"{% endif %}>Date</option>
@@ -51,31 +51,31 @@
           <option value="a"{% if order == "a" %} selected="selected"{% endif %}>Ascending</option>
         </select>
         order. 
-        <input type="text" class="textInput" name="keywords" placeholder="Search" style="width: 200px;" value="{{ keywords }}"> 
-        <button type="submit" value="Go" class="button"><img src="/static/images/searchbutton.png"></button>
+        <input type="text" class="text_input" name="keywords" placeholder="Search" style="width: 200px;" value="{{ keywords }}"> 
+        <button type="submit" value="Go" class="button"><img src="/static/images/search_button.png"></button>
       </form>
       <h2 id="title">Search Drawrawr</h2>
       <div style="clear:both;"></div>
     </div>
-    <div class="gallery" style="padding: 10px;">{{ drawGallery(art) }}</div>
+    <div class="gallery" style="padding: 10px;">{{ draw_gallery(art) }}</div>
     <span style="clear:both;display:block;"></span>
-    {% macro makeIndexLink(page,symbol) %}
+    {% macro make_index_link(page,symbol) %}
     <a href="{{ url_for("search", page=page) }}">{{ symbol | safe }}</a> 
     {% endmacro %}
-    {% if currentPage %}
-      {{ makeIndexLink(0,"&laquo;") }}
-      {{ makeIndexLink(currentPage - 1,"&lsaquo;") }}
+    {% if current_page %}
+      {{ make_index_link(0,"&laquo;") }}
+      {{ make_index_link(current_page - 1,"&lsaquo;") }}
     {% endif %}
     {% if pages != [] %}
-    {% set currentPage = pages.pop(0) %}
-      <b>{{ currentPage + 1 }}</b>
+    {% set current_page = pages.pop(0) %}
+      <b>{{ current_page + 1 }}</b>
     {% endif %}
     {% for p in pages %}
-      {{ makeIndexLink(p,p + 1) }}
+      {{ make_index_link(p,p + 1) }}
     {% endfor %}
-    {% if currentPage < last %}
-      {{ makeIndexLink(currentPage + 1,"&rsaquo;") }}
-      {{ makeIndexLink(last,"&raquo;") }}
+    {% if current_page < last %}
+      {{ make_index_link(current_page + 1,"&rsaquo;") }}
+      {{ make_index_link(last,"&raquo;") }}
     {% endif %}
   </section>
 {% endblock %}

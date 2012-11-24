@@ -35,73 +35,73 @@ inSet =
 	interactions : 'g'
 
 
-allowedIn = () ->
+allowed_in = () ->
 	
 
 ### Returns a serialized version of the layout ###
-serializeLayout = () ->
+serialize_layout = () ->
 	data = ""
-	$("#profileTop, #profileLeftCol, #profileRightCol, #profileBottom, #profileHidden").each (idx,elem) ->
+	$("#profile_top, #profile_left_col, #profile_right_col, #profile_bottom, #profile_hidden").each (idx,elem) ->
 		$(elem).children(".draggable").each (idx2,elem2) ->
 			data += $(elem2).attr("id") + "=" + $(elem).attr("data-loc") + "&"
 	data
 		
-serializeLayoutOrder = () ->
+serialize_layout_order = () ->
 	data = ""
-	$("#profileTop, #profileLeftCol, #profileRightCol, #profileBottom, #profileHidden").each (idx,elem) ->
+	$("#profile_top, #profile_left_col, #profile_right_col, #profile_bottom, #profile_hidden").each (idx,elem) ->
 		$(elem).children(".draggable").each (idx2,elem2) ->
 			data += $(elem2).attr("id") + "=" + idx2 + "&"
 	data
 
-updateLocation = (position) ->
+update_location = (position) ->
 	lat = position.coords.latitude
 	lon = position.coords.longitude
 
 	$("#latitude").val lat
 	$("#longitude").val lon
 
-getLocation = () ->
-	navigator.geolocation.getCurrentPosition updateLocation
+get_location = () ->
+	navigator.geolocation.getCurrentPosition update_location
 
 $(document).ready ->
 	### Gender ###
-	$("#changeGender").val($("#defaultGender").val())
+	$("#change_gender").val($("#default_gender").val())
 
 	### Geolocation ###
 	if Modernizr.geolocation
-		$("#getLocation").click getLocation
+		$("#get_location").click get_location
 	else
-		$("#getLocation").attr "disabled","disabled"
-		$("#getLocation").css "display","none"
-		$("#noLocationBrowser").css "display","block"
+		$("#get_location").attr "disabled","disabled"
+		$("#get_location").css "display","none"
+		$("#no_location_browser").css "display","block"
 
-	$("#whyLocation").click () ->
-		box = new Helpbox "#whyHelp"
+	$("#why_location").click () ->
+		box = new Help_Box "#whyHelp"
 
 	### Color Theme ###
-	$("#changeColorTheme").change ->
+	$("#change_color_theme").change ->
 		$("#colorThemeStyle").attr("href","/static/css/userpages/" + $(this).val() + ".css")
-	$("#changeColorTheme").val($("#defaultTheme").attr("data-theme"))
-	$("#changeColorTheme").trigger("change")
+	$("#change_color_theme").val($("#default_theme").attr("data-theme"))
+	$("#change_color_theme").trigger("change")
 
 	### Userpage Layout ###	
-	$("#profileTop, #profileLeftCol, #profileRightCol, #profileBottom, #profileHidden").sortable(
-		connectWith: ".dragBox"
+	$("#profile_top, #profile_left_col, #profile_right_col, #profile_bottom, #profile_hidden").sortable(
+		connectWith: ".drag_box"
 		update: () -> 
-			$("#changeLayout").val(serializeLayout())
-			$("#changeLayoutOrder").val(serializeLayoutOrder())
+			$("#change_layout").val(serialize_layout())
+			$("#change_layout_order").val(serialize_layout_order())
 	).disableSelection()
 
 	### Beta Keys ###
-	$("#generateNewInvite").click () ->
+	$("#generate_new_invite").click () ->
 		conf = confirm "Are you sure you want to spend one of your invites? "
 		if conf
 			$.ajax
-				url: "/admin/generateBetaPass",
+				url: "/admin/generate_beta_pass",
 				type: "POST",
 				beforeSend: () ->
-					$("#betaLoader").css("display","inline")
+					$("#beta_loader").css("display","inline")
 				success: (data) ->
-					$("#betaKeyList").append("<li style='display:none'>" + data + "</li>")
-					$("#betaKeyList li:last-child").fadeIn "slow", ->
-						$("#betaLoader").css("display","none")
+					$("#beta_key_list").append("<li style='display:none'>" + data + "</li>")
+					$("#beta_key_list li:last-child").fadeIn "slow", ->
+						$("#beta_loader").css("display","none")

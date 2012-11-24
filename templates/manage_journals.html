@@ -3,7 +3,7 @@
 {% block head %}
 <link rel="stylesheet" href="/static/css/jquery-ui-1.8.18.custom.css" media="screen">
 <script src="/static/js/jquery-ui-1.8.18.custom.min.js"></script>
-<script src="/static/js/manageJournals.js"></script>
+<script src="/static/js/manage_journals.js"></script>
 <style>
 ul {
   list-style: none;
@@ -17,25 +17,25 @@ li {
 {% endblock %}
 {% block content %}
 <div class="grid_3">
-  <section class="roundBox greenContainer" style="padding: 4px 15px 5px 15px;"><strong>Manage Journals</strong></section>
+  <section class="round_box green_container" style="padding: 4px 15px 5px 15px;"><strong>Manage Journals</strong></section>
   <section class="container" style="margin-top: 10px;">
     <ul>
     {% for j in allJournals %}
-      <li><a href="{{ url_for("editJournal", journal=j['_id']) }}">{{ j["title"] }}</a></li>
+      <li><a href="{{ url_for("edit_journal", journal=j['_id']) }}">{{ j["title"] }}</a></li>
     {% endfor %}
     </ul>
   </section>
 </div>  
 <div class="grid_9">
-  <section class="roundBox greenContainer" style="padding: 4px 15px 5px 15px;"><strong>Create Journal</strong></section>
+  <section class="round_box green_container" style="padding: 4px 15px 5px 15px;"><strong>Create Journal</strong></section>
   <section class="container" style="padding: 15px; margin-top: 10px;">
     <form method="POST">
       <b>Title:</b> <br>
-      <input type="text" name="journalTitle" class="textInput"> <br><br>
+      <input type="text" name="journal_title" class="text_input"> <br><br>
       <b>Journal:</b> <br>
-      <textarea name="journalContent" style="width: 100%;" cols=50 rows=17></textarea> <br><br>
+      <textarea name="journal_content" style="width: 100%;" cols=50 rows=17></textarea> <br><br>
       <b>Mood:</b> <br>
-      <input type="text" name="journalMood" id="moods" class="textInput"><br><br>
+      <input type="text" name="journal_mood" id="moods" class="text_input"><br><br>
       <input type="submit" class="button">
     </form>
   </section>

@@ -10,7 +10,7 @@
     {% elif len(messages) == 1 %}
       <h1> - Settings Published - </h1>
       <p>Your changes made to your <strong>{{ messages[0] }}</strong> were successful! </p>
-      <p>Why don't you head over to your <a href="/{{ loggedInUser["username"] }}">userpage</a>, or back to your <a href="/users/settings">settings</a>! </p>
+      <p>Why don't you head over to your <a href="/{{ logged_in_user["username"] }}">userpage</a>, or back to your <a href="/users/settings">settings</a>! </p>
     {% else %}
       <h1> - Settings Published - </h1>
       <ul style="list-style:none;">
@@ -18,7 +18,7 @@
           <li>{{ message }}</li>
       {% endfor %}
       </ul>
-      <p>Why don't you head over to your <a href="/{{ loggedInUser["username"] }}">userpage</a>, or back to your <a href="/users/settings">settings</a>! </p>
+      <p>Why don't you head over to your <a href="/{{ logged_in_user["username"] }}">userpage</a>, or back to your <a href="/users/settings">settings</a>! </p>
     {% endif %}
   </section>
 {% endblock %}

@@ -4,48 +4,48 @@
 	margin-bottom: 10px;
 }
 
-.leaveCommentButton {
+.leave_comment_button {
 	text-align: center;
 	margin: 40px 0 30px;
 	text-decoration: underline;
 	cursor: pointer; 	
 }
 
-.comment .userIcon {
+.comment .user_icon {
 	padding-top: 10px;
 }
 
-.comment .commentHeader .deleteComment {
+.comment .comment_header .deleteComment {
 	background: url("/static/images/XUnclick.png");
 }
 
-.comment .commentHeader {
+.comment .comment_header {
 	position: relative;
 	top: 10px;
 	left: 125px;
 	font-size: 0.85em;
 }
 
-.comment .commentFooter {
+.comment .comment_footer {
 	margin-left: 125px;
 }
 
-.comment .reportComment {
+.comment .report_comment {
 	color: #FE4422;
 }
 
-.comment .replyButton {
+.comment .reply_button {
 	text-decoration: underline;
 	cursor: pointer;
 	float: right;
 	margin-right: 15px;
 }
 
-.comment .datePosted {
+.comment .date_posted {
 	font-size: smaller;
 }
 
-#replyFormTemplate {
+#reply_form_template {
 	display: none;
 }
 
@@ -62,7 +62,7 @@
 	margin-bottom: 5px;
 }
 
-.comment .commentBubble {
+.comment .comment_bubble {
 	position: relative;
 	min-height: 60px;
 	margin: 13px 10px 0 110px;
@@ -78,7 +78,7 @@
 }
 
 /* Border of Pointer */
-.comment .commentBubble:before {
+.comment .comment_bubble:before {
 	content: ' ';
 	position: absolute;
 	width: 0;
@@ -89,7 +89,7 @@
 	border-color: transparent #CCCCCC transparent transparent;
 }
 /* White Insides of Pointer */
-.comment .commentBubble:after {
+.comment .comment_bubble:after {
 	content: ' ';
 	position: absolute;
 	width: 0;

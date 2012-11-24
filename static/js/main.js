@@ -6,14 +6,14 @@
     function Header(glued) {
       var _this = this;
       this.glued = glued;
-      this.switchGlue();
+      this.switch_glue();
       $("#set-header").click(function() {
-        _this.switchGlue();
-        return _this.updateDatabaseGlue();
+        _this.switch_glue();
+        return _this.update_database_glue();
       });
     }
 
-    Header.prototype.switchGlue = function() {
+    Header.prototype.switch_glue = function() {
       if (this.glued) {
         return this.unglue();
       } else {
@@ -21,7 +21,7 @@
       }
     };
 
-    Header.prototype.updateDatabaseGlue = function() {
+    Header.prototype.update_database_glue = function() {
       return $.ajax({
         url: "/users/glue",
         type: "POST",
@@ -104,26 +104,26 @@
 
   })();
 
-  this.Helpbox = (function() {
+  this.Help_Box = (function() {
 
-    function Helpbox(helpDiv) {
-      this.helpDiv = helpDiv;
+    function Help_Box(help_div) {
+      this.help_div = help_div;
       this.die = __bind(this.die, this);
-      $(this.helpDiv).click(this.die);
-      $(this.helpDiv).addClass("helpBox");
-      $(this.helpDiv).addClass("roundBox");
+      $(this.help_div).click(this.die);
+      $(this.help_div).addClass("help_box");
+      $(this.help_div).addClass("round_box");
       this.show();
     }
 
-    Helpbox.prototype.show = function() {
-      return $(this.helpDiv).css("display", "block");
+    Help_Box.prototype.show = function() {
+      return $(this.help_div).css("display", "block");
     };
 
-    Helpbox.prototype.die = function() {
-      return $(this.helpDiv).css("display", "none");
+    Help_Box.prototype.die = function() {
+      return $(this.help_div).css("display", "none");
     };
 
-    return Helpbox;
+    return Help_Box;
 
   })();
 
@@ -137,7 +137,7 @@
     /* Set up the header
     */
     header = new Header(false);
-    if ($("#glued").attr("data-glued") === "0") header.switchGlue();
+    if ($("#glued").attr("data-glued") === "0") header.switch_glue();
     /* Flashed Messages
     */
     $("#flashed li").each(function() {
@@ -145,7 +145,7 @@
     });
     /* Registration
     */
-    Recaptcha.create($("#registerCaptcha").attr("data-publicKey"), "registerCaptcha", {
+    Recaptcha.create($("#register_captcha").attr("data-publicKey"), "register_captcha", {
       theme: 'custom',
       custom_theme_widget: 'recaptcha_widget',
       callback: Recaptcha.focus_response_field

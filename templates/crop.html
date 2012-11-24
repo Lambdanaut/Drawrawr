@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="/static/css/jquery.Jcrop.css" type="text/css">
 <link rel="stylesheet" href="/static/css/gallery.css" media="screen" type="text/css">
 <style>
-#previewContainer {
+#preview_container {
 	overflow: hidden;
 	margin-left: auto; margin-right: auto;
 	width: 135px;
@@ -17,11 +17,11 @@
 	 -webkit-box-shadow: 3px 3px 5px #888;
 	box-shadow: 3px 3px 5px #888
 }
-#leftCol
+#left_col
 {
 	width: 20%;
 }
-#rightCol
+#right_col
 {
 	float: right;
 	width: 80%;
@@ -33,16 +33,16 @@
     <h1>Crop Artwork</h1>
     <p>Click and drag out the area that you would like to appear as the thumbnail for your artwork. </p>
   </section>
-  <div id = "rightCol">
+  <div id = "right_col">
     <section class="container" style="overflow: auto;">
       <img src="/art/uploads/{{ art["_id"] }}.{{ art["filetype"] }}" id="art">
     </section>
   </div>
-  <div id = "leftCol">
+  <div id = "left_col">
     <section class="container" style="text-align:center;">
       <h1>Preview</h1>
-      <div id="previewContainer">
-        <img src="/art/uploads/{{ art["_id"] }}.{{ art["filetype"] }}" id="preview" class="galleryThumb">
+      <div id="preview_container">
+        <img src="/art/uploads/{{ art["_id"] }}.{{ art["filetype"] }}" id="preview" class="gallery_thumb">
       </div>
     </section>
     <section class="container" style="text-align:center;">

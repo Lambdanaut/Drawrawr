@@ -21,16 +21,16 @@
 {% endblock %}
 {% block content %}
   <section class="container">
-    <img src= "/static/images/drpartygreen.png" alt="GREENY" style="float: right; margin-right: 20px;">
-    <img src= "/static/images/drpartybrown.png" alt="BROWNIE" style="float: left; margin-left: 20px;">
+    <img src= "/static/images/dr_party_green.png" alt="GREENY" style="float: right; margin-right: 20px;">
+    <img src= "/static/images/dr_party_brown.png" alt="BROWNIE" style="float: left; margin-left: 20px;">
     <h2>Welcome to Drawrawr!</h2>
     <h3>Now that you're a member, you can get started using your Account!</h3>
 
-    <a href="{{ url_for('userpage', username = g.loggedInUser["username"]) }}">-Check out your Drawrawr Userpage!-</a> 
+    <a href="{{ url_for('userpage', username = g.logged_in_user["username"]) }}">-Check out your Drawrawr Userpage!-</a> 
     <a href="{{ url_for('settings') }}">-Choose your Account settings-</a>
     <a href="{{ url_for('settings') }}#-profile">-Change your Profile Information-</a>
     <a href="{{ url_for('settings') }}#-layout">-Customize your Userpage Layout-</a>
-    <a href="{{ url_for('submitArt') }}">-Submit your first Artwork-</a>
+    <a href="{{ url_for('submit_art') }}">-Submit your first Artwork-</a>
     <a href="/journal/view">-Write your first Journal-</a>
     <a href="/">-Or just start Browsing and Meeting Artists!-</a>
   </section>

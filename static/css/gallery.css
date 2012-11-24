@@ -3,7 +3,7 @@
 	overflow: hidden;
 	text-align: center;
 }
-.thumbContainer
+.thumb_container
 {
 	position: relative;
 	float: left;
@@ -18,7 +18,7 @@
 	 -webkit-box-shadow: 3px 3px 5px #888;
 	box-shadow: 3px 3px 5px #888;
 }
-.thumbContainer .thumbCover
+.thumb_container .thumb_cover
 {
 	z-index: 100;
 	position: absolute;
@@ -42,13 +42,13 @@
 	-ms-transition: all 0.2s ease-in-out;
 	transition: all 0.2s ease-in-out;
 }
-.thumbContainer:hover .thumbCover
+.thumb_container:hover .thumb_cover
 {
 	position: absolute;
 	bottom: 0px;
 	opacity: 0.7;
 }
-.thumbContainer .artworkImage
+.thumb_container .artwork_image
 {
 	position: absolute;
 	left: 0px;
@@ -61,14 +61,14 @@
 	-ms-transition: all 0.4s ease-in-out;
 	transition: all 0.4s ease-out;
 }
-.thumbContainer:hover .artworkImage
+.thumb_container:hover .artwork_image
 {
 	width: 175px;
 	height: 143px;
 	left: -20.25px;
 	top: -16.5px;
 }
-.thumbContainer .thumbLink
+.thumb_container .thumbLink
 {
 	position: absolute; 
 	width: 100%;
@@ -77,7 +77,7 @@
 	left: 0px;
 	z-index: 110;
 }
-.thumbContainer .typeOverlay
+.thumb_container .typeOverlay
 {
 	position: absolute;
 	left: 0px;

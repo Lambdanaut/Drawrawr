@@ -2,24 +2,24 @@
 
   $(document).ready(function() {
     /* Comment Button
-    */    $(".leaveCommentButton").click(function() {
+    */    $(".leave_comment_button").click(function() {
       var _this = this;
-      $("#leaveCommentForm").html($("#replyFormTemplate").clone().html());
+      $("#leave_comment_form").html($("#reply_form_template").clone().html());
       return $(this).fadeOut("fast", function() {
-        $("#leaveCommentForm").fadeIn("fast");
-        return $("#leaveCommentForm").find("textarea").focus();
+        $("#leave_comment_form").fadeIn("fast");
+        return $("#leave_comment_form").find("textarea").focus();
       });
     });
     /* Reply Button
     */
-    return $(".comment .replyButton").click(function() {
+    return $(".comment .reply_button").click(function() {
       var form, reply,
         _this = this;
       reply = $(this).parent().find(".reply");
-      reply.html($("#replyFormTemplate").clone().html());
+      reply.html($("#reply_form_template").clone().html());
       form = reply.find("form");
-      form.find(".parentInput").val($(this).parent().find(".parentData").attr("data-value"));
-      form.find(".commentMapInput").val($(this).parent().find(".commentMapData").attr("data-value"));
+      form.find(".parent_input").val($(this).parent().find(".parentData").attr("data-value"));
+      form.find(".comment_map_input").val($(this).parent().find(".comment_map_data").attr("data-value"));
       return $(this).hide(0, function() {
         reply.fadeIn("fast");
         return reply.find("textarea").focus();

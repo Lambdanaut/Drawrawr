@@ -1,7 +1,7 @@
 (function() {
 
   $(document).ready(function() {
-    var art, favButton, watchButton;
+    var art, fav_button, watchButton;
     art = $("#art");
     /* Image Full View
     */
@@ -11,10 +11,10 @@
         "cursor": "pointer",
         "max-height": "1000px"
       });
-      $("#previewText").text("Click Image to Full View");
+      $("#preview_text").text("Click Image to Full View");
       art.click(function() {
         if (art.attr("data-size") === "small") {
-          $("#previewText").slideUp(200);
+          $("#preview_text").slideUp(200);
           return art.fadeOut(100, function() {
             art.css({
               "max-width": "None",
@@ -25,7 +25,7 @@
             });
           });
         } else {
-          $("#previewText").slideDown(200);
+          $("#preview_text").slideDown(200);
           return art.fadeOut(100, function() {
             art.css({
               "max-width": "80%",
@@ -40,18 +40,18 @@
     }
     /* Favorites
     */
-    favButton = $("#favButton");
-    favButton.click(function() {
+    fav_button = $("#fav_button");
+    fav_button.click(function() {
       return $.ajax({
-        url: "/art/" + $("#artID").attr("data-state") + "/favorite",
+        url: "/art/" + $("#art_ID").attr("data-state") + "/favorite",
         type: "POST",
         complete: function(msg) {
-          if (favButton.attr("data-state") === "fav") {
-            favButton.attr("src", "/static/images/unfavoritebutton.png");
-            return favButton.attr("data-state", "unfav");
+          if (fav_button.attr("data-state") === "fav") {
+            fav_button.attr("src", "/static/images/unfavorite_button.png");
+            return fav_button.attr("data-state", "unfav");
           } else {
-            favButton.attr("src", "/static/images/favoritebutton.png");
-            return favButton.attr("data-state", "fav");
+            fav_button.attr("src", "/static/images/favorite_button.png");
+            return fav_button.attr("data-state", "fav");
           }
         }
       });
@@ -66,10 +66,10 @@
         data: "watchedUser=" + $("#author").attr("data-name"),
         complete: function(msg) {
           if (watchButton.attr("data-state") === "watch") {
-            watchButton.attr("src", "/static/images/unwatchbutton.png");
+            watchButton.attr("src", "/static/images/unwatch_button.png");
             return watchButton.attr("data-state", "unwatch");
           } else {
-            watchButton.attr("src", "/static/images/watchbutton.png");
+            watchButton.attr("src", "/static/images/watch_button.png");
             return watchButton.attr("data-state", "watch");
           }
         }
@@ -83,7 +83,7 @@
     });
     /* Delete Button
     */
-    return $("#deleteButton").click(function() {
+    return $("#delete_button").click(function() {
       var conf;
       conf = confirm("Are you sure you want to delete this artwork? ");
       if (conf) {

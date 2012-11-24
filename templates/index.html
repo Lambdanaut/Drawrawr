@@ -9,40 +9,40 @@ h3 { margin-top: 0px; }
 {% block content %}
 <div class="grid_12">
   <section class="container gallery">
-    <h3 class="moduleTitle">POPULAR ART</h3>
+    <h3 class="module_title">POPULAR ART</h3>
     <div style="width: 95%;margin-left: auto; margin-right: auto;">
-      {{ drawGallery(popularArt) }}
+      {{ draw_gallery(popular_art) }}
     </div>
   </section>
   <section class="container gallery" style="max-height:500px;">
-    <h3 class="moduleTitle">RECENT ART</h3>
+    <h3 class="module_title">RECENT ART</h3>
     <div style="width: 95%;margin-left: auto; margin-right: auto;">
-      {{ drawGallery(recentArt) }}
+      {{ draw_gallery(recentArt) }}
     </div>
   </section>
 </div>
 <div class="grid_3">
-{% if showAds %}
+{% if show_ads %}
   <div id="pw_adbox_62797_6_0" style="margin: 5px auto 5px auto; width: 234px;"></div>
 {% endif %}
   <section class="container gallery">
-    <h3 class="moduleTitle">New Users</h3>
-    {{ drawUsers(newUsers, smallIcon = True) }}
+    <h3 class="module_title">New Users</h3>
+    {{ draw_users(new_users, small_icon = True) }}
   </section>
   <section class="container gallery">
-    <h3 class="moduleTitle">Featured User</h3>
+    <h3 class="module_title">Featured User</h3>
     SOMEBODY THAT IS REALLY COOL
   </section>
 </div>
 <div class="grid_9">
   <section class="container gallery">
-    <h3 class="moduleTitle">FEATURED ART</h3>
+    <h3 class="module_title">FEATURED ART</h3>
     <div style="width: 95%;margin-left: auto; margin-right: auto;">
-      {{ drawGallery(featuredArt) }}
+      {{ draw_gallery(featured_art) }}
     </div>
   </section>
   <section class="container">
-    <h3 class="moduleTitle">New News</h3>
+    <h3 class="module_title">New News</h3>
     <p>NEWS NEWS NEWS NEWS</p>
   </section>
 </div>

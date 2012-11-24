@@ -1,17 +1,17 @@
 class @Header
 	constructor: (@glued) ->
-		@switchGlue()
+		@switch_glue()
 
 		$("#set-header").click () => 
-			@switchGlue()
-			@updateDatabaseGlue()
+			@switch_glue()
+			@update_database_glue()
 
-	switchGlue: () ->
+	switch_glue: () ->
 		if @glued
 			@unglue()
 		else @glue()
 		
-	updateDatabaseGlue: () ->
+	update_database_glue: () ->
 		$.ajax
 			url:  "/users/glue",
 			type: "POST",
@@ -66,20 +66,20 @@ class @Modal
 		$("#modal aside").css("display","none")
 		$("#modal").css("display","none")
 
-class @Helpbox
-	constructor: (@helpDiv) ->
-		$(@helpDiv).click @die
+class @Help_Box
+	constructor: (@help_div) ->
+		$(@help_div).click @die
 
-		$(@helpDiv).addClass "helpBox"
-		$(@helpDiv).addClass "roundBox"
+		$(@help_div).addClass "help_box"
+		$(@help_div).addClass "round_box"
 
 		@show()
 
 	show: () ->
-		$(@helpDiv).css "display","block"
+		$(@help_div).css "display","block"
 
 	die: () =>
-		$(@helpDiv).css "display","none"
+		$(@help_div).css "display","none"
 
 $(document).ready ->
 	### Keeps the copyright up to date on the current year ###
@@ -89,14 +89,14 @@ $(document).ready ->
 	### Set up the header ###
 	header = new Header false
 	if $("#glued").attr("data-glued") == "0"
-		header.switchGlue()
+		header.switch_glue()
 
 	### Flashed Messages ###
 	$("#flashed li").each ->
 		new Notice "MESSAGE" ,$(this).text()
 
 	### Registration ###		
-	Recaptcha.create $("#registerCaptcha").attr("data-publicKey"), "registerCaptcha", theme : 'custom', custom_theme_widget: 'recaptcha_widget', callback: Recaptcha.focus_response_field
+	Recaptcha.create $("#register_captcha").attr("data-publicKey"), "register_captcha", theme : 'custom', custom_theme_widget: 'recaptcha_widget', callback: Recaptcha.focus_response_field
 	$("#register-button").click () =>
 		signupModal = new Modal "#register-form"
 		$('form:not(.filter) :input:visible:first').focus()

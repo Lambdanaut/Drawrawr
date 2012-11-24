@@ -1,47 +1,47 @@
 (function() {
-  var unwatchText, watchText;
+  var unwatch_text, watch_text;
 
-  watchText = " + watch ";
+  watch_text = " + watch ";
 
-  unwatchText = " - unwatch ";
+  unwatch_text = " - unwatch ";
 
   $(document).ready(function() {
     /* Sets the watch button's text
-    */    if ($("#watchUserButton").attr("data-state") === "True") {
-      $("#watchUserButton").text(unwatchText);
+    */    if ($("#watch_user_button").attr("data-state") === "True") {
+      $("#watch_user_button").text(unwatch_text);
     } else {
-      $("#watchUserButton").text(watchText);
+      $("#watch_user_button").text(watch_text);
     }
     /* Watch button functionality
     */
-    return $("#watchUserButton").click(function() {
+    return $("#watch_user_button").click(function() {
       return $.ajax({
         url: "/users/watch",
         type: "POST",
         data: "watchedUser=" + $("#username").attr("data-name"),
         beforeSend: function() {
-          return $("#watchUserButton").text(" - Loading - ");
+          return $("#watch_user_button").text(" - Loading - ");
         },
         complete: function(msg) {
-          var loggedInLowername, loggedInUsername;
-          if ($("#watchUserButton").attr("data-state") === "True") {
-            $("#watchUserButton").attr("data-state", "False");
-            $("#watchUserButton").text(watchText);
+          var logged_in_lowername, logged_in_username;
+          if ($("#watch_user_button").attr("data-state") === "True") {
+            $("#watch_user_button").attr("data-state", "False");
+            $("#watch_user_button").text(watch_text);
             /* Hide user from watch list
             */
-            return $('#watchers img[title="' + $("#loggedInUsername").attr("data-name") + '"]').fadeOut("slow", function() {
+            return $('#watchers img[title="' + $("#logged_in_username").attr("data-name") + '"]').fadeOut("slow", function() {
               return $(this).remove();
             });
           } else {
-            $("#watchUserButton").attr("data-state", "True");
-            $("#watchUserButton").text(unwatchText);
+            $("#watch_user_button").attr("data-state", "True");
+            $("#watch_user_button").text(unwatch_text);
             /* Show user in watch list
             */
             $("#watchers p").remove();
-            loggedInUsername = $("#loggedInUsername").attr("data-name");
-            loggedInLowername = loggedInUsername.toLowerCase();
-            $("#watchers").prepend('<a href="/' + loggedInLowername + '"><img src="/icons/' + loggedInLowername + '" alt="' + loggedInUsername + '\'s icon" class="tinyIcon" style="float: left;margin: 2px; display: none;" title="' + loggedInUsername + '"></a>');
-            return $('#watchers img[title="' + $("#loggedInUsername").attr("data-name") + '"]').fadeIn("slow");
+            logged_in_username = $("#logged_in_username").attr("data-name");
+            logged_in_lowername = logged_in_username.toLowerCase();
+            $("#watchers").prepend('<a href="/' + logged_in_lowername + '"><img src="/icons/' + logged_in_lowername + '" alt="' + logged_in_username + '\'s icon" class="tiny_icon" style="float: left;margin: 2px; display: none;" title="' + logged_in_username + '"></a>');
+            return $('#watchers img[title="' + $("#logged_in_username").attr("data-name") + '"]').fadeIn("slow");
           }
         }
       });
