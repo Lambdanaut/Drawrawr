@@ -18,7 +18,7 @@
       return $.ajax({
         url: "/users/watch",
         type: "POST",
-        data: "watchedUser=" + $("#username").attr("data-name"),
+        data: "watched_user=" + $("#username").attr("data-name"),
         beforeSend: function() {
           return $("#watch_user_button").text(" - Loading - ");
         },

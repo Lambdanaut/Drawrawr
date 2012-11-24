@@ -9,7 +9,7 @@ __version__ = '2.0'
 __author__  = 'Josh Thomas'
 
 import server as server
-import os,sys
+import os, sys
 from optparse import OptionParser
 
 parser = OptionParser()

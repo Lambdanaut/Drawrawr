@@ -97,7 +97,7 @@ $(document).ready ->
 		conf = confirm "Are you sure you want to spend one of your invites? "
 		if conf
 			$.ajax
-				url: "/admin/generate_beta_pass",
+				url: "/admin/generate",
 				type: "POST",
 				beforeSend: () ->
 					$("#beta_loader").css("display","inline")

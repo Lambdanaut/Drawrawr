@@ -1,11 +1,11 @@
 from flask import *
 import werkzeug
-
-import os, math, mimetypes, sys, random, logging, datetime, base64
+import pymongo
 
 from PIL import Image
 
-from system.database import Database
+import os, math, mimetypes, sys, random, logging, datetime, base64
+
 from system.S3 import S3
 
 import system.captcha as captcha
@@ -39,6 +39,8 @@ db.authenticate(config.dbUsername, config.dbPassword)
 
 users_model     = models.Users(db)
 art_model       = models.Art(db)
+journals_model  = models.Journals(db)
+comments_model  = models.Comments(db)
 keys_model      = models.Keys(db)
 beta_pass_model = models.Beta_Pass(db)
 
@@ -70,7 +72,7 @@ def index():
   featured_art = []
 
   # Get New Users
-  new_users_result = users_model.find().sort("_id",1).limit(20)
+  new_users_result = users_model.get().sort("_id",1).limit(20)
   new_users = []
   for user in new_users_result:
     new_users.append(user["username"])
@@ -79,34 +81,34 @@ def index():
 
 @app.route('/<username>')
 def userpage(username):
-  user = users_model.get_one({"lowername": user['lowername']})
+  user = users_model.get_one({"lowername": username.lower() })
   if user:
     # Increment Page Views
-    db.db.users.update({"lowername": user['lowername']}, {"$inc": {"page_views": 1} })
+    users_model.increment_views({"_id": user['_id']})
     # Gallery Module
     gallery = None
     if user["layout"]["gallery"][0] != "h":
-      gallery = db.db.art.find({"author_ID": user["_id"]}).limit(15).sort("_id",-1)
+      gallery = art_model.get({"author_ID": user["_id"]}).limit(15).sort("_id",-1)
       if gallery.count() == 0: gallery = None
     else: gallery = None
     # Nearby Users Module
     # It's rather naive in that the processing is done by the server and not the database. It may be a problem in the future. 
     close_users = None
     if user["layout"]["nearby"][0] != "h" and user["latitude"] and user["longitude"]:
-      all_users = db.db.users.find({"_id": {"$ne" : user["_id"]} , "latitude" : {"$ne" : None}, "longitude" : {"$ne" : None} })
+      all_users = users_model.get({"_id": {"$ne" : user["_id"]} , "latitude" : {"$ne" : None}, "longitude" : {"$ne" : None} })
       close_users = []
       for aUser in all_users:
         if math.sqrt( (user["latitude"] - aUser["latitude"])**2 + (user["longitude"] - aUser["longitude"])**2 ) < config.max_nearby_user_distance: close_users.append(aUser["username"])
     # Journal Module
     journal = None
     if user["layout"]["journal"][0] != "h":
-      journal_result = db.db.journals.find({"author_ID" : user["_id"] }).sort("_id",-1).limit(1)
+      journal_result = journals_model.get({"author_ID" : user["_id"] }).sort("_id",-1).limit(1)
       if journal_result.count() == 0: journal = None
       else: journal = journal_result[0]
     # Comment Module
     comments = None
     if user["layout"]["comments"][0] != "h":
-      comments = db.db.comments.find({"home": user["_id"], "home_type" : "u"}).sort("_id",1).limit(config.max_comments_on_userpages)
+      comments = comments_model.get({"home": user["_id"], "home_type" : "u"}).sort("_id",1).limit(config.max_comments_on_userpages)
       if comments.count() == 0: comments = None
 
     return render_template("user.html", user=user, userGallery=gallery, nearby_users=close_users, journal_result=journal, comment_result=comments, show_ads=False)
@@ -115,7 +117,7 @@ def userpage(username):
 @app.route('/users/login', methods=['POST'])
 def login():
   if request.method == 'POST':
-    user_result = db.db.users.find_one({'lowername' : request.form['username'].lower() })
+    user_result = users_model.get_one({'lowername' : request.form['username'].lower() })
     if user_result:
       if system.cryptography.encrypt_password(request.form['password'], True) == user_result['password']: 
         session['username'] = user_result['username']
@@ -126,7 +128,7 @@ def login():
         try: ip.remove(request.remote_addr)
         except ValueError: pass
         ip.insert(0,request.remote_addr)
-        db.db.users.update({"lowername": user_result['lowername']}, {"$set": {"ip": ip} })
+        users_model.update({"lowername": user_result['lowername']}, {"ip": ip})
         return "1"
       else: return "0"
     else: return "0"
@@ -140,19 +142,19 @@ def logout():
 
 @app.route('/users/signup', methods=['GET', 'POST'])
 def signup(): 
-  if db.user_exists(request.form['username']) or len(request.form['username']) == 0 or request.form['password1'] != request.form['password2'] or request.form['tos_agree'] != 'true':
+  if users_model.username_taken(request.form['username']) or len(request.form['username']) == 0 or request.form['password1'] != request.form['password2'] or request.form['tos_agree'] != 'true':
     return "0" #ERROR, User doesn't exist or username is too small
   if captcha.check(request.form['recaptcha_challenge_field'], request.form['recaptcha_response_field'],config.captcha_secret_key,request.remote_addr):
     return "2" #ERROR, Captcha Fail
   if config.beta_key:
-    beta_key = beta_pass_model.check_beta_pass(request.form["beta_code"])
+    beta_key = beta_pass_model.check(request.form["beta_code"])
     if not beta_key:
       return "3" #ERROR, Beta Code Fail
   else: beta_key = None
   hashed = system.cryptography.encrypt_password(request.form['password1'], True)
   storage.push("static/images/newby_icon.png", os.path.join(config.icons_dir, request.form['username'].lower() ), mimetype="image/png")
   key = keys_model.next("users")
-  db.db.users.insert({
+  users_model.insert({
     "_id"         : key
   , "username"    : request.form['username']
   , "lowername"   : request.form['username'].lower()
@@ -183,14 +185,14 @@ def signup():
     , "playlist"  : ["h",0]
     }
   , "permissions" : {
-      "delete_comments"     : True
-    , "edit_art"            : True
-    , "delete_art"          : True
-    , "ban_users"           : True
-    , "make_props"          : True
-    , "vote"                : True
-    , "generate_beta_pass"  : True
-    , "crop_art"            : True
+      "delete_comments"    : True
+    , "edit_art"           : True
+    , "delete_art"         : True
+    , "ban_users"          : True
+    , "make_props"         : True
+    , "vote"               : True
+    , "generate_beta_pass" : True
+    , "crop_art"           : True
     }
   , "latitude"     : None
   , "longitude"    : None
@@ -220,7 +222,7 @@ def glue():
     else: return "1"
   elif request.method == 'POST':
     if g.logged_in_user:
-      db.db.users.update({"lowername": g.logged_in_user['lowername']}, {"$set": {"glued": request.form['glued']}})
+      users_model.update({"lowername": g.logged_in_user['lowername']}, {"$set": {"glued": request.form['glued']}})
       return "1"
     else: return "0"
 
@@ -231,18 +233,18 @@ def watch():
     return "0"
   elif request.method == 'POST':
     if g.logged_in_user:
-      watchedUser = request.form["watchedUser"]
-      if g.logged_in_user["lowername"] != watchedUser.lower():
-        user_result = db.db.users.find_one({"lowername" : watchedUser.lower()})
+      watched_user = request.form["watched_user"]
+      if g.logged_in_user["lowername"] != watched_user.lower():
+        user_result = users_model.get_one({"lowername" : watched_user.lower()})
         if g.logged_in_user["username"] in user_result["watchers"]:
-          db.db.users.update({"lowername" : watchedUser.lower()},{"$pull" : {"watchers" : g.logged_in_user["username"] } })
+          users_model.update({"lowername" : watched_user.lower()},{"$pull" : {"watchers" : g.logged_in_user["username"] } })
         else:
           watchers = user_result["watchers"]
           watchers.insert(0, g.logged_in_user["username"])
-          db.db.users.update({"lowername" : watchedUser.lower()},{"$set" : {"watchers" : watchers } } )
+          users_model.update({"lowername" : watched_user.lower()},{"watchers" : watchers} )
         return "1"
       else:
-        if config.logging: logging.warning("User \"" + watchedUser + "\" tried to watch themself. The procedure failed, but it's a bit weird that they should even be able to do this. Keep a watch out for them. ")
+        if config.logging: logging.warning("User \"" + watched_user + "\" tried to watch themself. The procedure failed, but it's a bit weird that they should even be able to do this. Keep a watch out for them. ")
         return "0"
     else: abort(401)
 
@@ -256,7 +258,7 @@ def welcome():
 def settings():
   if g.logged_in_user:
     if request.method == 'GET':
-      if config.beta_key: beta_keys = db.db.betaPass.find({"owner" : g.logged_in_user["username"] })
+      if config.beta_key: beta_keys = beta_pass_model.get({"owner" : g.logged_in_user["username"] })
       else: beta_keys = None
       return render_template("settings.html", beta_keys = beta_keys)
     elif request.method == 'POST':
@@ -279,7 +281,7 @@ def settings():
             if fileType.lower() == "jpg": fileType = "jpeg" # Change filetype for PIL
             (mimetype,i) = mimetypes.guess_type(icon.filename)
             file_location = os.path.join(config.icons_dir, fileName)
-            db.db.users.update({"lowername": g.logged_in_user['lowername']}, {"$set": {"icon": fileType } } )
+            users_model.update({"lowername": g.logged_in_user['lowername']}, {"icon": fileType} )
             icon.save(file_location)
             image = Image.open(file_location)
             resized = image.resize(config.iconSize, Image.ANTIALIAS)
@@ -294,29 +296,29 @@ def settings():
           flash("The new passwords you gave don't match! Try retyping them carefully. ")
         else:
           hashed = system.cryptography.encrypt_password(request.form['change_pass_new_1'], True)
-          db.db.users.update({"lowername": g.logged_in_user['lowername']}, {"$set": {"password": hashed}})
+          users_model.update({"lowername": g.logged_in_user['lowername']}, {"password": hashed} )
           session['password']=hashed
           messages.append("Password")
       # Gender
       if request.form["change_gender"] != g.logged_in_user["gender"]:
-        db.db.users.update({"lowername": g.logged_in_user['lowername']}, {"$set": {"gender": request.form["change_gender"] }})
+        users_model.update({"lowername": g.logged_in_user['lowername']}, {"gender": request.form["change_gender"] })
         messages.append("Gender")
       # Location
       if request.form["change_latitude"] != str(g.logged_in_user["latitude"]) or request.form["change_longitude"] != str(g.logged_in_user["longitude"]):
         try:
           latFloat = float(request.form["change_latitude"])
           lonFloat = float(request.form["change_longitude"])
-          db.db.users.update({"lowername": g.logged_in_user['lowername']}, {"$set": {"latitude": latFloat, "longitude": lonFloat } } )
+          users_model.update({"lowername": g.logged_in_user['lowername']}, {"latitude": latFloat, "longitude": lonFloat } )
           messages.append("Location")
         except ValueError:
           flash("The locations you gave were invalid latitude and longitude coordinates! ): ")
       # Profile
       if request.form["change_profile"] != g.logged_in_user["profile"]:
-        db.db.users.update({"lowername": g.logged_in_user['lowername']}, {"$set": {"profile": request.form["change_profile"], "code_profile": usercode.parse(request.form["change_profile"]) } })
+        users_model.update({"lowername": g.logged_in_user['lowername']}, {"profile": request.form["change_profile"], "code_profile": usercode.parse(request.form["change_profile"]) })
         messages.append("Profile")
       # Color Theme
       if request.form["change_color_theme"] != g.logged_in_user["theme"]:
-        db.db.users.update({"lowername": g.logged_in_user['lowername']}, {"$set": {"theme": request.form["change_color_theme"]} })
+        users_model.update({"lowername": g.logged_in_user['lowername']}, {"theme": request.form["change_color_theme"]} )
         messages.append("Color Theme")
       # Layout
       l1 = util.url_decode(request.form["change_layout"])
@@ -328,7 +330,7 @@ def settings():
           layout_to_push = {}
           for key in layout:
             layout_to_push["layout." + key] = layout[key]
-          db.db.users.update({"lowername": g.logged_in_user['lowername']}, {"$set": layout_to_push })
+          users_model.update({"lowername": g.logged_in_user['lowername']}, layout_to_push)
           messages.append("Layout")
       return render_template("settings_success.html",messages=messages,len=len)
   else: abort(401)
@@ -341,7 +343,7 @@ def settings():
 @app.route('/journal/view/<int:journal>/comment', methods=['POST'])
 def comment(username=None,art=None,journal=None,commentID=None):
   if request.method == 'GET':
-    comment_result = db.db.comments.find_one({"_id" : commentID})
+    comment_result = comments_model.get_one({"_id" : commentID})
     if not comment_result: abort(404)
     return render_template("comment.html", comment=comment_result)
   else:
@@ -357,8 +359,7 @@ def comment(username=None,art=None,journal=None,commentID=None):
           parent     = int(request.form["parent"])
           comment_map = util.parse_comment_map(request.form["comment_map"])
         except ValueError: abort(500)
-        db.db.comments.update( { "_id" : parent }, {
-          "$push" : { comment_map : {
+        comments_model.update( { "_id" : parent }, { comment_map : {
             "author_ID"    : g.logged_in_user["_id"]
           , "author"       : g.logged_in_user["username"]
           , "content"      : request.form["content"]
@@ -366,13 +367,13 @@ def comment(username=None,art=None,journal=None,commentID=None):
           , "r"            : []
           , "date"         : datetime.datetime.today()
           } }
-        })
+        , "$push")
         return "1"
       # Top Level Comment
       else:
         if username:
           location = "u"
-          user_lookup = db.db.users.find_one({"lowername" : username.lower()})
+          user_lookup = users_model.get_one({"lowername" : username.lower()})
           if user_lookup: home = user_lookup["_id"]
           else: abort(500)
         elif art:
@@ -383,7 +384,7 @@ def comment(username=None,art=None,journal=None,commentID=None):
           home = journal
         else         : abort(500)
         key = keys_model.next("comments")
-        db.db.comments.insert({
+        comments_model.insert({
           "_id"          : key
         , "author_ID"    : g.logged_in_user["_id"]
         , "author"       : g.logged_in_user["username"]
@@ -399,7 +400,7 @@ def comment(username=None,art=None,journal=None,commentID=None):
     else: abort(401)
 
 @app.route('/meta/terms_of_service', methods=['GET'])
-def policy():
+def terms_of_service():
   f = open("static/legal/tos")
   tos = f.read()
   return render_template("tos.html", tos=tos)
@@ -415,16 +416,16 @@ def donate():
 @app.route('/art/<int:art>', methods=['GET','DELETE'])
 def view_art(art):
   try: 
-    art_lookup = db.db.art.find_one({'_id' : art})
+    art_lookup = art_model.get_one({'_id' : art})
   except ValueError: abort(404)
   if not art_lookup: abort(404)
   if request.method == 'GET':
-    author_lookup = db.db.users.find_one({'_id' : art_lookup["author_ID"]})
+    author_lookup = users_model.get_one({'_id' : art_lookup["author_ID"]})
     # Increment Art Views
     inc_views = True
     if g.logged_in_user: inc_views = not g.logged_in_user["_id"] == author_lookup["_id"]
     if config.page_views_require_alternate_IP: not request.remote_addr in author_lookup["ip"]
-    if inc_views: db.db.art.update({"_id": art}, {"$inc": {"views": 1} })
+    if inc_views: art_model.increment_views({"_id": art})
     return render_template("art.html", art=art_lookup, author=author_lookup )
   elif request.method == 'DELETE':
     if g.logged_in_user:
@@ -432,7 +433,7 @@ def view_art(art):
         # Delete File
         storage.delete(os.path.join(config.art_dir , str(art_lookup['_id']) + "." + art_lookup['filetype'] ) )
         # Delete From Database
-        db.db.art.remove({'_id' : art_lookup['_id']})
+        art_model.delete({'_id' : art_lookup['_id']})
         flash("Your artwork <b>" + art_lookup["title"] + "</b> was deleted successfully! ")
         return "1"
       else: abort(401)
@@ -440,35 +441,35 @@ def view_art(art):
 @app.route('/art/<int:art>/feature', methods=['POST'])
 def feature_art(art):
   try: 
-    art_lookup = db.db.art.find_one({'_id' : art})
+    art_lookup = art_model.get_one({'_id' : art})
   except ValueError: abort(404)
   if not art_lookup: abort(404)
   if not "featured_text" in request.form: abort(500)
-  db.db.feature.insert({
+  art_model.suggest_feature ({
     "author"  : g.logged_in_user["username"]
   , "art_ID"  : art
   , "content" : request.form["featured_text"]
   , "date"    : datetime.datetime.today()
   })
-  featureCount = db.db.feature.find({"art_ID" : art}).count()
-  flash("Your feature suggestion was submitted successfully. If " + str(config.features_before_consideration - featureCount) + " more users request this artwork to be featured, then staff will be notified. " )
+  feature_count = art_model.get_feature({"art_ID" : art}).count()
+  flash("Your feature suggestion was submitted successfully. If " + str(config.features_before_consideration - feature_count) + " more users request this artwork to be featured, then staff will be notified. " )
   return redirect(url_for("view_art", art=art))
 
 @app.route('/art/<int:art>/favorite', methods=['POST','GET'])
 def favorite(art):
   if g.logged_in_user:
     if request.method == 'POST':
-      fav = db.db.art.find_one({"_id" : art})
+      fav = art_model.get_one({"_id" : art})
       if g.logged_in_user != fav["author"]:
         if g.logged_in_user["username"] in fav["favorites"]:
-          db.db.art.update({"_id" : art}, {"$pull" : {"favorites" : g.logged_in_user["username"] }  , "$inc" : {"fav_amount": -1 } } )
+          art_model.art.update({"_id" : art}, {"$pull" : {"favorites" : g.logged_in_user["username"] } , "$inc" : {"fav_amount": -1 } } )
         else:
-          db.db.art.update({"_id" : art}, {"$addToSet" : {"favorites" : g.logged_in_user["username"] } , "$inc" : {"fav_amount": 1 } } )
+          art_model.art.update({"_id" : art}, {"$addToSet" : {"favorites" : g.logged_in_user["username"] } , "$inc" : {"fav_amount": 1 } } )
         return "1"
       else: return "0"
     else:
       # The GET method returns 1 if the user has fav'd this art, and a 0 if they're not. 
-      fav = db.db.art.find_one({"_id" : art})
+      fav = art_model.get_one({"_id" : art})
       if g.logged_in_user["username"] in fav["favorites"]: return "1"
       else:                                              return "0"
   else: abort(401)
@@ -481,7 +482,7 @@ def welcome():
 @app.route('/<username>/gallery/<folder>', defaults={'page': 0}, methods=['GET'])
 @app.route('/<username>/gallery/<folder>/<int:page>', methods=['GET'])
 def view_gallery(username,folder,page):
-  author_lookup = db.db.users.find_one({'lowername' : username.lower()})
+  author_lookup = users_model.get_one({'lowername' : username.lower()})
   if not author_lookup: abort(404)
   else:
     sort  = "d"
@@ -494,13 +495,13 @@ def view_gallery(username,folder,page):
     elif sort == "p": user_sort = "fav_amount"
     else:             user_sort = "_id"
     if folder=="all":
-      art_lookup = db.db.art.find({'author' : author_lookup["username"]}).skip(config.displayed_works_per_page * page).limit( config.displayed_works_per_page ).sort(user_sort,user_order)
+      art_lookup = art_model.get({'author' : author_lookup["username"]}).skip(config.displayed_works_per_page * page).limit( config.displayed_works_per_page ).sort(user_sort,user_order)
     elif folder=="mature":
-      art_lookup = db.db.art.find({'author' : author_lookup["username"], 'mature' : True}).skip(config.displayed_works_per_page * page).limit( config.displayed_works_per_page ).sort(user_sort,user_order)
+      art_lookup = art_model.get({'author' : author_lookup["username"], 'mature' : True}).skip(config.displayed_works_per_page * page).limit( config.displayed_works_per_page ).sort(user_sort,user_order)
     elif folder=="favorites":
-      art_lookup = db.db.art.find({'favorites' : {"$in" : [author_lookup["username"] ] } } ).skip(config.displayed_works_per_page * page).limit( config.displayed_works_per_page ).sort(user_sort,user_order)
+      art_lookup = art_model.get({'favorites' : {"$in" : [author_lookup["username"] ] } } ).skip(config.displayed_works_per_page * page).limit( config.displayed_works_per_page ).sort(user_sort,user_order)
     else:
-      art_lookup = db.db.art.find({'author' : author_lookup["username"], 'folder' : folder}).skip(config.displayed_works_per_page * page).limit( config.displayed_works_per_page ).sort(user_sort,user_order)
+      art_lookup = art_model.get({'author' : author_lookup["username"], 'folder' : folder}).skip(config.displayed_works_per_page * page).limit( config.displayed_works_per_page ).sort(user_sort,user_order)
     # Create page index
     art_count = art_lookup.count()
     if not art_count: art_lookup = None
@@ -538,7 +539,7 @@ def submit_art():
         else:
           fileType = util.fileType(request.files['upload'].filename)
           key = keys_model.next("art")
-          db.db.art.insert({
+          art_model.insert({
             "_id"         : key
           , "title"       : request.form["title"]
           , "description" : request.form["description"]
@@ -571,7 +572,7 @@ def submit_art():
 @app.route('/art/do/autocrop/<int:art>',methods=['POST'])
 def autocrop(art):
   if g.logged_in_user:
-    art_lookup = db.db.art.find_one({'_id' : art})
+    art_lookup = art_model.get_one({'_id' : art})
     if not art_lookup: abort(404)
     if not g.logged_in_user["_id"] == art_lookup["author_ID"] and not g.logged_in_user["permissions"]["crop_art"]: abort(401)
     image_location = os.path.join(config.art_dir, str(art_lookup["_id"]) + "." + art_lookup["filetype"] )
@@ -587,7 +588,7 @@ def autocrop(art):
 @app.route('/art/do/crop/<int:art>', methods=['GET','POST'])
 def crop(art):
   if g.logged_in_user:
-    art_lookup = db.db.art.find_one({'_id' : art})
+    art_lookup = art_model.get_one({'_id' : art})
     if not art_lookup: abort(404)
     if not g.logged_in_user["_id"] == art_lookup["author_ID"] and not g.logged_in_user["permissions"]["crop_art"]: abort(401)
     if request.method == 'GET':
@@ -607,49 +608,48 @@ def crop(art):
 
 @app.route('/<username>/journals', methods=['GET'])
 def viewUserJournals(username):
-  owner_result = db.db.users.find_one({"lowername" : username.lower() })
+  owner_result = users_model.get_one({"lowername" : username.lower() })
   if not owner_result: abort(404)
-  journal_result = db.db.journals.find({"author_ID" : owner_result["_id"] }).limit(1).sort("_id",-1)
+  journal_result = journals_model.get({"author_ID" : owner_result["_id"] }).limit(1).sort("_id",-1)
   if journal_result.count() == 0: abort(404)
   return redirect(url_for('view_journal', journal = journal_result[0]["_id"]) )
 
 @app.route('/journal/view/<int:journal>', methods=['GET'])
 def view_journal(journal):
-  journal_result = db.db.journals.find_one({"_id" : journal })
+  journal_result = journals_model.get_one({"_id" : journal })
   if not journal_result: abort(404)
-  db.db.journals.update({"_id": journal}, {"$inc": {"views": 1} })
-  all_journals = db.db.journals.find({"author_ID" : journal_result['author_ID'] }).sort("_id",-1)
+  journals_model.increment_views({"_id": journal})
+  all_journals = journals_model.get({"author_ID" : journal_result['author_ID'] }).sort("_id",-1)
   return render_template("view_journal.html", journal=journal_result, all_journals=all_journals)
 
 @app.route('/journal/edit/<int:journal>', methods=['GET', 'POST'])
 def edit_journal(journal):
   if g.logged_in_user:
-    journal_result = db.db.journals.find_one({"_id" : journal })
+    journal_result = journals_model.get_one({"_id" : journal })
     if not journal_result: abort(404)
     if g.logged_in_user["_id"] != journal_result['author_ID']:
       abort(401)
     if request.method == 'GET':
-      all_journals = db.db.journals.find({"author_ID" : g.logged_in_user['_id'] }).sort("_id",-1)
+      all_journals = journals_model.get({"author_ID" : g.logged_in_user['_id'] }).sort("_id",-1)
       return render_template("edit_journal.html", journal=journal_result, all_journals=all_journals)
     elif request.method == 'POST':
         if "journal_title" in request.form and "journal_content" in request.form and "journal_mood" in request.form:
           if request.form["journal_title"].strip() != "":
-            db.db.journals.update({"_id": journal}, {"$set": {"title": request.form["journal_title"], "content": request.form["journal_content"], "code_content": usercode.parse(request.form["journal_content"]), "mood": request.form["journal_mood"] }})
+            journals_model.update({"_id": journal}, {"title": request.form["journal_title"], "content": request.form["journal_content"], "code_content": usercode.parse(request.form["journal_content"]), "mood": request.form["journal_mood"] }, "$set")
             return redirect(url_for('view_journal', journal = journal) )
-
   else: abort(401)
 
 @app.route('/journal/manage', methods=['GET','POST'])
 def manage_journal():
   if g.logged_in_user:
     if request.method == 'GET':
-      all_journals = db.db.journals.find({"author_ID" : g.logged_in_user['_id'] }).sort("_id",-1)
+      all_journals = journals_model.get({"author_ID" : g.logged_in_user['_id'] }).sort("_id",-1)
       return render_template("manage_journals.html", all_journals = all_journals)
     else:
       if not "journal_title" in request.form or not "journal_content" in request.form or not "journal_mood" in request.form: abort(500)
       if request.form["journal_title"].strip() != "":
         key = keys_model.next("journals")
-        db.db.journals.insert({
+        journals_model.insert({
           "_id"         : key
         , "title"       : request.form["journal_title"]
         , "content"     : request.form["journal_content"]
@@ -692,9 +692,9 @@ def search(page):
   elif sort == "p": user_sort = "fav_amount"
   else:             user_sort = "_id"
   if keywords:
-    art_lookup = db.db.art.find({"keywords" : {"$in": map(lambda keyword: keyword.lower(), keywords) } } ).skip(config.displayed_works_per_page * page).limit( config.displayed_works_per_page ).sort(user_sort,user_order)
+    art_lookup = art_model.get({"keywords" : {"$in": map(lambda keyword: keyword.lower(), keywords) } } ).skip(config.displayed_works_per_page * page).limit( config.displayed_works_per_page ).sort(user_sort,user_order)
   else:
-    art_lookup = db.db.art.find().skip(config.displayed_works_per_page * page).limit( config.displayed_works_per_page ).sort(user_sort,user_order)
+    art_lookup = art_model.get().skip(config.displayed_works_per_page * page).limit( config.displayed_works_per_page ).sort(user_sort,user_order)
   # Create page index
   art_count = art_lookup.count()
   if not art_count: art_lookup = None
@@ -715,8 +715,8 @@ def search(page):
 def staff():
   if g.logged_in_user:
     if any(util.dict_to_list(g.logged_in_user["permissions"]) ): 
-      users = db.db.users.find()
-      art   = db.db.art.find()
+      users = users_model.get()
+      art   = art_model.get()
       return render_template("staff.html", userCount=users.count(), art_count=art.count() )
     else: abort(401)
   else: abort(401)
@@ -752,10 +752,10 @@ def parse_usercode(text):
 def generate_beta_pass():
   if g.logged_in_user:
     if g.logged_in_user["permissions"]["generate_beta_pass"]:
-      return db.generate_beta_pass(ownerName=g.logged_in_user["username"])
+      return beta_pass_model.generate(ownerName=g.logged_in_user["username"])
     elif g.logged_in_user["beta_keys"] > 0:
-      db.db.users.update({"_id" : g.logged_in_user["_id"]}, {"$inc" : {"beta_keys" : -1} } )
-      return db.generate_beta_pass(ownerName=g.logged_in_user["username"])
+      users_model.increment_beta_keys({"_id" : g.logged_in_user["_id"]}, -1)
+      return beta_pass_model.generate(ownerName=g.logged_in_user["username"])
     else: abort(401)
   else: abort(401)
 

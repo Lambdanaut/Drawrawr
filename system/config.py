@@ -1,4 +1,4 @@
-# import os
+import os
 using_secrets=True
 try: import secrets
 except ImportError: using_secrets=False
@@ -11,7 +11,7 @@ port = int(os.environ.get("PORT", 80))
 production        = True
 logging           = False
 debug             = True
-beta_key           = True
+beta_key          = False
 random_secret_key = False
 
 # Database

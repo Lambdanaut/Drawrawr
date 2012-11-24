@@ -136,7 +136,7 @@
       conf = confirm("Are you sure you want to spend one of your invites? ");
       if (conf) {
         return $.ajax({
-          url: "/admin/generate_beta_pass",
+          url: "/admin/generate",
           type: "POST",
           beforeSend: function() {
             return $("#beta_loader").css("display", "inline");

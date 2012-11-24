@@ -63,7 +63,7 @@
       return $.ajax({
         url: "/users/watch",
         type: "POST",
-        data: "watchedUser=" + $("#author").attr("data-name"),
+        data: "watched_user=" + $("#author").attr("data-name"),
         complete: function(msg) {
           if (watchButton.attr("data-state") === "watch") {
             watchButton.attr("src", "/static/images/unwatch_button.png");
