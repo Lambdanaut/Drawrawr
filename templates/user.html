@@ -98,12 +98,13 @@
 
 {% macro journal() %}
   <section class="container">
-    <span class="moduleTitle"><a href="{{ url_for("viewJournal", journal = journalResult['_id']) }}" style="float:right; font-weight:normal; ">View</a>Journal :: {{ journalResult["title"] }}</span>
-    {% if journalResult %} 
-      <p>{{ journalResult["content"] }}</p>
-    {% else %}
-      <p style="text-align:center;">There aren't any journals to display just yet! </p>
-    {% endif %}
+  {% if journalResult %}
+    <span class="moduleTitle">Journal :: <a href="{{ url_for("viewJournal", journal = journalResult['_id']) }}">{{ journalResult["title"] }}</a></span>
+    <p>{{ journalResult["codeContent"] | safe }}</p>
+  {% else %}
+    <span class="moduleTitle">Journal</span>
+    <p style="text-align:center;">There aren't any journals to display just yet! </p>
+  {% endif %}
   </section>
 {% endmacro %}
 
