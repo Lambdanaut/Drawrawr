@@ -100,11 +100,9 @@ def userpage(username):
       for aUser in all_users:
         if math.sqrt( (user["latitude"] - aUser["latitude"])**2 + (user["longitude"] - aUser["longitude"])**2 ) < config.max_nearby_user_distance: close_users.append(aUser["username"])
     # Journal Module
-    journal = None
-    if user["layout"]["journal"][0] != "h":
-      journal_result = journals_model.get({"author_ID" : user["_id"] }).sort("_id",-1).limit(1)
-      if journal_result.count() == 0: journal = None
-      else: journal = journal_result[0]
+    journal_result = journals_model.get({"author_ID" : user["_id"] }).sort("_id",-1).limit(1)
+    if journal_result.count() == 0: journal = None
+    else: journal = journal_result[0]
     # Comment Module
     comments = None
     if user["layout"]["comments"][0] != "h":
@@ -607,11 +605,13 @@ def crop(art):
   else: abort(401)
 
 @app.route('/<username>/journals', methods=['GET'])
-def viewUserJournals(username):
+def view_user_journals(username):
   owner_result = users_model.get_one({"lowername" : username.lower() })
   if not owner_result: abort(404)
   journal_result = journals_model.get({"author_ID" : owner_result["_id"] }).limit(1).sort("_id",-1)
-  if journal_result.count() == 0: abort(404)
+  if journal_result.count() == 0: 
+    flash(username + " hasn't posted any journals yet. ")
+    abort(404)
   return redirect(url_for('view_journal', journal = journal_result[0]["_id"]) )
 
 @app.route('/journal/view/<int:journal>', methods=['GET'])

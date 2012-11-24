@@ -138,7 +138,9 @@
 {% if logged_in_user %}<span id="logged_in_username" data-name="{{ logged_in_user["username"] }}"></span>{% endif %}
 <div class="grid_12">
   <div style="float: left;" id="user_nav_area">
-    <a href="{{ url_for("viewUserJournals", username=user["username"]) }}" class="container tab_button"><!--<img src="/static/images/tinyCHAT.png" alt="Drawrboard icon" style="vertical-align:bottom;">--> View Journals</a>
+    {% if journal_result %}
+    <a href="{{ url_for("view_user_journals", username=user["username"]) }}" class="container tab_button"><!--<img src="/static/images/tinyCHAT.png" alt="Drawrboard icon" style="vertical-align:bottom;">--> View Journals</a>
+    {% endif %}
     <a href="{{ url_for("view_gallery", username=user["username"]) }}" class="container tab_button"><!--<img src="/static/images/tinyDRAWRBOARD.png" alt="Drawrboard icon" style="vertical-align:bottom;">--> View Gallery</a>
   </div>
 {% if g.logged_in_user and g.logged_in_user["_id"] != user["_id"] %}
