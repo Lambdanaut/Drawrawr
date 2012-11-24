@@ -217,10 +217,10 @@ def glue():
       if g.logged_in_user:
         return str(g.logged_in_user["glued"])
       else: return "1"
-    else: return "1"
+    else: return "0"
   elif request.method == 'POST':
     if g.logged_in_user:
-      users_model.update({"lowername": g.logged_in_user['lowername']}, {"$set": {"glued": request.form['glued']}})
+      users_model.update({"lowername": g.logged_in_user['lowername']}, {"glued": request.form['glued']})
       return "1"
     else: return "0"
 
@@ -635,7 +635,8 @@ def edit_journal(journal):
     elif request.method == 'POST':
         if "journal_title" in request.form and "journal_content" in request.form and "journal_mood" in request.form:
           if request.form["journal_title"].strip() != "":
-            journals_model.update({"_id": journal}, {"title": request.form["journal_title"], "content": request.form["journal_content"], "code_content": usercode.parse(request.form["journal_content"]), "mood": request.form["journal_mood"] }, "$set")
+            journals_model.update({"_id": journal}, {"title": request.form["journal_title"], "content": request.form["journal_content"], "code_content": usercode.parse(request.form["journal_content"]), "mood": request.form["journal_mood"] })
+            flash("Journal edited successfully! ")
             return redirect(url_for('view_journal', journal = journal) )
   else: abort(401)
 
