@@ -60,12 +60,14 @@ def before_request():
 
 @app.context_processor
 def inject_user():
+  """Feeds essential variables into every template"""
   if g.logged_in_user: show_ads = g.logged_in_user["show_ads"]
   else:                show_ads = True
   return dict (logged_in_user = g.logged_in_user, show_ads = show_ads, util = util, config=config, any = any, str = str)
 
 @app.route('/')
 def index():
+  """The Drawrawr Front Page"""
   # Get Arts
   recent_art = art_model.get().limit(30).sort("_id",-1)
   popular_art = art_model.get( {"fav_amount" : {"$gt" : 0 } } ).sort("favorites",-1).limit(12)
@@ -81,6 +83,7 @@ def index():
 
 @app.route('/<username>')
 def userpage(username):
+  """Renders the user's homepage"""
   user = users_model.get_one({"lowername": username.lower() })
   if user:
     # Increment Page Views
@@ -114,6 +117,7 @@ def userpage(username):
 
 @app.route('/users/login', methods=['POST'])
 def login():
+  """Handles logging in to Drawrawr"""
   if request.method == 'POST':
     user_result = users_model.get_one({'lowername' : request.form['username'].lower() })
     if user_result:
@@ -134,12 +138,14 @@ def login():
 
 @app.route('/users/logout', methods=['POST'])
 def logout():
+  """Logs the user out"""
   session.pop('username', None)
   session.pop('password', None)
   return "1"
 
-@app.route('/users/signup', methods=['GET', 'POST'])
+@app.route('/users/signup', methods=['POST'])
 def signup(): 
+  """Handles member signup requests"""
   if users_model.username_taken(request.form['username']) or len(request.form['username']) == 0 or request.form['password1'] != request.form['password2'] or request.form['tos_agree'] != 'true':
     return "0" #ERROR, User doesn't exist or username is too small
   if captcha.check(request.form['recaptcha_challenge_field'], request.form['recaptcha_response_field'],config.captcha_secret_key,request.remote_addr):
@@ -212,6 +218,10 @@ def signup():
 
 @app.route('/users/glue', methods=['GET','POST'])
 def glue():
+  """
+  Glues and Unglues the header from the top of the screen. 
+  If the user is logged in, this function will record the header's new state.
+  """
   if request.method == 'GET':
     if 'username' in session:
       if g.logged_in_user:
@@ -226,6 +236,7 @@ def glue():
 
 @app.route('/users/watch', methods=['GET','POST'])
 def watch():
+  """Handles user watching and de-watching"""
   if request.method == 'GET':
     # This needs to return a list of watchers or something
     return "0"
@@ -246,14 +257,11 @@ def watch():
         return "0"
     else: abort(401)
 
-@app.route('/users/welcome', methods=['GET'])
-def welcome():
-  return render_template("welcome.html")
-
 # TODO:
 # Optimize Settings by building up one single dictionary to push to the database, rather than running multiple queries. 
 @app.route('/users/settings', methods=['GET','POST'])
 def settings():
+  """The user's settings page. Used for changing their profile, account settings, and homepage."""
   if g.logged_in_user:
     if request.method == 'GET':
       if config.beta_key: beta_keys = beta_pass_model.get({"owner" : g.logged_in_user["username"] })
@@ -340,6 +348,7 @@ def settings():
 @app.route('/art/<int:art>/comment', methods=['POST'])
 @app.route('/journal/view/<int:journal>/comment', methods=['POST'])
 def comment(username=None,art=None,journal=None,commentID=None):
+  """Handles posting and getting comments and comment threads."""
   if request.method == 'GET':
     comment_result = comments_model.get_one({"_id" : commentID})
     if not comment_result: abort(404)
@@ -380,7 +389,7 @@ def comment(username=None,art=None,journal=None,commentID=None):
         elif journal:
           location = "j"
           home = journal
-        else         : abort(500)
+        else: abort(500)
         key = keys_model.next("comments")
         comments_model.insert({
           "_id"          : key
@@ -399,20 +408,29 @@ def comment(username=None,art=None,journal=None,commentID=None):
 
 @app.route('/meta/terms_of_service', methods=['GET'])
 def terms_of_service():
+  """Displays the Drawrawr Terms of Service, loaded from a text file. """
   f = open("static/legal/tos")
   tos = f.read()
   return render_template("tos.html", tos=tos)
 
 @app.route('/meta/about', methods=['GET'])
 def about():
+  """Displays a page about Drawrawr"""
   return render_template("about.html")
 
 @app.route('/meta/donate', methods=['GET'])
 def donate():
+  """Displays the donations page"""
   return render_template("donate.html")
+
+@app.route('/users/welcome', methods=['GET'])
+def welcome():
+  """A welcome page displayed to new members that have just signed up"""
+  return render_template("welcome.html")
 
 @app.route('/art/<int:art>', methods=['GET','DELETE'])
 def view_art(art):
+  """Displays the artwork of whichever ID is passed in, along with comments, and information about the artwork."""
   try: 
     art_lookup = art_model.get_one({'_id' : art})
   except ValueError: abort(404)
@@ -438,6 +456,7 @@ def view_art(art):
 
 @app.route('/art/<int:art>/feature', methods=['POST'])
 def feature_art(art):
+  """Handles feature suggestion of an artwork by users. """
   try: 
     art_lookup = art_model.get_one({'_id' : art})
   except ValueError: abort(404)
@@ -455,6 +474,7 @@ def feature_art(art):
 
 @app.route('/art/<int:art>/favorite', methods=['POST','GET'])
 def favorite(art):
+  """Handles favoriting and de-favoriting artworks"""
   if g.logged_in_user:
     if request.method == 'POST':
       fav = art_model.get_one({"_id" : art})
@@ -472,14 +492,11 @@ def favorite(art):
       else:                                              return "0"
   else: abort(401)
 
-@app.route('/users/welcome', methods=['GET'])
-def welcome():
-  return render_template("welcome.html")
-
 @app.route('/<username>/gallery/', defaults={'folder': "all", 'page': 0}, methods=['GET'])
 @app.route('/<username>/gallery/<folder>', defaults={'page': 0}, methods=['GET'])
 @app.route('/<username>/gallery/<folder>/<int:page>', methods=['GET'])
 def view_gallery(username,folder,page):
+  """Displays a user's gallery or favorites, filtered and ordered based on given GET parameters."""
   author_lookup = users_model.get_one({'lowername' : username.lower()})
   if not author_lookup: abort(404)
   else:
@@ -518,6 +535,7 @@ def view_gallery(username,folder,page):
 
 @app.route('/art/do/submit', methods=['GET','POST'])
 def submit_art():
+  """Displays the artwork submission page and handles the submission of artworks."""
   if g.logged_in_user:
     if request.method == 'GET':
         return render_template("submit.html")
@@ -569,6 +587,7 @@ def submit_art():
 
 @app.route('/art/do/autocrop/<int:art>',methods=['POST'])
 def autocrop(art):
+  """Automatically creates a crappily cropped temporary thumbnail for an artwork. Used as the default thumbnail until the user crops a better one. """
   if g.logged_in_user:
     art_lookup = art_model.get_one({'_id' : art})
     if not art_lookup: abort(404)
@@ -585,6 +604,7 @@ def autocrop(art):
 
 @app.route('/art/do/crop/<int:art>', methods=['GET','POST'])
 def crop(art):
+  """Displays a page for the user to crop out a thumbnail from their artwork and handles cropping requests."""
   if g.logged_in_user:
     art_lookup = art_model.get_one({'_id' : art})
     if not art_lookup: abort(404)
@@ -606,6 +626,7 @@ def crop(art):
 
 @app.route('/<username>/journals', methods=['GET'])
 def view_user_journals(username):
+  """Redirects to the most recent journal for a given user."""
   owner_result = users_model.get_one({"lowername" : username.lower() })
   if not owner_result: abort(404)
   journal_result = journals_model.get({"author_ID" : owner_result["_id"] }).limit(1).sort("_id",-1)
@@ -616,6 +637,7 @@ def view_user_journals(username):
 
 @app.route('/journal/view/<int:journal>', methods=['GET'])
 def view_journal(journal):
+  """Views a specific journal given its ID."""
   journal_result = journals_model.get_one({"_id" : journal })
   if not journal_result: abort(404)
   journals_model.increment_views({"_id": journal})
@@ -624,6 +646,7 @@ def view_journal(journal):
 
 @app.route('/journal/edit/<int:journal>', methods=['GET', 'POST'])
 def edit_journal(journal):
+  """Edits a specific journal given its ID"""
   if g.logged_in_user:
     journal_result = journals_model.get_one({"_id" : journal })
     if not journal_result: abort(404)
@@ -642,6 +665,10 @@ def edit_journal(journal):
 
 @app.route('/journal/manage', methods=['GET','POST'])
 def manage_journal():
+  """
+  Renders a page for posting a new journal, with links to edit past journals. 
+  Handles the posting of new journals. 
+  """
   if g.logged_in_user:
     if request.method == 'GET':
       all_journals = journals_model.get({"author_ID" : g.logged_in_user['_id'] }).sort("_id",-1)
@@ -668,19 +695,26 @@ def manage_journal():
 
 @app.route('/clubs/')
 def clubs():
+  """Dummy Clubs Page"""
   return render_template("clubs.html")
 
 @app.route('/clubs/edit',  methods=['GET','POST'])
 def clubs_edit():
+  """Dummy Clubs Page"""
   return render_template("club_edit.html")
 
 @app.route('/clubs/view/<clubName>')
 def clubpage(clubName):
+  """Dummy Clubs Page"""
   return render_template("clubpage.html")
 
 @app.route('/search/', defaults={'page': 0} )
 @app.route('/search/<int:page>', methods=['GET'])
 def search(page):
+  """
+  Displays a page for searching Drawrawr for artworks based on given criteria.
+  By default, the most recent artworks are displayed.
+  """
   sort  = "d"
   order = "d"
   keywords = []
@@ -714,6 +748,7 @@ def search(page):
 
 @app.route('/staff/')
 def staff():
+  """Displays the staff-only page. A member must have at least one moderator-granted permission to view it. """
   if g.logged_in_user:
     if any(util.dict_to_list(g.logged_in_user["permissions"]) ): 
       users = users_model.get()
@@ -724,14 +759,17 @@ def staff():
 
 @app.route('/art/uploads/<filename>')
 def artFile(filename):
+  """Grabs an artwork file from storage."""
   return redirect( storage.get(os.path.join(config.art_dir,filename ) ) )
 
 @app.route('/art/uploads/thumbs/<filename>')
 def thumb_file(filename):
+  """Grabs an artwork's thumbnail file from storage."""
   return redirect( storage.get(os.path.join(config.thumb_dir,filename ) ) )
 
 @app.route('/icons/<filename>')
 def icon_files(filename):
+  """Grabs a user's icon file from storage."""
   return redirect( storage.get(os.path.join(config.icons_dir,filename ) ) )
   '''
   filename = filename.lower()
@@ -747,10 +785,12 @@ def icon_files(filename):
 
 @app.route('/util/parse_usercode/<text>')
 def parse_usercode(text):
+  """Given usercode text, parses it into HTML and returns it."""
   return usercode.parse(text)
 
 @app.route('/admin/generate_beta_pass',methods=['POST'])
 def generate_beta_pass():
+  """Generates and returns a new beta key for the user."""
   if g.logged_in_user:
     if g.logged_in_user["permissions"]["generate_beta_pass"]:
       return beta_pass_model.generate(ownerName=g.logged_in_user["username"])
@@ -762,6 +802,7 @@ def generate_beta_pass():
 
 @app.route('/api/update_count',methods=['GET'])
 def update_count():
+  """Returns the number of updates for a member."""
   try:
     username = request.args.get('username')
     password = request.args.get('password')
@@ -789,10 +830,6 @@ def page_not_found(e):
   elif rando == 6: randimg = "browniexxx404.png"
   return render_template('404.html',randimg=randimg), 404
 
-@app.errorhandler(405)
-def unauthorized(e):
-  return page_not_found(e)
-
 @app.errorhandler(500)
-def internalError(e):
+def internal_error(e):
   return render_template('500.html'), 500
