@@ -246,7 +246,7 @@ def watch():
       if g.logged_in_user["lowername"] != watched_user.lower():
         user_result = users_model.get_one({"lowername" : watched_user.lower()})
         if g.logged_in_user["username"] in user_result["watchers"]:
-          users_model.update({"lowername" : watched_user.lower()},{"$pull" : {"watchers" : g.logged_in_user["username"] } })
+          users_model.update({"lowername" : watched_user.lower()}, {"watchers" : g.logged_in_user["username"] }, "$pull")
         else:
           watchers = user_result["watchers"]
           watchers.insert(0, g.logged_in_user["username"])
