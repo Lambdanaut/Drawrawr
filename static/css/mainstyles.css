@@ -135,7 +135,7 @@ noscript
 	text-align: center;
 	z-index: 1000;
 	background-color: #000000;
-	background:url(/static/images/modalpixelbackground.png);
+	background:url(/static/images/modal_pixel_background.png);
 }
 #modal .inner {
 	display: none;
