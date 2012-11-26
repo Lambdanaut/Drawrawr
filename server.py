@@ -134,7 +134,6 @@ def login():
         return "1"
       else: return "0"
     else: return "0"
-  else: return "None"
 
 @app.route('/users/logout', methods=['POST'])
 def logout():
@@ -154,6 +153,8 @@ def signup():
     beta_key = beta_pass_model.check(request.form["beta_code"])
     if not beta_key:
       return "3" #ERROR, Beta Code Fail
+  if g.logged_in_user:
+    return "4" #ERROR, User is already logged in
   else: beta_key = None
   hashed = system.cryptography.encrypt_password(request.form['password1'], True)
   storage.push("static/images/newby_icon.png", os.path.join(config.icons_dir, request.form['username'].lower() ), mimetype="image/png")
@@ -302,29 +303,29 @@ def settings():
           flash("The new passwords you gave don't match! Try retyping them carefully. ")
         else:
           hashed = system.cryptography.encrypt_password(request.form['change_pass_new_1'], True)
-          users_model.update({"lowername": g.logged_in_user['lowername']}, {"password": hashed} )
+          users_model.update({"_id": g.logged_in_user['_id']}, {"password": hashed} )
           session['password']=hashed
           messages.append("Password")
       # Gender
       if request.form["change_gender"] != g.logged_in_user["gender"]:
-        users_model.update({"lowername": g.logged_in_user['lowername']}, {"gender": request.form["change_gender"] })
+        users_model.update({"_id": g.logged_in_user['_id']}, {"gender": request.form["change_gender"] })
         messages.append("Gender")
       # Location
       if request.form["change_latitude"] != str(g.logged_in_user["latitude"]) or request.form["change_longitude"] != str(g.logged_in_user["longitude"]):
         try:
           latFloat = float(request.form["change_latitude"])
           lonFloat = float(request.form["change_longitude"])
-          users_model.update({"lowername": g.logged_in_user['lowername']}, {"latitude": latFloat, "longitude": lonFloat } )
+          users_model.update({"_id": g.logged_in_user['_id']}, {"latitude": latFloat, "longitude": lonFloat } )
           messages.append("Location")
         except ValueError:
           flash("The locations you gave were invalid latitude and longitude coordinates! ): ")
       # Profile
       if request.form["change_profile"] != g.logged_in_user["profile"]:
-        users_model.update({"lowername": g.logged_in_user['lowername']}, {"profile": request.form["change_profile"], "code_profile": usercode.parse(request.form["change_profile"]) })
+        users_model.update({"_id": g.logged_in_user['_id']}, {"profile": request.form["change_profile"], "code_profile": usercode.parse(request.form["change_profile"]) })
         messages.append("Profile")
       # Color Theme
       if request.form["change_color_theme"] != g.logged_in_user["theme"]:
-        users_model.update({"lowername": g.logged_in_user['lowername']}, {"theme": request.form["change_color_theme"]} )
+        users_model.update({"_id": g.logged_in_user['_id']}, {"theme": request.form["change_color_theme"]} )
         messages.append("Color Theme")
       # Layout
       l1 = util.url_decode(request.form["change_layout"])
@@ -336,7 +337,7 @@ def settings():
           layout_to_push = {}
           for key in layout:
             layout_to_push["layout." + key] = layout[key]
-          users_model.update({"lowername": g.logged_in_user['lowername']}, layout_to_push)
+          users_model.update({"_id": g.logged_in_user['_id']}, layout_to_push)
           messages.append("Layout")
       return render_template("settings_success.html",messages=messages,len=len)
   else: abort(401)
@@ -650,8 +651,7 @@ def edit_journal(journal):
   if g.logged_in_user:
     journal_result = journals_model.get_one({"_id" : journal })
     if not journal_result: abort(404)
-    if g.logged_in_user["_id"] != journal_result['author_ID']:
-      abort(401)
+    if g.logged_in_user["_id"] != journal_result['author_ID']: abort(401)
     if request.method == 'GET':
       all_journals = journals_model.get({"author_ID" : g.logged_in_user['_id'] }).sort("_id",-1)
       return render_template("edit_journal.html", journal=journal_result, all_journals=all_journals)
@@ -678,15 +678,15 @@ def manage_journal():
       if request.form["journal_title"].strip() != "":
         key = keys_model.next("journals")
         journals_model.insert({
-          "_id"         : key
-        , "title"       : request.form["journal_title"]
-        , "content"     : request.form["journal_content"]
+          "_id"          : key
+        , "title"        : request.form["journal_title"]
+        , "content"      : request.form["journal_content"]
         , "code_content" : usercode.parse(request.form["journal_content"])
-        , "mood"        : request.form["journal_mood"]
-        , "author"      : g.logged_in_user["username"]
+        , "mood"         : request.form["journal_mood"]
+        , "author"       : g.logged_in_user["username"]
         , "author_ID"    : g.logged_in_user["_id"]
-        , "views"       : 0
-        , "date"        : datetime.datetime.today()
+        , "views"        : 0
+        , "date"         : datetime.datetime.today()
         })
         return redirect(url_for('view_journal',journal=key))
       else: return 0
