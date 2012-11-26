@@ -19,9 +19,9 @@ li {
 <div class="grid_3">
   <section class="round_box green_container" style="padding: 4px 15px 5px 15px;"><strong>Manage Journals</strong></section>
   <section class="container" style="margin-top: 10px;">
-    <ul>
+    <ul id="manage_journals">
     {% for j in all_journals %}
-      <li><a href="{{ url_for("edit_journal", journal=j['_id']) }}">{{ j["title"] }}</a></li>
+      <li><span class="close" style="margin-top:4px;"></span><a href="{{ url_for("edit_journal", journal=j['_id']) }}" data-id="{{ j['_id'] }}">{{ j["title"] }}</a></li>
     {% endfor %}
     </ul>
   </section>

@@ -166,3 +166,10 @@ $(document).ready ->
 	$("#moods").autocomplete(
 		source: availableMoods
 	)
+	$("#manage_journals .close").click ->
+		journal_link = $(this).parent().find("a")
+		journal_id = journal_link.attr("data-id")
+		confirm_deletion = confirm "Are you sure you want to delete \"" + journal_link.text() + "\"?"
+		if confirm_deletion
+			$.post ("/journal/delete/" + journal_id), () => 
+				journal_link.parent().fadeOut("slow")

@@ -663,6 +663,16 @@ def edit_journal(journal):
             return redirect(url_for('view_journal', journal = journal) )
   else: abort(401)
 
+@app.route('/journal/delete/<int:journal>', methods=['POST'])
+def delete_journal(journal):
+  if g.logged_in_user:
+    journal_result = journals_model.get_one({"_id" : journal })
+    if not journal_result: abort(404)
+    if g.logged_in_user["_id"] != journal_result['author_ID']: abort(401)
+    journals_model.delete({"_id" : journal})
+    return "1"
+
+
 @app.route('/journal/manage', methods=['GET','POST'])
 def manage_journal():
   """
@@ -675,21 +685,20 @@ def manage_journal():
       return render_template("manage_journals.html", all_journals = all_journals)
     else:
       if not "journal_title" in request.form or not "journal_content" in request.form or not "journal_mood" in request.form: abort(500)
-      if request.form["journal_title"].strip() != "":
-        key = keys_model.next("journals")
-        journals_model.insert({
-          "_id"          : key
-        , "title"        : request.form["journal_title"]
-        , "content"      : request.form["journal_content"]
-        , "code_content" : usercode.parse(request.form["journal_content"])
-        , "mood"         : request.form["journal_mood"]
-        , "author"       : g.logged_in_user["username"]
-        , "author_ID"    : g.logged_in_user["_id"]
-        , "views"        : 0
-        , "date"         : datetime.datetime.today()
-        })
-        return redirect(url_for('view_journal',journal=key))
-      else: return 0
+      if request.form["journal_title"].strip() == "": return "0" # ERROR: 
+      key = keys_model.next("journals")
+      journals_model.insert({
+        "_id"          : key
+      , "title"        : request.form["journal_title"]
+      , "content"      : request.form["journal_content"]
+      , "code_content" : usercode.parse(request.form["journal_content"])
+      , "mood"         : request.form["journal_mood"]
+      , "author"       : g.logged_in_user["username"]
+      , "author_ID"    : g.logged_in_user["_id"]
+      , "views"        : 0
+      , "date"         : datetime.datetime.today()
+      })
+      return redirect(url_for('view_journal',journal=key))
       
   else: abort(401)    
 
