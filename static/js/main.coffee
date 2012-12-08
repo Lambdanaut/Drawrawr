@@ -86,6 +86,9 @@ $(document).ready ->
 	date = new Date()
 	$("#copyright-date").html date.getFullYear()
 
+	### Refreshes relative dates ###
+	$("body").timeago();
+
 	### Set up the header ###
 	header = new Header false
 	if $("#glued").attr("data-glued") == "0"

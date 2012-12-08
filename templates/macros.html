@@ -89,7 +89,7 @@
   </div>
   <div class="comment_footer">
     <div class="reply_button">REPLY</div>
-    <div class="date_posted">Posted <abbr title="{{ comment["date"] }}">{{ util.pretty_date(comment["date"]) }}</abbr></div>
+    <div class="date_posted">Posted <abbr title="{{ comment["date"] }}"><time class="timeago" datetime="{{ comment["date"] }}">{{ util.pretty_date(comment["date"]) }}</time></abbr></div>
     <div class="parentData" data-value="{{ home }}" style="display: none;"></div>
     <div class="comment_map_data" data-value="{{ util.print_list(depth_chain) }}" style="display: none;"></div>
     <div class="reply"></div>

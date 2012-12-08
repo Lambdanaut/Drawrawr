@@ -134,6 +134,9 @@
       _this = this;
     date = new Date();
     $("#copyright-date").html(date.getFullYear());
+    /* Refreshes relative dates
+    */
+    $("body").timeago();
     /* Set up the header
     */
     header = new Header(false);

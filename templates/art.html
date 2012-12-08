@@ -27,7 +27,7 @@
     </div>
     <div style="clear:both;"></div>
     <small>
-      Submitted <abbr title="{{ art["date"] }}">{{ util.pretty_date(art["date"]) }}</abbr>
+      Submitted <abbr title="{{ art["date"] }}"><time class="timeago" datetime="{{ art["date"] }}">{{ util.pretty_date(art["date"]) }}</time></abbr>
       <div id="views">Views: {{ art["views"] }}</div>
       <div id="favorites">Favorites: {{ art["fav_amount"] }}</div>
     </small>
