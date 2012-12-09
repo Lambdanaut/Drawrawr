@@ -79,7 +79,7 @@
     */
     $("#featureButton").click(function() {
       var featureModal;
-      return featureModal = new Modal("modal");
+      return featureModal = new Modal("#feature_art_modal");
     });
     /* Delete Button
     */
