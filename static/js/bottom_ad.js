@@ -1,4 +1,4 @@
-  (function(){function pw_load(){
+(function(){function pw_load(){
 if(arguments.callee.z)return;else arguments.callee.z=true;
 var d=document;var s=d.createElement('script');
 var x=d.getElementsByTagName('script')[0];
