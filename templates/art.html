@@ -57,16 +57,16 @@
       <img src="/static/images/feature_button.png" id="featureButton" class="user_button" title="Feature Button">
       <img src="/static/images/reportbutton.png" class="user_button" title="Report Button">
       {% if logged_in_user["permissions"]["delete_art"] %}{{ delete_button() }}{% endif %}
-      <aside id="modal">
-        <section class="container" style="color: #513727; margin: 20px 20% 0 20%;">
+      <aside class="modal">
+        <aside id="feature_art_modal" class="container" style="color: #513727; margin: 20px 20% 0 20%;">
           <span class="close"></span>
           <h3>Suggest <i>{{ art["title"] }}</i> to be Featured</h3>
           <form method="POST" action="{{ art["_id"] }}/feature">
             <p>Please type a well-thought out reason for why you think this art should be featured: </p>
-            <textarea class="textArea" name="featured_text" cols=50 rows=5 style="width: 100%; margin-bottom: 10px;"></textarea><br>
+            <textarea class="text_area_no_recoil" name="featured_text" cols=50 rows=5 style="width: 100%; margin-bottom: 10px;"></textarea><br>
             <input type="submit" value="Submit">
           </form>
-        </section>
+        </aside>
       </aside>
     {# Art Owner #}
     {% else %}

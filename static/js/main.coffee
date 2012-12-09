@@ -52,19 +52,19 @@ class @Notice
 
 class @Modal
 	constructor: (@modalDiv) ->
-		$("#modal .close").click @die
+		$(".modal .close").click @die
 		
 		@show()
 
 	show: () ->
 		@visible=true
 		$(@modalDiv).css("display","block")
-		$("#modal").css("display","block")
+		$(".modal").css("display","block")
 
 	die: () ->
 		@visible=false
-		$("#modal aside").css("display","none")
-		$("#modal").css("display","none")
+		$(".modal aside").css("display","none")
+		$(".modal").css("display","none")
 
 class @Help_Box
 	constructor: (@help_div) ->

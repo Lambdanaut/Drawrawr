@@ -25,7 +25,7 @@
     <img src= "/static/images/drminigreen.png" alt="GREENY" style="float:left; margin-top: 50px; margin-left: 100px;">
     <img src= "/static/images/drminibrown.png" alt="BROWNIE" style="float:right; margin-top: 50px; margin-right: 100px;">
     <div style="position:relative;top: 50px;">
-      <h2 id="submitTitle"> Submit Artwork </h2>
+      <h2 id="submit_title"> Submit Artwork </h2>
       <b>Submission type:</b>
       <select id="artOptions" name="artOptions">
         <option id="ignore">-----</option>
@@ -40,7 +40,7 @@
   </section>
     <div id="imageArea" class="artArea">
       <form enctype="multipart/form-data" method="POST" class="container">
-        <input type="hidden" name="artType" value="image">
+        <input type="hidden" name="art_type" value="image">
         <table>
           <tr>
             <th>File: </th>
@@ -56,23 +56,23 @@
           </tr>
           <tr>
             <th></th>
-            <th><input type="submit"  class='button uploadButton'></th>
+            <th><input type="submit"  class='button upload_button'></th>
           </tr>
         </table>
       </form>
     </div>
-    <div id="audioArea" class="artArea">
+    <div id="audio_area" class="artArea">
     </div>
-    <div id="literatureArea" class="artArea">
+    <div id="literature_area" class="artArea">
     </div>
-    <div id="craftArea" class="artArea">
+    <div id="craft_area" class="artArea">
     </div>
-    <div id="culinaryArea" class="artArea">
+    <div id="culinary_area" class="artArea">
     </div>
-    <div id="performanceArea" class="artArea">
+    <div id="performance_area" class="artArea">
     </div>
-    <aside id='modal'>
-      <div style="margin-top: 10%; margin-left: auto; margin-right: auto; z-index:10000;">
+    <aside class='modal'>
+      <div id="submit_loading_modal" style="margin-top: 10%; margin-left: auto; margin-right: auto; z-index:10000;">
         <b>UPLOADING ART</b><br>
         <img src="/static/images/loader.gif" alt="LOADING">
       </div>

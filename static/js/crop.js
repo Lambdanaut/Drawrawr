@@ -1,21 +1,21 @@
 (function() {
-  var showPreview, thumbHeight, thumbWidth;
+  var show_preview, thumb_height, thumb_width;
 
-  thumbWidth = 135;
+  thumb_width = 135;
 
-  thumbHeight = 110;
+  thumb_height = 110;
 
-  showPreview = function(coords) {
+  show_preview = function(coords) {
     var rx, ry;
-    rx = thumbWidth / coords.w;
-    ry = thumbHeight / coords.h;
+    rx = thumb_width / coords.w;
+    ry = thumb_height / coords.h;
     $("#x").val(coords.x);
     $("#y").val(coords.y);
     $("#w").val(coords.w);
     $("#h").val(coords.h);
     return $('#preview').css({
-      width: Math.round(rx * imageWidth) + 'px',
-      height: Math.round(ry * imageHeight) + 'px',
+      width: Math.round(rx * image_width) + 'px',
+      height: Math.round(ry * image_height) + 'px',
       marginLeft: '-' + Math.round(rx * coords.x) + 'px',
       marginTop: '-' + Math.round(ry * coords.y) + 'px'
     });
@@ -23,23 +23,23 @@
 
   $(document).ready(function() {
     $('#art').load(function() {
-      window.imageWidth = $("#art").width();
-      window.imageHeight = $("#art").height();
+      window.image_width = $("#art").width();
+      window.image_height = $("#art").height();
       $('#art').Jcrop({
-        aspectRatio: thumbWidth / thumbHeight,
-        onChange: showPreview,
-        onSelect: showPreview,
-        setSelect: [0, 0, imageWidth, imageHeight]
+        aspectRatio: thumb_width / thumb_height,
+        onChange: show_preview,
+        onSelect: show_preview,
+        setSelect: [0, 0, image_width, image_height]
       });
-      return showPreview({
-        w: imageWidth,
-        h: imageHeight
+      return show_preview({
+        w: image_width,
+        h: image_height
       });
     });
     return $("form").submit(function() {
       var m;
       $(".button").attr("disabled", "disabled");
-      m = new Modal("#modal");
+      m = new Modal("#crop_loading_modal");
       return 1;
     });
   });

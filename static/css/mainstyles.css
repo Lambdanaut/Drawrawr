@@ -124,7 +124,7 @@ noscript
 	z-index: 1001;
 }
 #notice p{font-size: 12px;}
-#modal 
+.modal 
 {
 	display: none;
 	position: fixed;
@@ -137,19 +137,19 @@ noscript
 	background-color: #000000;
 	background:url(/static/images/modal_pixel_background.png);
 }
-#modal .inner {
+.modal .inner {
 	display: none;
 	text-align: center;
 	width: 350px;
 	margin: 2% auto;	
 }
-#modal .mascot {
+.modal .mascot {
 	position: relative;
 	width: 0px;
 	height: 0px;
 	margin: 2% auto;
 }
-#modal h6 {
+.modal h6 {
 	margin-bottom: 0px;
 }
 .help_box {
@@ -358,7 +358,7 @@ noscript
 	border: 1px #513727 solid;
 	width: 160px;
 }
-.textArea
+.text_area
 {
 	height: 60px;
 	-webkit-transition: all 0.5s ease-in-out;
@@ -367,7 +367,7 @@ noscript
 	-ms-transition: all 0.5s ease-in-out;
 	transition: all 0.5s ease-in-out;
 }
-.textArea:focus
+.text_area:focus
 {
 	height: 300px;
 }

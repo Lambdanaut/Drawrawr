@@ -84,20 +84,20 @@
 
     function Modal(modalDiv) {
       this.modalDiv = modalDiv;
-      $("#modal .close").click(this.die);
+      $(".modal .close").click(this.die);
       this.show();
     }
 
     Modal.prototype.show = function() {
       this.visible = true;
       $(this.modalDiv).css("display", "block");
-      return $("#modal").css("display", "block");
+      return $(".modal").css("display", "block");
     };
 
     Modal.prototype.die = function() {
       this.visible = false;
-      $("#modal aside").css("display", "none");
-      return $("#modal").css("display", "none");
+      $(".modal aside").css("display", "none");
+      return $(".modal").css("display", "none");
     };
 
     return Modal;

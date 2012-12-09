@@ -12,8 +12,8 @@
 	width: 135px;
 	height: 110px;
 	border: solid 1px;
-	 -moz-box-shadow: 3px 3px 5px #888;
-	 -webkit-box-shadow: 3px 3px 5px #888;
+	-moz-box-shadow: 3px 3px 5px #888;
+	-webkit-box-shadow: 3px 3px 5px #888;
 	box-shadow: 3px 3px 5px #888
 }
 #left_col
@@ -53,11 +53,11 @@
         <input type="submit" value="Submit Thumbnail" class="button">
       </form>
     </section>
-    <aside id='modal'>
-      <div style="margin-top: 19%; margin-left: auto; margin-right: auto; z-index:10000;">
+    <aside class="modal">
+      <aside id="crop_loading_modal" style="margin-top: 19%; margin-left: auto; margin-right: auto; z-index:10000;">
         <b>CROPPING THUMBNAIL</b><br>
         <img src="/static/images/loader.gif" alt="LOADING">
-      </div>
+      </aside>
     </aside>
   </div>
 {% endblock %}

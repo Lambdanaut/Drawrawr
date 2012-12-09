@@ -1,16 +1,16 @@
 (function() {
 
   $(document).ready(function() {
-    $("#artOptions").change(function() {
+    $("#art_options").change(function() {
       $("#ignore").remove();
-      $("#submitTitle").text($(this).val());
-      $(".artArea").css("display", "none");
-      return $("#" + $(this).val().toLowerCase() + "Area").css("display", "inline");
+      $("#submit_title").text($(this).val());
+      $(".art_area").css("display", "none");
+      return $("#" + $(this).val().toLowerCase() + "_area").css("display", "inline");
     });
     return $("form").submit(function() {
       var m;
-      $(".uploadButton").attr("disabled", "disabled");
-      m = new Modal("#modal");
+      $(".upload_button").attr("disabled", "disabled");
+      m = new Modal("#submit_loading_modal");
       return 1;
     });
   });

@@ -1,11 +1,11 @@
 $(document).ready ->
-	$("#artOptions").change () ->
+	$("#art_options").change () ->
 		$("#ignore").remove()
-		$("#submitTitle").text($(this).val())
-		$(".artArea").css "display","none"
-		$("#" + $(this).val().toLowerCase() + "Area").css "display","inline"
+		$("#submit_title").text($(this).val())
+		$(".art_area").css "display","none"
+		$("#" + $(this).val().toLowerCase() + "_area").css "display","inline"
 
 	$("form").submit () ->
-		$(".uploadButton").attr "disabled","disabled"
-		m = new Modal "#modal"
+		$(".upload_button").attr "disabled","disabled"
+		m = new Modal "#submit_loading_modal"
 		return 1

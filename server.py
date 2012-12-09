@@ -543,7 +543,7 @@ def submit_art():
     else:
       messages = []
       # Image
-      if request.form["artType"] == "image":
+      if request.form["art_type"] == "image":
         image = request.files['upload']
         if not util.allowed_file(image.filename, config.image_extensions):
           flash(config.file_type_error + "The allowed filetypes are " + util.print_list(config.image_extensions) + ". ")

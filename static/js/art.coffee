@@ -57,7 +57,7 @@ $(document).ready ->
 
 	### Feature Button ###
 	$("#featureButton").click ->
-		featureModal = new Modal "modal"
+		featureModal = new Modal "#feature_art_modal"
 
 	### Delete Button ###
 	$("#delete_button").click ->
