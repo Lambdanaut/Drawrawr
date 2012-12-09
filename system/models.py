@@ -82,7 +82,7 @@ class Art:
     return self.feature.find(series)
 
   def suggest_feature (self, data):
-    return self.featured.insert(data)
+    return self.feature.insert(data)
 
 class Journals:
   def __init__ (self, db):
