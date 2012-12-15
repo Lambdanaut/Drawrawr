@@ -36,8 +36,10 @@ if config.logging: logging.basicConfig(filename='logs/DR.log',level=logging.DEBU
 
 # Database
 db_con = pymongo.Connection(config.dbHost,config.dbPort)
-db     = db_con.heroku_app2925802
-db.authenticate(config.dbUsername, config.dbPassword)
+if config.dbDatabase: db = db_con[config.dbDatabase]
+else: db = db_con
+if config.using_secrets:
+  db.authenticate(config.dbUsername, config.dbPassword)
 
 users_model     = models.Users(db)
 art_model       = models.Art(db)

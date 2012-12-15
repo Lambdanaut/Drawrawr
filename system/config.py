@@ -8,14 +8,13 @@ host = '0.0.0.0'
 port = int(os.environ.get("PORT", 80))
 
 # Production
-production        = True
 logging           = False
 debug             = True
 beta_key          = False
 random_secret_key = False
 
 # Database
-if production and using_secrets:
+if using_secrets:
   dbHost     = "ds029817.mongolab.com"
   dbPort     = 29817
   dbUsername = secrets.dbUsername
@@ -23,6 +22,7 @@ if production and using_secrets:
 else:
   dbHost = "localhost"
   dbPort = 27017
+dbDatabase = "heroku_app2925802"
 
 # Users
 iconSize = 75,75
