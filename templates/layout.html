@@ -29,7 +29,6 @@
   <script type="text/javascript" src="/static/js/bottom_ad.js"></script>
   {% endif %}
   {% block head %}{% endblock %}
-
 </head>
 <body>
   <noscript class="container"><b>Warning:</b> You are browsing with Javascript disabled. Drawrawr requires Javascript to function correctly. Please either enable it, or upgrade your browser.</noscript>
@@ -42,6 +41,7 @@
         </ul>
       {% endif %}
     {%- endwith -%}
+  {%- if not g.logged_in_user %}
   <aside class="modal">
     <aside id='register-form' class='container inner'>
       <span class="close"></span>
@@ -82,6 +82,7 @@
       </form>
     </aside>
   </aside>
+  {%- endif %}
   <header>
     <div id="header">
       <span id="glued" data-glued="{{ logged_in_user["glued"] }}"></span>

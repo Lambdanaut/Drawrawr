@@ -1,6 +1,9 @@
-{# Maps integers to month names #}
+{#- A list of macros that are used to display  #}
+
+{#- Maps integers to month names #}
 {% macro month_name(m) %}{% if m == 1 %}January{% elif m == 2 %}February{% elif m == 3 %}March{% elif m == 4 %}April{% elif m == 5 %}May{% elif m == 6 %}June{% elif m == 7 %}July{% elif m == 8 %}August{% elif m == 9 %}September{% elif m == 10 %}October{% elif m == 11 %}November{% else %}December{% endif %}{% endmacro %}
-{# Writes out three select boxes with names "changeYear", "change_month", and "change_day" #}
+
+{#- Writes out three select boxes with names "changeYear", "change_month", and "change_day" #}
 {% macro date_selects() %}
 <select name=change_month>
   <option value='1'>January</option>
@@ -27,19 +30,23 @@
 {% endfor %}
 </select>
 {% endmacro %}
-{# Sets the css to fit a theme #}
+
+{#- Sets the css to fit a theme #}
 {% macro apply_theme(theme) %}
 <link rel="stylesheet" href="/static/css/userpages/{{ theme }}.css">
 {% endmacro %}
-{# Prints out a user's icon #}
+
+{#- Prints out a user's icon #}
 {% macro user_icon(user) %}
 <a href="{{ url_for('userpage',username=user) }}"><img src="{{ url_for('icon_files',filename=user.lower()) }}" alt="{{ user }}'s icon" class="user_icon" style="float: left;margin: 2px;" title="{{ user }}"></a>
 {% endmacro %}
-{# Prints out a tiny user's icon #}
+
+{#- Prints out a tiny user's icon #}
 {% macro tinyUserIcon(user) %}
 <a href="/{{ user }}"><img src="{{ url_for('icon_files',filename=user.lower()) }}" alt="{{ user }}'s icon" class="tiny_icon" style="float: left;margin: 1px;" title="{{ user }}"></a>
 {% endmacro %}
-<!-- {# Take a list of arts from the database and shows them in gallery format on the page #} -->
+
+{#- Take a list of arts from the database and shows them in gallery format on the page #}
 {% macro draw_gallery(gallery) %}
 {% if gallery %}
   {% for art in gallery %}
@@ -56,7 +63,8 @@
 <br><br><p>There isn't any art to display just yet. </p>
 {% endif %}
 {% endmacro %}
-{# Take a list of usernames and shows their clickable avatars one after another #}
+
+{#- Take a list of usernames and shows their clickable avatars one after another #}
 {% macro draw_users(users, small_icon = False) %}
 {% if users %}
 {% for user in users %}{% if small_icon %}{{ tinyUserIcon(user) }}{% else %}{{ user_icon(user) }}{% endif %}{% endfor %}
@@ -64,7 +72,8 @@
 <p>There aren't any users to display yet. </p>
 {% endif %}
 {% endmacro %}
-{# Takes a comment chain and draws it out #}
+
+{#- Takes a comment chain and draws it out #}
 {% macro draw_comment_chain(comment, home, home_type, depth_chain=[]) %}
   {{ draw_comment(comment,home,home_type,depth_chain) }}
   {% set order = 0 %}
@@ -73,7 +82,8 @@
     {% set order = order + 1 %}
   {% endfor %} 
 {% endmacro %}
-{# Takes an individual comment and draws it out #}
+
+{#- Takes an individual comment and draws it out #}
 {% macro draw_comment(comment,home,home_type,depth_chain) %}
 <div class="comment">
   <div class="comment_header">
@@ -97,7 +107,8 @@
   <div style="clear:both;"></div>
 </div>
 {% endmacro %}
-{# Draws out a generic reply form #}
+
+{#- Draws out a generic reply form #}
 {% macro draw_reply_form(home, home_type) %}
   {% if   home_type == "u" %}<form method="POST" class="replyForm" action="{{ url_for("userpage", username=user["username"]) }}/comment">
   {% elif home_type == "a" %}<form method="POST" class="replyForm" action="{{ url_for("view_art", art=home) }}/comment">

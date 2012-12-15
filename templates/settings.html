@@ -1,91 +1,91 @@
 {% extends "layout.html" %}
 {% block title %}Settings{% endblock %}
 {% block head %}
-<script src="/static/js/lib/jquery-ui-1.8.18.custom.min.js"></script>
-<script src="/static/js/tabs.js"></script>
-<script src="/static/js/settings.js"></script>
-<link rel="stylesheet" href="/static/css/tabs.css" media="screen">
-<link rel="stylesheet" href="/static/css/draggable.css" media="screen">
-<link rel="stylesheet" href="/" media="screen" id="colorThemeStyle">
-<style media="screen" type="text/css">
-h3
-{
-	margin: 2px;
-}
-.left_col
-{
-	float: left;
-	width: 33%;
-}
-.middle_col
-{
-	float: left;
-	width: 33%
-}
-.right_col
-{
-	float: left;
-	width: 33%;
-}
-#content_mimic
-{
-	float: left;
-	width: 60%;
-	background-color: #B8B8B8;
-}
-.container
-{
-	margin: 5px;
-}
-.profile_full_row
-{
-	width: 100%;
-	clear: both;
-	padding-top: 5px;
-}
-#profile_top
-{
-	min-height: 75px;
-	border-bottom: dashed 1px #513727;
-}
-#profile_right_col
-{
-	float: right;
-	min-height: 75px;
-	width: 35%;
-}
-#profile_left_col
-{
-	width: 65%;
-	min-height: 75px;
-}
-#profile_bottom
-{
-	border-top: dashed 1px #513727;
-	min-height: 75px;
-}
-#profile_hidden_divider
-{   
-	text-align:center;
-	border-top: double 1px #513727;	
-}
-#profile_hidden
-{
-	min-height: 150px;
-}
-#profile_hidden .draggable
-{
-        float: left;
-        display: inline;
-        color: #cccccc;
-        background-color: #637e63;
-        width: 20%;
-}
-#profile_hidden .draggable:hover
-{
-	background-color: #70CD71;
-}
-</style>
+  <script src="/static/js/lib/jquery-ui-1.8.18.custom.min.js"></script>
+  <script src="/static/js/tabs.js"></script>
+  <script src="/static/js/settings.js"></script>
+  <link rel="stylesheet" href="/static/css/tabs.css" media="screen">
+  <link rel="stylesheet" href="/static/css/draggable.css" media="screen">
+  <link rel="stylesheet" href="/" media="screen" id="colorThemeStyle">
+  <style media="screen" type="text/css">
+  h3
+  {
+  	margin: 2px;
+  }
+  .left_col
+  {
+  	float: left;
+  	width: 33%;
+  }
+  .middle_col
+  {
+  	float: left;
+  	width: 33%
+  }
+  .right_col
+  {
+  	float: left;
+  	width: 33%;
+  }
+  #content_mimic
+  {
+  	float: left;
+  	width: 60%;
+  	background-color: #B8B8B8;
+  }
+  .container
+  {
+  	margin: 5px;
+  }
+  .profile_full_row
+  {
+  	width: 100%;
+  	clear: both;
+  	padding-top: 5px;
+  }
+  #profile_top
+  {
+  	min-height: 75px;
+  	border-bottom: dashed 1px #513727;
+  }
+  #profile_right_col
+  {
+  	float: right;
+  	min-height: 75px;
+  	width: 35%;
+  }
+  #profile_left_col
+  {
+  	width: 65%;
+  	min-height: 75px;
+  }
+  #profile_bottom
+  {
+  	border-top: dashed 1px #513727;
+  	min-height: 75px;
+  }
+  #profile_hidden_divider
+  {   
+  	text-align:center;
+  	border-top: double 1px #513727;	
+  }
+  #profile_hidden
+  {
+  	min-height: 150px;
+  }
+  #profile_hidden .draggable
+  {
+          float: left;
+          display: inline;
+          color: #cccccc;
+          background-color: #637e63;
+          width: 20%;
+  }
+  #profile_hidden .draggable:hover
+  {
+  	background-color: #70CD71;
+  }
+  </style>
 {% endblock %}
 {% block content %}
   <div id="tabs">
@@ -177,14 +177,14 @@ h3
   {% if logged_in_user["layout"][module][0] == loc and logged_in_user["layout"][module][1] == order %} <div id="{{ module }}" class="draggable container">{{ module }}</div> {% endif %}
 {% endmacro %}
 {% macro drawModules(l) %}
-  {% for o in range(0,6) %}
-    {{ drawModule("profile",l,o) }}
-    {{ drawModule("gallery",l,o) }}
-    {{ drawModule("watches",l,o) }}
-    {{ drawModule("comments",l,o) }}
-    {{ drawModule("nearby",l,o) }}
-    {{ drawModule("journal",l,o) }}
-  {% endfor %}
+  {%- for o in range(0,6) -%}
+    {{- drawModule("profile",l,o) -}}
+    {{- drawModule("gallery",l,o) -}}
+    {{- drawModule("watches",l,o) -}}
+    {{- drawModule("comments",l,o) -}}
+    {{- drawModule("nearby",l,o) -}}
+    {{- drawModule("journal",l,o) -}}
+  {%- endfor -%}
 {% endmacro %}
           <div id="content_mimic" class='round_box'>
             <div class='layout_section'>

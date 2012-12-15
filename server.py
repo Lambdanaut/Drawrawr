@@ -19,6 +19,8 @@ import system.util as util
 
 # Create Application
 app = Flask(__name__)
+
+# Jinja Settings
 app.jinja_env.trim_blocks = True
 
 # Secret Key

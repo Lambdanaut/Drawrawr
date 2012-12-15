@@ -1,35 +1,35 @@
 {% extends "layout.html" %}
-{% block title %} {{ user["username"] }} @ DrawRawr  {% endblock %}
+{% block title %}{{ user["username"] }} @ DrawRawr{% endblock %}
 {% block head %}
-<link rel="stylesheet" href="/static/css/gallery.css" media="screen">
-<link rel="stylesheet" href="/static/css/comment.css" media="screen">
-<script src="/static/js/user.js"></script>
-<script src="/static/js/comment.js"></script>
+  <link rel="stylesheet" href="/static/css/gallery.css" media="screen">
+  <link rel="stylesheet" href="/static/css/comment.css" media="screen">
+  <script src="/static/js/user.js"></script>
+  <script src="/static/js/comment.js"></script>
 
-<style media="screen" type="text/css">
-#user_nav_area a
-{
-	color: inherit;
-	text-decoration: none;
-}
-.tab_button
-{
-	float: right;
-	padding: 3px 5px 3px 5px;
-	margin-right: 5px;
-	cursor: pointer;
-  -moz-user-select: none;
-  -khtml-user-select: none;
-  -webkit-user-select: none;
-  user-select: none;
-  list-style-type: none;
-  font-size: 0.9em;
-}
-.tab_button:hover
-{
-  background: none;
-  background-color: #DDDDDD;
-}
+  <style media="screen" type="text/css">
+  #user_nav_area a
+  {
+  	color: inherit;
+  	text-decoration: none;
+  }
+  .tab_button
+  {
+  	float: right;
+  	padding: 3px 5px 3px 5px;
+  	margin-right: 5px;
+  	cursor: pointer;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+    list-style-type: none;
+    font-size: 0.9em;
+  }
+  .tab_button:hover
+  {
+    background: none;
+    background-color: #DDDDDD;
+  }
 </style>
 
 {# Color Theme Settings #}
@@ -37,7 +37,7 @@
 
 {% endblock %}	
 
-{% macro profile() %}
+{%- macro profile() %}
   <section class="container">
   <div style="float:left;height:100%;margin-right:5px;">
   {{ user_icon(user['username']) }}
@@ -52,13 +52,13 @@
 	Birthday: {{ month_name(user["dob"].month) }} {{ user["dob"].day }}, {{ user["dob"].year }}
       </span>
     {% endif %}
-    <div style=" margin-left: 80px;">{{ user["code_profile"] | safe }}</div>
+    <div style="margin-left: 80px;">{{ user["code_profile"] | safe }}</div>
   </div>
   <div style="clear: both;"></div>
   </section>
 {% endmacro %}
 
-{% macro gallery() %}
+{%- macro gallery() %}
   <section class="container gallery" style="max-height: 264px;min-height:140px;">
     <span class="module_title">Gallery</span>
     <span style="clear:both;"></span>
@@ -66,7 +66,7 @@
   </section>
 {% endmacro %}
 
-{% macro watches() %}
+{%- macro watches() %}
   <section class="container gallery" style="max-height: 260px;">
     <span class="module_title">Watchers</span>
     <div id="watchers">
@@ -75,7 +75,7 @@
   </section>
 {% endmacro %}
 
-{% macro comments() %}
+{%- macro comments() %}
   <section class="container">
     <span class="module_title">Comments</span>
     <div id="reply_form_template">{{ draw_reply_form(user["_id"], "u") }}</div>
@@ -89,18 +89,18 @@
   </section>
 {% endmacro %}
 
-{% macro nearby() %}
+{%- macro nearby() %}
   <section class="container gallery" style="max-height: 260px;">
     <span class="module_title">Nearby Artists</span>
     {{ draw_users( nearby_users, small_icon=True ) }}
   </section>
 {% endmacro %}
 
-{% macro journal() %}
+{%- macro journal() %}
   <section class="container">
   {% if journal_result %}
     <span class="module_title">Journal :: <a href="{{ url_for("view_journal", journal = journal_result['_id']) }}">{{ journal_result["title"] }}</a></span>
-    <p>{{ journal_result["code_content"] | safe }}</p>
+    {{ journal_result["code_content"] | safe }}
   {% else %}
     <span class="module_title">Journal</span>
     <p style="text-align:center;">There aren't any journals to display just yet! </p>
@@ -108,30 +108,30 @@
   </section>
 {% endmacro %}
 
-{% macro mod_to_func(m) %}
-  {% if   m == "profile"  %}{{ profile() }}
-  {% elif m == "gallery"  %}{{ gallery() }}
-  {% elif m == "watches"  %}{{ watches() }}
-  {% elif m == "comments" %}{{ comments() }}
-  {% elif m == "nearby"   %}{{ nearby() }}
-  {% elif m == "journal"  %}{{ journal() }}
-  {% endif %}
+{%- macro mod_to_func(m) %}
+  {%- if   m == "profile"  %}{{ profile() }}
+  {%- elif m == "gallery"  %}{{ gallery() }}
+  {%- elif m == "watches"  %}{{ watches() }}
+  {%- elif m == "comments" %}{{ comments() }}
+  {%- elif m == "nearby"   %}{{ nearby() }}
+  {%- elif m == "journal"  %}{{ journal() }}
+  {%- endif %}
 {% endmacro %}
 
-{% macro drawModule(module,loc,order) %}
-  {% if user["layout"][module][0] == loc and user["layout"][module][1] == order %} {{ mod_to_func(module) }} {% endif %}
+{%- macro drawModule(module,loc,order) %}
+  {%- if user["layout"][module][0] == loc and user["layout"][module][1] == order -%} {{- mod_to_func(module) -}} {%- endif %}
 {% endmacro %}
 
-{% macro row(l) %}
-  {% for o in range(0,5) %}
-    {{ drawModule("profile",l,o) }}
-    {{ drawModule("gallery",l,o) }}
-    {{ drawModule("watches",l,o) }}
-    {{ drawModule("comments",l,o) }}
-    {{ drawModule("nearby",l,o) }}
-    {{ drawModule("journal",l,o) }}
-  {% endfor %}
-{% endmacro %}
+{%- macro row(l) -%}
+  {%- for o in range(0,5) -%}
+    {{- drawModule("profile",l,o) -}}
+    {{- drawModule("gallery",l,o) -}}
+    {{- drawModule("watches",l,o) -}}
+    {{- drawModule("comments",l,o) -}}
+    {{- drawModule("nearby",l,o) -}}
+    {{- drawModule("journal",l,o) -}}
+  {%- endfor -%}
+{%- endmacro -%}
 
 {% block content %}
 <span id="username" data-name="{{ user["username"] }}"></span>
