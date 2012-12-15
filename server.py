@@ -151,7 +151,7 @@ def signup():
   """Handles member signup requests"""
   if users_model.username_taken(request.form['username']) or len(request.form['username']) == 0 or request.form['password1'] != request.form['password2'] or request.form['tos_agree'] != 'true':
     return "0" #ERROR, User doesn't exist or username is too small
-  if not captcha.check(request.form['recaptcha_challenge_field'], request.form['recaptcha_response_field'],config.captcha_secret_key,request.remote_addr):
+  if config.captcha and not captcha.check(request.form['recaptcha_challenge_field'], request.form['recaptcha_response_field'],config.captcha_secret_key,request.remote_addr):
     return "2" #ERROR, Captcha Fail
   if config.beta_key:
     beta_key = beta_pass_model.check(request.form["beta_code"])

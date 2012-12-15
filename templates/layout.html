@@ -51,9 +51,10 @@
         <!-- <h6>EMAIL: (<i>optional</i>)</h6> <input type = 'text' class='text_input_no_recoil' name = 'email'> -->
         <label><h6>PASSWORD:</h6> <input type='password' class='text_input_no_recoil' name='password1'></label>
         <label><h6>VERIFY PASSWORD:</h6> <input type='password' class='text_input_no_recoil' name='password2'></label><br>
-        {% if config.beta_key %}
+        {%- if config.beta_key %}
         <label><h6>BETA CODE:</h6> <input type='text' class='text_input_no_recoil' name='beta_code'></label><br>
-        {% endif %}
+        {%- endif %}
+        {%- if config.captcha %}
         <div id="register_captcha" data-publicKey="{{ config.captcha_public_key }}">
           <div id="recaptcha_image" style="margin-left: auto; margin-right: auto; margin-top: 5px;"></div>
           <div class="recaptcha_only_if_incorrect_sol" style="color:red">Incorrect please try again</div>
@@ -66,6 +67,7 @@
           <div class="recaptcha_only_if_audio"><h6 class="marginless"><a href="javascript:Recaptcha.switch_type('image')">Get an image CAPTCHA</a></h6></div>
           <div><a href="javascript:Recaptcha.showhelp()"><h6 class="marginless">Help</h6></a></div>
         </div>
+        {%- endif %}
         <label><input type='checkbox' name='tos_agree' value='true'><span style="font-size:12px;">You Agree to Our <a href="{{ url_for("terms_of_service") }}">Terms of Service</a></span></label><br>
         <div style='bottom: 165px; left:-336px;' class='mascot'><img src='/static/images/left_register_mascot.png' alt='Green Mascot'></div>
         <div style='bottom: 200px; left:135px;' class='mascot'><img src='/static/images/right_register_mascot.png' alt='Brown Mascot'></div>
