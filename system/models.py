@@ -1,5 +1,6 @@
 import sys
 import pymongo
+import config
 
 class Users:
   def __init__ (self, db):
@@ -41,7 +42,7 @@ class Users:
 
   def username_taken (self, username):
     user = self.get_one({'lowername' : username.lower()})
-    if user == None:
+    if user == None and not username in config.reserved_usernames:
       return False
     else: return True
 

@@ -29,6 +29,7 @@ dbDatabase = "heroku_app2925802"
 iconSize = 75,75
 max_nearby_user_distance = 5
 starting_beta_keys = 3
+reserved_usernames = ["users","art","journal","meta","clubs","search"]
 
 # Passwords
 short_salt_1 = "SDDG$##@Hfa"

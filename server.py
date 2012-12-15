@@ -62,6 +62,12 @@ def before_request():
     g.logged_in_user = user
   else: g.logged_in_user = None
 
+@app.before_request
+def remove_trailing_slash():
+  """Redirects the URL to remove trailing slashes"""
+  if request.path != '/' and request.path.endswith('/'):
+    return redirect(request.path[:-1])
+
 @app.context_processor
 def inject_user():
   """Feeds essential variables into every template"""
@@ -411,23 +417,6 @@ def comment(username=None,art=None,journal=None,commentID=None):
 
     else: abort(401)
 
-@app.route('/meta/terms_of_service', methods=['GET'])
-def terms_of_service():
-  """Displays the Drawrawr Terms of Service, loaded from a text file. """
-  f = open("static/legal/tos")
-  tos = f.read()
-  return render_template("tos.html", tos=tos)
-
-@app.route('/meta/about', methods=['GET'])
-def about():
-  """Displays a page about Drawrawr"""
-  return render_template("about.html")
-
-@app.route('/meta/donate', methods=['GET'])
-def donate():
-  """Displays the donations page"""
-  return render_template("donate.html")
-
 @app.route('/users/welcome', methods=['GET'])
 def welcome():
   """A welcome page displayed to new members that have just signed up"""
@@ -497,7 +486,7 @@ def favorite(art):
       else:                                              return "0"
   else: abort(401)
 
-@app.route('/<username>/gallery/', defaults={'folder': "all", 'page': 0}, methods=['GET'])
+@app.route('/<username>/gallery', defaults={'folder': "all", 'page': 0}, methods=['GET'])
 @app.route('/<username>/gallery/<folder>', defaults={'page': 0}, methods=['GET'])
 @app.route('/<username>/gallery/<folder>/<int:page>', methods=['GET'])
 def view_gallery(username,folder,page):
@@ -706,7 +695,7 @@ def manage_journal():
       
   else: abort(401)    
 
-@app.route('/clubs/')
+@app.route('/clubs')
 def clubs():
   """Dummy Clubs Page"""
   return render_template("clubs.html")
@@ -721,7 +710,7 @@ def clubpage(clubName):
   """Dummy Clubs Page"""
   return render_template("clubpage.html")
 
-@app.route('/search/', defaults={'page': 0} )
+@app.route('/search', defaults={'page': 0} )
 @app.route('/search/<int:page>', methods=['GET'])
 def search(page):
   """
@@ -758,17 +747,6 @@ def search(page):
     pages = pages[page: page + pages_left]
     more = False
   return render_template("search.html", art=art_lookup, keywords=util.unsplit(keywords), sort=sort, order=order, current_page=page, pages=pages, last=page_count - 1)
-
-@app.route('/staff/')
-def staff():
-  """Displays the staff-only page. A member must have at least one moderator-granted permission to view it. """
-  if g.logged_in_user:
-    if any(util.dict_to_list(g.logged_in_user["permissions"]) ): 
-      users = users_model.get()
-      art   = art_model.get()
-      return render_template("staff.html", userCount=users.count(), art_count=art.count() )
-    else: abort(401)
-  else: abort(401)
 
 @app.route('/art/uploads/<filename>')
 def artFile(filename):
@@ -826,6 +804,34 @@ def update_count():
       pass
     else: return "Error: Invalid Username/Password combo"
   else: return "Error: Invalid request"
+
+@app.route('/meta/terms_of_service', methods=['GET'])
+def terms_of_service():
+  """Displays the Drawrawr Terms of Service, loaded from a text file. """
+  f = open("static/legal/tos")
+  tos = f.read()
+  return render_template("tos.html", tos=tos)
+
+@app.route('/meta/about', methods=['GET'])
+def about():
+  """Displays a page about Drawrawr"""
+  return render_template("about.html")
+
+@app.route('/meta/donate', methods=['GET'])
+def donate():
+  """Displays the donations page"""
+  return render_template("donate.html")
+
+@app.route('/meta/staff')
+def staff():
+  """Displays the staff-only page. A member must have at least one moderator-granted permission to view it. """
+  if g.logged_in_user:
+    if any(util.dict_to_list(g.logged_in_user["permissions"]) ): 
+      users = users_model.get()
+      art   = art_model.get()
+      return render_template("staff.html", userCount=users.count(), art_count=art.count() )
+    else: abort(401)
+  else: abort(401)
 
 @app.errorhandler(401)
 def unauthorized(e):
