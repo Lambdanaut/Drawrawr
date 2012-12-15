@@ -12,6 +12,7 @@ logging           = False
 debug             = True
 beta_key          = False
 random_secret_key = False
+captcha           = False
 
 # Database
 if using_secrets:
