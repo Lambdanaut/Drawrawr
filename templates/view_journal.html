@@ -27,7 +27,7 @@ li {
   </section>
 </div>
 <div class="grid_9">
-  <section class="round_box green_container" style="padding: 4px 15px 5px 15px;"><span style="float:right;">Posted <abbr title="{{ journal["date"] }}"><time class="timeago" datetime="{{ journal["date"] }}">{{ util.pretty_date(journal["date"]) }}</time></abbr></span>
+  <section class="round_box green_container" style="padding: 4px 15px 5px 15px;"><span style="float:right;">Posted {{ draw_relative_time(journal["date"]) }}</span>
   <strong><a href="{{ url_for("userpage",username=journal["author"]) }}">{{ journal["author"] }}</a>: {{ journal["title"] }}</strong></section>
   <section class="container" style="padding: 15px;">
     {{ journal["code_content"] | safe }}

@@ -1,9 +1,13 @@
-{#- A list of macros that are used to display  #}
+{#- A collection of Macros used throughout Drawrawr #}
 
 {#- Maps integers to month names #}
 {% macro month_name(m) %}{% if m == 1 %}January{% elif m == 2 %}February{% elif m == 3 %}March{% elif m == 4 %}April{% elif m == 5 %}May{% elif m == 6 %}June{% elif m == 7 %}July{% elif m == 8 %}August{% elif m == 9 %}September{% elif m == 10 %}October{% elif m == 11 %}November{% else %}December{% endif %}{% endmacro %}
 
-{#- Writes out three select boxes with names "changeYear", "change_month", and "change_day" #}
+{#- Writes out a dynamically updating relative date #}
+{#- Takes a formatted date(string) as input #}
+{% macro draw_relative_time(date) %}<abbr title="{{ date }}"><time class="timeago" datetime="{{ date }}">{{ util.pretty_date(date) }}</time></abbr>{% endmacro %}
+
+{#- Writes out three select boxes with names "change_year", "change_month", and "change_day" #}
 {% macro date_selects() %}
 <select name=change_month>
   <option value='1'>January</option>
@@ -99,7 +103,7 @@
   </div>
   <div class="comment_footer">
     <div class="reply_button">REPLY</div>
-    <div class="date_posted">Posted <abbr title="{{ comment["date"] }}"><time class="timeago" datetime="{{ comment["date"] }}">{{ util.pretty_date(comment["date"]) }}</time></abbr></div>
+    <div class="date_posted">Posted {{ draw_relative_time(comment["date"]) }}</div>
     <div class="parentData" data-value="{{ home }}" style="display: none;"></div>
     <div class="comment_map_data" data-value="{{ util.print_list(depth_chain) }}" style="display: none;"></div>
     <div class="reply"></div>
@@ -112,8 +116,7 @@
 {% macro draw_reply_form(home, home_type) %}
   {% if   home_type == "u" %}<form method="POST" class="replyForm" action="{{ url_for("userpage", username=user["username"]) }}/comment">
   {% elif home_type == "a" %}<form method="POST" class="replyForm" action="{{ url_for("view_art", art=home) }}/comment">
-  {% elif home_type == "j" %}<form method="POST" class="replyForm" action="{{ url_for("view_journal", journal=home) }}/comment">
-  {% else %}<form method="POST" class="replyForm" action="{{ url_for("userpage", username=home) }}/comment">
+  {% elif home_type == "j" %}<form method="POST" class="replyForm" action="{{ url_for("view_journal", journal=home) }}/comment">{% else %}<form method="POST" class="replyForm" action="{{ url_for("userpage", username=home) }}/comment">
   {% endif %}
       <input type="hidden" class="parent_input" name="parent" value="">
       <input type="hidden" class="comment_map_input" name="comment_map" value="">
