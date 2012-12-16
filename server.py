@@ -4,18 +4,21 @@ import pymongo
 
 from PIL import Image
 
-import os, math, mimetypes, sys, random, logging, datetime, base64
-
-from system.S3 import S3
+import os, math, shutil, mimetypes, sys, random, logging, datetime, base64
 
 import system.captcha as captcha
 import system.config as config
-import system.cryptography
+import system.cryptography as cryptography
 import system.ignored_keywords as ignored_keywords
 import system.models as models
 import system.setup as setup
 import system.usercode as usercode
 import system.util as util
+
+if config.using_S3:
+  from system.S3 import S3
+else:
+  from system.local_storage import Local_Storage
 
 # Create Application
 app = Flask(__name__)
@@ -30,8 +33,11 @@ else                       : app.secret_key = "0"
 # Add Config
 app.config['MAX_CONTENT_LENGTH'] = config.max_file_size
 
-storage = S3()
+# File Storage
+if config.using_S3: storage = S3()
+else:               storage = Local_Storage()
 
+# Logging
 if config.logging: logging.basicConfig(filename='logs/DR.log',level=logging.DEBUG)
 
 # Database
@@ -129,7 +135,7 @@ def login():
     user_result = users_model.get_one({'lowername' : request.form['username'].lower() })
     if not user_result:
       return "2" # No username match
-    if system.cryptography.encrypt_password(request.form['password'], True) != user_result['password']: 
+    if cryptography.encrypt_password(request.form['password'], True) != user_result['password']: 
       return "3" # No password match
     session['username'] = user_result['username']
     session['password'] = user_result['password']
@@ -175,8 +181,10 @@ def signup():
     return "7" #ERROR, User is already logged in
   else: beta_key = None
   # Add the user to the database
-  hashed = system.cryptography.encrypt_password(request.form['password1'], True)
-  storage.push("static/images/newby_icon.png", os.path.join(config.icons_dir, request.form['username'].lower() ), mimetype="image/png")
+  hashed = cryptography.encrypt_password(request.form['password1'], True)
+  icon_filepath = os.path.join(config.icons_dir, request.form['username'].lower())
+  storage.push("static/images/newby_icon.png", icon_filepath, mimetype="image/png")
+  if not config.using_S3: shutil.copyfile("static/images/newby_icon.png", icon_filepath)
   key = keys_model.next("users")
   users_model.insert({
     "_id"         : key
@@ -212,6 +220,7 @@ def signup():
       "delete_comments"    : True
     , "edit_art"           : True
     , "delete_art"         : True
+    , "delete_journal"     : True
     , "ban_users"          : True
     , "make_props"         : True
     , "vote"               : True
@@ -310,18 +319,18 @@ def settings():
             users_model.update({"lowername": g.logged_in_user['lowername']}, {"icon": fileType} )
             icon.save(file_location)
             image = Image.open(file_location)
-            resized = image.resize(config.iconSize, Image.ANTIALIAS)
+            resized = image.resize(config.icon_size, Image.ANTIALIAS)
             resized.save(file_location, fileType, quality=100)
             storage.push(file_location, file_location, mimetype = mimetype )
             messages.append("User Icon")
       # Password
       if request.form["change_pass_current"] and request.form["change_pass_new_1"] and request.form["change_pass_new_2"]:
-        if system.cryptography.encrypt_password(request.form["change_pass_current"], True) != g.logged_in_user['password']:
+        if cryptography.encrypt_password(request.form["change_pass_current"], True) != g.logged_in_user['password']:
           flash("The new password you gave didn't match the one in the database! ):")
         elif request.form["change_pass_new_1"] != request.form["change_pass_new_2"]:
           flash("The new passwords you gave don't match! Try retyping them carefully. ")
         else:
-          hashed = system.cryptography.encrypt_password(request.form['change_pass_new_1'], True)
+          hashed = cryptography.encrypt_password(request.form['change_pass_new_1'], True)
           users_model.update({"_id": g.logged_in_user['_id']}, {"password": hashed} )
           session['password']=hashed
           messages.append("Password")
@@ -667,10 +676,11 @@ def edit_journal(journal):
 
 @app.route('/journal/delete/<int:journal>', methods=['POST'])
 def delete_journal(journal):
+  """Deletes a journal given its ID"""
   if g.logged_in_user:
     journal_result = journals_model.get_one({"_id" : journal })
     if not journal_result: abort(404)
-    if g.logged_in_user["_id"] != journal_result['author_ID']: abort(401)
+    if g.logged_in_user["_id"] != journal_result['author_ID'] and not g.logged_in_user["permissions"]["delete_journal"]: abort(401)
     journals_model.delete({"_id" : journal})
     return "1"
 
@@ -760,28 +770,17 @@ def search(page):
 @app.route('/art/uploads/<filename>')
 def artFile(filename):
   """Grabs an artwork file from storage."""
-  return redirect( storage.get(os.path.join(config.art_dir,filename ) ) )
+  return storage.get(os.path.join(config.art_dir,filename ) )
 
 @app.route('/art/uploads/thumbs/<filename>')
 def thumb_file(filename):
   """Grabs an artwork's thumbnail file from storage."""
-  return redirect( storage.get(os.path.join(config.thumb_dir,filename ) ) )
+  return storage.get(os.path.join(config.thumb_dir,filename ) )
 
 @app.route('/icons/<filename>')
 def icon_files(filename):
   """Grabs a user's icon file from storage."""
-  return redirect( storage.get(os.path.join(config.icons_dir,filename ) ) )
-  '''
-  filename = filename.lower()
-  icon = None
-  for f in os.listdir(config.icons_dir):
-    (name,ext) = f.split(".")
-    if name == filename: 
-      try: icon = send_from_directory(config.icons_dir,f)
-      except: abort(404)
-  if icon: return icon
-  else: abort(404)
-  '''
+  return storage.get(os.path.join(config.icons_dir,filename ) )
 
 @app.route('/util/parse_usercode/<text>')
 def parse_usercode(text):

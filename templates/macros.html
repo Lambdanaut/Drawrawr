@@ -42,12 +42,12 @@
 
 {#- Prints out a user's icon #}
 {% macro user_icon(user) %}
-<a href="{{ url_for('userpage',username=user) }}"><img src="{{ url_for('icon_files',filename=user.lower()) }}" alt="{{ user }}'s icon" class="user_icon" style="float: left;margin: 2px;" title="{{ user }}"></a>
+<a href="{{ url_for('userpage',username=user) }}"><img src="{{ url_for('icon_files',filename=user.lower()) }}" alt="{{ user }}'s icon" class="user_icon" style="float:left;margin:2px;" title="{{ user }}"></a>
 {% endmacro %}
 
 {#- Prints out a tiny user's icon #}
 {% macro tinyUserIcon(user) %}
-<a href="/{{ user }}"><img src="{{ url_for('icon_files',filename=user.lower()) }}" alt="{{ user }}'s icon" class="tiny_icon" style="float: left;margin: 1px;" title="{{ user }}"></a>
+<a href="/{{ user }}"><img src="{{ url_for('icon_files',filename=user.lower()) }}" alt="{{ user }}'s icon" class="tiny_icon" style="float:left;margin:1px;" title="{{ user }}"></a>
 {% endmacro %}
 
 {#- Take a list of arts from the database and shows them in gallery format on the page #}

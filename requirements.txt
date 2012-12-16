@@ -10,3 +10,4 @@ pymongo==2.1
 recaptcha-client>=1.0.5
 urwid==1.0.1
 virtualenv==1.7.1.2
+magic==0.4.3

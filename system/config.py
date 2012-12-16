@@ -26,7 +26,7 @@ else:
 dbDatabase = "heroku_app2925802"
 
 # Users
-iconSize = 75,75
+icon_size = 75,75
 max_nearby_user_distance = 5
 starting_beta_keys = 3
 reserved_usernames = ["users","art","journal","meta","clubs","search"]
@@ -50,7 +50,8 @@ displayed_works_per_page = 50
 page_indexes = 15
 
 # Uploads
-using_S3 = True
+using_S3 = False
+S3_bucket_name = "drawrawr"
 
 uploads_dir      = "uploads"
 icons_dir        = os.path.join(uploads_dir, "icons")
@@ -88,7 +89,7 @@ page_not_found_images = [
 ]
 
 # Captcha API
-if using_secrets:
+if using_secrets and captcha:
   captcha_public_key = secrets.captcha_public
   captcha_secret_key = secrets.captcha_secret
 else:
