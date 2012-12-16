@@ -99,7 +99,8 @@ $(document).ready ->
 		new Notice "MESSAGE" ,$(this).text()
 
 	### Registration ###		
-	Recaptcha.create $("#register_captcha").attr("data-publicKey"), "register_captcha", theme : 'custom', custom_theme_widget: 'recaptcha_widget', callback: Recaptcha.focus_response_field
+	if $("#register_captcha").length
+		Recaptcha.create $("#register_captcha").attr("data-publicKey"), "register_captcha", theme : 'custom', custom_theme_widget: 'recaptcha_widget', callback: Recaptcha.focus_response_field
 	$("#register-button").click () =>
 		signupModal = new Modal "#register-form"
 		$('form:not(.filter) :input:visible:first').focus()

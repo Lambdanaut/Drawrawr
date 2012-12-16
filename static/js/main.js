@@ -148,11 +148,13 @@
     });
     /* Registration
     */
-    Recaptcha.create($("#register_captcha").attr("data-publicKey"), "register_captcha", {
-      theme: 'custom',
-      custom_theme_widget: 'recaptcha_widget',
-      callback: Recaptcha.focus_response_field
-    });
+    if ($("#register_captcha").length) {
+      Recaptcha.create($("#register_captcha").attr("data-publicKey"), "register_captcha", {
+        theme: 'custom',
+        custom_theme_widget: 'recaptcha_widget',
+        callback: Recaptcha.focus_response_field
+      });
+    }
     $("#register-button").click(function() {
       var signupModal;
       signupModal = new Modal("#register-form");
