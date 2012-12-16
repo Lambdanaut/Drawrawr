@@ -123,21 +123,24 @@ def userpage(username):
 def login():
   """Handles logging in to Drawrawr"""
   if request.method == 'POST':
+    required_parameters = ["username","password"]
+    if not util.all_in_list(required_parameters, request.form):
+      return "0" #ERROR, A required form element wasn't found
     user_result = users_model.get_one({'lowername' : request.form['username'].lower() })
-    if user_result:
-      if system.cryptography.encrypt_password(request.form['password'], True) == user_result['password']: 
-        session['username'] = user_result['username']
-        session['password'] = user_result['password']
-        session.permanent = True
-        # Add the user's IP to the front of the list of his IPs
-        ip = user_result["ip"]
-        try: ip.remove(request.remote_addr)
-        except ValueError: pass
-        ip.insert(0,request.remote_addr)
-        users_model.update({"lowername": user_result['lowername']}, {"ip": ip})
-        return "1"
-      else: return "0"
-    else: return "0"
+    if not user_result:
+      return "2" # No username match
+    if system.cryptography.encrypt_password(request.form['password'], True) != user_result['password']: 
+      return "3" # No password match
+    session['username'] = user_result['username']
+    session['password'] = user_result['password']
+    session.permanent = True
+    # Add the user's IP to the front of the list of his IPs
+    ip = user_result["ip"]
+    try: ip.remove(request.remote_addr)
+    except ValueError: pass
+    ip.insert(0,request.remote_addr)
+    users_model.update({"lowername": user_result['lowername']}, {"ip": ip})
+    return "1"
 
 @app.route('/users/logout', methods=['POST'])
 def logout():
@@ -149,17 +152,29 @@ def logout():
 @app.route('/users/signup', methods=['POST'])
 def signup(): 
   """Handles member signup requests"""
-  if users_model.username_taken(request.form['username']) or len(request.form['username']) == 0 or request.form['password1'] != request.form['password2'] or request.form['tos_agree'] != 'true':
-    return "0" #ERROR, User doesn't exist or username is too small
+  # Error Handling
+  required_parameters = ['username','password1','password2']
+  if config.captcha: required_parameters += ['recaptcha_challenge_field','recaptcha_response_field']
+  if config.beta_key: required_parameters += ['beta_code']
+  if not util.all_in_list(required_parameters, request.form):
+    return "0" #ERROR, A required form element wasn't found
+  username_len = len(request.form['username'])
+  if users_model.username_taken(request.form['username']) or username_len == 0 or username_len > 30:
+    return "2" #ERROR, User doesn't exist or username is too small
+  if request.form['password1'] != request.form['password2'] or not request.form['password1']:
+    return "3" #ERROR, Passwords don't match
+  if not 'tos_agree' in request.form:
+    return "4" #ERROR, Terms of Service wasn't checked
   if config.captcha and not captcha.check(request.form['recaptcha_challenge_field'], request.form['recaptcha_response_field'],config.captcha_secret_key,request.remote_addr):
-    return "2" #ERROR, Captcha Fail
+    return "5" #ERROR, Captcha Fail
   if config.beta_key:
     beta_key = beta_pass_model.check(request.form["beta_code"])
     if not beta_key:
-      return "3" #ERROR, Beta Code Fail
+      return "6" #ERROR, Beta Code Fail
   if g.logged_in_user:
-    return "4" #ERROR, User is already logged in
+    return "7" #ERROR, User is already logged in
   else: beta_key = None
+  # Add the user to the database
   hashed = system.cryptography.encrypt_password(request.form['password1'], True)
   storage.push("static/images/newby_icon.png", os.path.join(config.icons_dir, request.form['username'].lower() ), mimetype="image/png")
   key = keys_model.next("users")

@@ -166,7 +166,25 @@
         type: "POST",
         data: form,
         success: function(data) {
-          if (data === "1") return window.location = "/users/welcome";
+          if (data === "1") {
+            /* SUCCESS
+            */
+            return window.location = "/users/welcome";
+          } else if (data === "0") {
+            return new Notice("Woops!", "There was a serious error processing your signup. Try refreshing the page and trying again. ");
+          } else if (data === "2") {
+            return new Notice("Mixup!", "That Username is already taken! Try a different one. ");
+          } else if (data === "3") {
+            return new Notice("I H8 Passwords!", "Your passwords didn't match up! Try typing them again. ");
+          } else if (data === "4") {
+            return new Notice("Legal Jargon!", "You must read and agree to our Terms of Service!");
+          } else if (data === "5") {
+            return new Notice("Woops!", "Your Captcha answer was invalid. Try again! ");
+          } else if (data === "6") {
+            return new Notice("B8a C0d3!", "We didn't recognize your <strong>Beta Code</strong>. It seems to be inactive! ");
+          } else if (data === "7") {
+            return new Notice("Lmao Hacker!", "You already seem to have an account with us. ");
+          }
         }
       });
       return false;
@@ -186,9 +204,12 @@
         type: "POST",
         data: form,
         success: function(data) {
-          if (data === "1") location.reload(true);
-          if (data === "0") {
-            return new Notice("Woops!", "Incorrect Username/Password combination. Remember that your password is case sensative! ");
+          if (data === "1") {
+            return location.reload(true);
+          } else if (data === "2") {
+            return new Notice("WHAT Username!?", "That username <em>DOESN'T</em> exist. Believe me, I checked! Perhaps you're spelling it wrong. ");
+          } else if (data === "3") {
+            return new Notice("Wrong Password", "That username exists, but that is <em>NOT</em> the correct password for their account. Try again, and remember, the password is <a href=\"http://en.wikipedia.org/wiki/Case_sensitivity\" target=\"_blank\">CASE SENSITIVE</a>!");
           }
         }
       });

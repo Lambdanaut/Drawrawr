@@ -29,6 +29,10 @@ def dict_to_list(d):
     l.append(d[k])
   return l
 
+def all_in_list (list1, list2):
+  """Returns true if all of the elements from list1 are in list2"""
+  return all(map(lambda c: c in list2, list1) )
+
 def parse_comment_map(cMap):
   '''
   Returns a string that can be used in mongodb to find a comment reply
