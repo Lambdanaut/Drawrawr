@@ -848,14 +848,7 @@ def unauthorized(e):
 
 @app.errorhandler(404)
 def page_not_found(e):
-  rando = random.randint(0,6)
-  if   rando == 0: randimg = "scary404.png"
-  elif rando == 1: randimg = "vonderdevil404.png"
-  elif rando == 2: randimg = "cute404.png"
-  elif rando == 3: randimg = "bomb404.png"
-  elif rando == 4: randimg = "bile404.png"
-  elif rando == 5: randimg = "sexy404.png"
-  elif rando == 6: randimg = "browniexxx404.png"
+  randimg = config.page_not_found_images[random.randint(0,len(config.page_not_found_images) - 1)]
   return render_template('404.html',randimg=randimg), 404
 
 @app.errorhandler(500)

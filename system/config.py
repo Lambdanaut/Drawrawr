@@ -76,6 +76,17 @@ max_image_size_text = "Eight Megabytes"
 file_type_error = "The file you uploaded had an incorrect filetype. "
 file_size_error = "The file you uploaded was too large. "
 
+# Error Pages
+page_not_found_images = [
+  "scary404.png"
+, "vonderdevil404.png"
+, "cute404.png"
+, "bomb404.png"
+, "bile404.png"
+, "sexy404.png"
+, "browniexxx404.png"
+]
+
 # Captcha API
 if using_secrets:
   captcha_public_key = secrets.captcha_public
