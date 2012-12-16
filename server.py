@@ -35,22 +35,16 @@ storage = S3()
 if config.logging: logging.basicConfig(filename='logs/DR.log',level=logging.DEBUG)
 
 # Database
-db_con = pymongo.Connection(config.dbHost,config.dbPort)
-if config.dbDatabase: db = db_con[config.dbDatabase]
-else: db = db_con
-if config.using_secrets:
-  db.authenticate(config.dbUsername, config.dbPassword)
-
-users_model     = models.Users(db)
-art_model       = models.Art(db)
-journals_model  = models.Journals(db)
-comments_model  = models.Comments(db)
-keys_model      = models.Keys(db)
-beta_pass_model = models.Beta_Pass(db)
+users_model     = models.Users()
+art_model       = models.Art()
+journals_model  = models.Journals()
+comments_model  = models.Comments()
+keys_model      = models.Keys()
+beta_pass_model = models.Beta_Pass()
 
 def main():
   # First Start Setup
-  setup.main(db)
+  setup.main(models.db)
 
   # Run Server
   app.run(host=config.host,port=config.port,debug=config.debug)

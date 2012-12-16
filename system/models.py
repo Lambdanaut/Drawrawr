@@ -1,9 +1,16 @@
 import sys
 import pymongo
+
 import config
 
+db_con = pymongo.Connection(config.dbHost,config.dbPort)
+if config.dbDatabase: db = db_con[config.dbDatabase]
+else: db = db_con
+if config.using_secrets:
+  db.authenticate(config.dbUsername, config.dbPassword)
+
 class Users:
-  def __init__ (self, db):
+  def __init__ (self):
     self.con = db
     self.db = self.con.db
     self.users = db.users
@@ -47,7 +54,7 @@ class Users:
     else: return True
 
 class Art:
-  def __init__ (self, db):
+  def __init__ (self):
     self.con = db
     self.db = self.con.db
     self.art = db.art
@@ -86,7 +93,7 @@ class Art:
     return self.feature.insert(data)
 
 class Journals:
-  def __init__ (self, db):
+  def __init__ (self):
     self.con = db
     self.db = self.con.db
     self.journals = db.journals
@@ -115,7 +122,7 @@ class Journals:
     return self.journals.remove(series)
 
 class Comments:
-  def __init__ (self, db):
+  def __init__ (self):
     self.con = db
     self.db = self.con.db
     self.comments = db.comments
@@ -141,7 +148,7 @@ class Comments:
     return self.comments.remove(series)
 
 class Keys:
-  def __init__ (self, db):
+  def __init__ (self):
     self.con = db
     self.db = self.con.db
     self.users = db.users
@@ -157,7 +164,7 @@ class Keys:
     return self.get(collection)
 
 class Beta_Pass:
-  def __init__ (self, db):
+  def __init__ (self):
     import betaGenerator
 
     self.con = db
