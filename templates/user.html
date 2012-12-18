@@ -99,7 +99,10 @@
 {%- macro journal() %}
   <section class="container">
   {% if journal_result %}
-    <span class="module_title">Journal :: <a href="{{ url_for("view_journal", journal = journal_result['_id']) }}">{{ journal_result["title"] }}</a></span>
+    <span class="module_title">
+      <span style="float:right;font-weight:normal;font-size:0.8em;">Posted {{ journal_result['date'].strftime("%B %d, %Y") }}</span>
+      Journal :: <a href="{{ url_for("view_journal", journal = journal_result['_id']) }}">{{ journal_result["title"] }}</a>
+    </span>
     {{ journal_result["code_content"] | safe }}
   {% else %}
     <span class="module_title">Journal</span>
