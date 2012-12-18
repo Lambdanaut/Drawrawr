@@ -5,7 +5,7 @@
 
 {#- Writes out a dynamically updating relative date #}
 {#- Takes a formatted date(string) as input #}
-{% macro draw_relative_time(date) %}<abbr title="{{ date }}"><time class="timeago" datetime="{{ date }}">{{ util.pretty_date(date) }}</time></abbr>{% endmacro %}
+{% macro draw_relative_time(date) %}<abbr title="{{ date.strftime("%B %d, %Y @ %I:%M:%S%p ") }}"><time class="timeago" datetime="{{ date }}">{{ util.pretty_date(date) }}</time></abbr>{% endmacro %}
 
 {#- Writes out three select boxes with names "change_year", "change_month", and "change_day" #}
 {% macro date_selects() %}
