@@ -13,6 +13,7 @@ debug             = True
 beta_key          = False
 random_secret_key = False
 captcha           = False
+advertisements    = False
 
 # Database
 if using_secrets:
