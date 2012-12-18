@@ -106,7 +106,7 @@
   {% if journal_result %}
     <span class="module_title">
       <span style="float:right;font-weight:normal;font-size:0.8em;">Posted {{ draw_relative_time(journal_result['date']) }}</span>
-      Journal :: <a href="{{ url_for("view_journal", journal = journal_result['_id']) }}">{{ journal_result["title"] }}</a>
+      Journal :: <a href="{{ url_for("view_journal", journal = journal_result['_id']) }}" style="text-decoration:none;">{{ journal_result["title"] }}</a>
     </span>
     <div class="journal_content">
       {{ journal_result["code_content"] | safe }}
