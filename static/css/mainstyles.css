@@ -79,22 +79,7 @@ noscript
 	margin-right: 85px;
 	overflow: hidden;
 }
-#options-tab div
-{
-	padding: 2px 5px 5px 4px;
-	background-color: #59422f;
-	border-bottom: 1px solid black;
-	z-index: 950;
-}
-#options-tab div
-{
-	position: absolute;
-	display: none;
-}
-#options-tab:hover div
-{
-	display: block;
-}
+
 /* WIDGETS */
 #flashed{display: none;}
 #set-header
@@ -204,6 +189,7 @@ noscript
 #navigation ul 
 {
 	display: inline;
+	margin: 0;
 	padding-left: 0px;
 	list-style-type: none;
 }

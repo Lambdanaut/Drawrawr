@@ -38,11 +38,6 @@ body
   color: #700000;
 }
 
-#options-tab .round_box
-{
-  background-color: white;
-}
-
 #header {
   /* Header Gradient */
   background: #FFF; /* Old browsers */

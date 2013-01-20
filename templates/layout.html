@@ -93,17 +93,8 @@
         <aside id="control-panel">
           <div style="float:right;">
             <b><a href='{{ url_for("userpage", username=logged_in_user['username']) }}'>{{ logged_in_user['username'] }}</a></b><br>
-            <a>Updates</a><br>
-            <div id="options-tab">
-              <u style="cursor:pointer;">Options</u>
-              <div class="round_box">
-                <a href="{{ url_for('submit_art') }}">Submit Art</a><br>
-                <a href="{{ url_for('manage_journal') }}">Journals</a><br>
-                <a href="{{ url_for('settings') }}">Settings</a><br>
-                {% if any(util.dict_to_list(logged_in_user["permissions"]) ) %} <a href="{{ url_for('staff') }}">Staff</a><br>{% endif %}
-                <a id="logout-button">Logout</a>
-              </div>
-            </div>
+            <a href="updates">Updates</a><br>
+            <a href="{{ url_for('settings') }}">Settings</a>
           </div>
           <a href = "{{ url_for("userpage", username=logged_in_user['username']) }}">
             <img src='/icons/{{ logged_in_user["lowername"] }}' class='user_icon'  style='margin-right: 5px;' alt='User Icon'>
@@ -116,8 +107,18 @@
       {% endif %}
       <a href="{{ url_for('index') }}"><div id="header-image"></div></a>
     <nav id="navigation">
+      <ul style="float: right;">
+        <li><a href="{{ url_for('submit_art') }}">Submit Art</a></li>
+        <li><a href="{{ url_for('manage_journal') }}">Journals</a></li>
+        {% if any(util.dict_to_list(logged_in_user["permissions"]) ) %}<li><a href="{{ url_for('staff') }}">Staff</a></li>{% endif %}
+        <li><a id="logout-button">Logout</a></li>
+      </ul>
       <ul>
-        <li><a href="{{ url_for('index') }}">News</a></li><li><a href="{{ url_for("search") }}">Search</a></li><li><a href="{{ url_for('clubs') }}">Clubs</a><li><a href="/">DRadio</a></li><li><a href="{{ url_for('donate') }}">Donate</a></li>
+        <li><a href="{{ url_for('index') }}">News</a></li>
+        <li><a href="{{ url_for("search") }}">Search</a></li>
+        <li><a href="{{ url_for('clubs') }}">Clubs</a></li>
+        <li><a href="/">DRadio</a></li>
+        <li><a href="{{ url_for('donate') }}">Donate</a></li>
       </ul>
     </nav>
     </div>
