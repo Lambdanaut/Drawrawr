@@ -22,6 +22,8 @@ class Users:
     return self.users.find_one(series)
 
   def insert (self, data):
+    if not "_id" in data:
+      data["_id"] = keys.next("users")
     return self.users.insert(data)
 
   def update (self, series, data, method = "$set"):
@@ -67,6 +69,8 @@ class Art:
     return self.art.find_one(series)
 
   def insert (self, data):
+    if not "_id" in data:
+      data["_id"] = keys.next("art")
     return self.art.insert(data)
 
   def update (self, series, data, method = "$set"):
@@ -105,6 +109,8 @@ class Journals:
     return self.journals.find_one(series)
 
   def insert (self, data):
+    if not "_id" in data:
+      data["_id"] = keys.next("journals")
     return self.journals.insert(data)
 
   def update (self, series, data, method = "$set"):
@@ -134,6 +140,8 @@ class Comments:
     return self.comments.find_one(series)
 
   def insert (self, data):
+    if not "_id" in data:
+      data["_id"] = keys.next("comments")
     return self.comments.insert(data)
 
   def update (self, series, data, method = "$set"):
@@ -151,17 +159,18 @@ class Keys:
   def __init__ (self):
     self.con = db
     self.db = self.con.db
-    self.users = db.users
+    self.seq = db.seq
 
-  def get (self, collection):
-    key = self.db.seq.find_one({"_id" : collection})
+  def get (self, key_id):
+    key = self.seq.find_one({"_id" : key_id})
     if key:
       return key["next"]
     else: return key
 
-  def next (self, collection):
-    self.db.seq.update({"_id": collection}, {"$inc" : {"next" : 1 } })
-    return self.get(collection)
+  def next (self, key_id):
+    self.seq.update({"_id": key_id}, {"$inc" : {"next" : 1 } })
+    key_collection = self.seq.find_one({"_id" : key_id})
+    if key_collection: return key_collection["next"]
 
 class Beta_Pass:
   def __init__ (self):
@@ -183,3 +192,5 @@ class Beta_Pass:
       self.beta_pass.remove({"password": password.lower()})
       return True
     else: return False
+
+keys = Keys()

@@ -185,10 +185,8 @@ def signup():
   icon_filepath = os.path.join(config.icons_dir, request.form['username'].lower())
   storage.push("static/images/newby_icon.png", icon_filepath, mimetype="image/png")
   if not config.using_S3: shutil.copyfile("static/images/newby_icon.png", icon_filepath)
-  key = keys_model.next("users")
   users_model.insert({
-    "_id"         : key
-  , "username"    : request.form['username']
+    "username"    : request.form['username']
   , "lowername"   : request.form['username'].lower()
   , "password"    : hashed
   , "email"       : None #request.form['email']
@@ -419,10 +417,8 @@ def comment(username=None,art=None,journal=None,commentID=None):
           location = "j"
           home = journal
         else: abort(500)
-        key = keys_model.next("comments")
         comments_model.insert({
-          "_id"          : key
-        , "author_ID"    : g.logged_in_user["_id"]
+          "author_ID"    : g.logged_in_user["_id"]
         , "author"       : g.logged_in_user["username"]
         , "content"      : request.form["content"]
         , "code_content" : usercode.parse(request.form["content"])

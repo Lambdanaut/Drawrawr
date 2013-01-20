@@ -24,7 +24,7 @@ if using_secrets:
 else:
   dbHost = "localhost"
   dbPort = 27017
-dbDatabase = "heroku_app2925802"
+dbDatabase = "drawrawr"
 
 # Users
 icon_size = 75,75

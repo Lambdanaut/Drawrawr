@@ -16,24 +16,21 @@ li {
 </style>
 {% endblock %}
 {% block content %}
+{% if all_journals.count() %}
 <div class="grid_3">
   <section class="round_box green_container" style="padding: 4px 15px 5px 15px;"><strong>Manage Journals</strong></section>
   <section class="container" style="margin-top: 10px;">
     <ul id="manage_journals">
-    {% if all_journals.count() %}
       {% for j in all_journals %}
         <li><span class="close" style="margin-top:4px;"></span><a href="{{ url_for("edit_journal", journal=j['_id']) }}" data-id="{{ j['_id'] }}">{{ j["title"] }}</a></li>
       {% endfor %}
-    {% else %}
-      <div style="text-align:center;">
-        <p>No Journals <em>Yet!</em></p>
-        <p>Go ahead and write one <strong>&rArr;</strong></p>
-      </div>
-    {% endif %}
     </ul>
   </section>
 </div>  
 <div class="grid_9">
+{% else %}
+<div>
+{% endif %}
   <section class="round_box green_container" style="padding: 4px 15px 5px 15px;"><strong>Create Journal</strong></section>
   <section class="container" style="padding: 15px; margin-top: 10px;">
     <form method="POST">

@@ -7,13 +7,17 @@ def database_setup(db):
   journals = db.seq.find_one({"_id" : "journals"})
   comments = db.seq.find_one({"_id" : "comments"})
   if not art:
+    print("Initializing Art IDs for the first time to 0")
     db.seq.insert({"_id" : "art", "next" : 0})
   if not users:
-    db.seq.insert({"_id" : "users", "next" : 0})  
+    print("Initializing Users IDs for the first time to 0")
+    db.seq.insert({"_id" : "users", "next" : 0})
   if not journals:
-    db.seq.insert({"_id" : "journals", "next" : 0})  
+    print("Initializing Journals IDs for the first time to 0")
+    db.seq.insert({"_id" : "journals", "next" : 0})
   if not comments:
-    db.seq.insert({"_id" : "comments", "next" : 0})  
+    print("Initializing Comments IDs for the first time to 0")
+    db.seq.insert({"_id" : "comments", "next" : 0})
 
 def directory_setup():
   # /uploads/ setup
