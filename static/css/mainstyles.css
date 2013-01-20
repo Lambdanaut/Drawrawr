@@ -345,14 +345,14 @@ noscript
 .text_input 
 {
 	border: 1px #513727 solid;
-	width: 160px;
-	-webkit-transition: all 1s ease-in-out;
-	-moz-transition: all 1s ease-in-out;
-	-o-transition: all 1s ease-in-out;
-	-ms-transition: all 1s ease-in-out;
-	transition: all 1s ease-in-out;
+	width: 150px;
+	-webkit-transition: all 0.2s ease-in-out;
+	-moz-transition: all 0.2s ease-in-out;
+	-o-transition: all 0.2s ease-in-out;
+	-ms-transition: all 0.2s ease-in-out;
+	transition: all 0.2s ease-in-out;
 }
-.text_input:focus {width: 200px;}
+.text_input:focus {width: 230px;}
 .text_input_no_recoil
 {
 	border: 1px #513727 solid;
