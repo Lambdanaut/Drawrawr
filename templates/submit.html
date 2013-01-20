@@ -4,16 +4,16 @@
 <script src= "/static/js/submit.js"></script>
 <style>
 
-.artArea
+.art_area
 {
 	display:none;
 	text-align:left;
 }
-.artArea table
+.art_area table
 {
 	margin: auto;
 }
-.artArea th
+.art_area th
 {
 	padding: 10px;
 }
@@ -27,7 +27,7 @@
     <div style="position:relative;top: 50px;">
       <h2 id="submit_title"> Submit Artwork </h2>
       <b>Submission type:</b>
-      <select id="artOptions" name="artOptions">
+      <select id="art_options" name="art_options">
         <option id="ignore">-----</option>
         <option>Image</option>
         <option>Audio</option>
@@ -38,7 +38,7 @@
       </select>
     </div>
   </section>
-    <div id="imageArea" class="artArea">
+    <div id="image_area" class="art_area">
       <form enctype="multipart/form-data" method="POST" class="container">
         <input type="hidden" name="art_type" value="image">
         <table>
@@ -61,15 +61,15 @@
         </table>
       </form>
     </div>
-    <div id="audio_area" class="artArea">
+    <div id="audio_area" class="art_area">
     </div>
-    <div id="literature_area" class="artArea">
+    <div id="literature_area" class="art_area">
     </div>
-    <div id="craft_area" class="artArea">
+    <div id="craft_area" class="art_area">
     </div>
-    <div id="culinary_area" class="artArea">
+    <div id="culinary_area" class="art_area">
     </div>
-    <div id="performance_area" class="artArea">
+    <div id="performance_area" class="art_area">
     </div>
     <aside class='modal'>
       <div id="submit_loading_modal" style="margin-top: 10%; margin-left: auto; margin-right: auto; z-index:10000;">
