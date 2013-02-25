@@ -68,3 +68,9 @@ $(document).ready ->
 				complete: (status,msg) ->
 					if msg is "success"
 						window.location = "/" + $("#author").attr "data-name"
+
+	### Flash Animation ###
+	flash_animation = $("#flash_animation")
+	if flash_animation.length
+		flash_src = flash_animation.data "src" 
+		swfobject.embedSWF(flash_src, "flash_animation", "10%", "10%", "9.0.0","expressInstall.swf", {}, {}, {});

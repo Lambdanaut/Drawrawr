@@ -300,6 +300,7 @@ def settings():
       # User Icon
       icon = request.files['icon_upload']
       if icon:
+        print icon.content_length
         if not icon.content_length <= config.max_icon_size:
           flash(config.file_size_error + "Your icon must be at most " + config.max_icon_size_text + ". ")
         else:
@@ -548,48 +549,63 @@ def submit_art():
     if request.method == 'GET':
         return render_template("submit.html")
     else:
-      messages = []
+      # Form Validation
+      if not ("title" in request.form and "description" in request.form) : 
+        abort(500)
+      elif not request.form["title"]:
+        flash("Your title must not be left blank. ")
+      art = request.files['upload']
+      art_type = None
+
       # Image
       if request.form["art_type"] == "image":
-        image = request.files['upload']
-        if not util.allowed_file(image.filename, config.image_extensions):
+        if not util.allowed_file(art.filename, config.image_extensions):
           flash(config.file_type_error + "The allowed filetypes are " + util.print_list(config.image_extensions) + ". ")
-        elif image.content_length >= config.max_image_size:
+        elif art.content_length >= config.max_image_size:
           flash(config.file_size_error + "Your image must be at most " + config.max_image_size_text + ". ")
-        elif not ("title" in request.form and "description" in request.form) : 
-          abort(500)
-        elif not request.form["title"]:
-          flash("Your title must not be left blank. ")
-        else:
-          fileType = util.fileType(request.files['upload'].filename)
-          key = keys_model.next("art")
-          art_model.insert({
-            "_id"         : key
-          , "title"       : request.form["title"]
-          , "description" : request.form["description"]
-          , "code_desc"   : usercode.parse(request.form["description"])
-          , "author"      : g.logged_in_user["username"]
-          , "author_ID"   : g.logged_in_user["_id"]
-          , "keywords"    : filter (lambda keyword: not keyword in ignored_keywords.commonWords, map(lambda keyword: keyword.lower() , request.form["title"].split() ) )
-          , "mature"      : False
-          , "folder"      : "complete"
-          , "favorites"   : []
-          , "fav_amount"  : 0
-          , "views"       : 0
-          , "date"        : datetime.datetime.today()
-          , "filetype"    : fileType
-          , "type"        : "image"
-          })
-          file_location = os.path.join(config.art_dir, str(key) + "." + fileType)
-          image.save(file_location)
-          storage.push(file_location, file_location)
+        else: art_type = "image"
+      # Audio
+      # Literature
+      # Animation
+      if request.form["art_type"] == "animation":
+        if not util.allowed_file(art.filename, config.animation_extensions):
+          flash(config.file_type_error + "Your animation must be a " + util.print_list(config.animation_extensions) + " file. ")
+        elif art.content_length >= config.max_animation_size:
+          flash(config.file_size_error + "Your .swf file must be at most " + config.max_image_size_text + ". ")
+        else: art_type = "animation"
+      # Craft
+      # Cullinary
+      # Performance
+
+      if art_type:
+        fileType = util.fileType(art.filename)
+        key = keys_model.next("art")
+        file_location = os.path.join(config.art_dir, str(key) + "." + fileType)
+        art.save(file_location)
+        storage.push(file_location, file_location)
+        art_model.insert({
+          "_id"         : key
+        , "title"       : request.form["title"]
+        , "description" : request.form["description"]
+        , "code_desc"   : usercode.parse(request.form["description"])
+        , "author"      : g.logged_in_user["username"]
+        , "author_ID"   : g.logged_in_user["_id"]
+        , "keywords"    : filter (lambda keyword: not keyword in ignored_keywords.commonWords, map(lambda keyword: keyword.lower() , request.form["title"].split() ) )
+        , "mature"      : False
+        , "folder"      : "complete"
+        , "favorites"   : []
+        , "fav_amount"  : 0
+        , "views"       : 0
+        , "date"        : datetime.datetime.today()
+        , "filetype"    : fileType
+        , "type"        : art_type
+        })
+        if type == "image":
           autocrop(key)
           return redirect(url_for('crop',art=key))
-    # Audio
-    # Literature
-    # Craft
-    # Cullinary
-    # Performance
+        else:
+          return redirect(url_for('view_art',art=key))
+      return redirect(url_for('submit_art'))
     return redirect(url_for('submit_art'))
   else: abort(401)
 
@@ -764,7 +780,7 @@ def search(page):
   return render_template("search.html", art=art_lookup, keywords=util.unsplit(keywords), sort=sort, order=order, current_page=page, pages=pages, last=page_count - 1)
 
 @app.route('/art/uploads/<filename>')
-def artFile(filename):
+def art_file(filename):
   """Grabs an artwork file from storage."""
   return storage.get(os.path.join(config.art_dir,filename ) )
 

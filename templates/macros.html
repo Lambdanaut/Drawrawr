@@ -125,4 +125,12 @@
       <input type="submit" class="button">
     </form>
 {% endmacro %}
+
+{#- Draws an artwork given an artwork object #}
+{% macro draw_artwork(art) %}
+  {% if   art['type'] == "image" %}<img src="{{ url_for("art_file", filename = art["_id"]) }}.{{ art["filetype"] }}" alt='' id="art" data-type="{{ art["type"] }}" data-size="small">
+  {% elif art['type'] == "animation" %}<div id="flash_animation" data-src="{{ url_for("art_file", filename = art["_id"]) }}.{{ art["filetype"] }}"></div>
+  {% else %}
+  {% endif %}
+{% endmacro %}
 {% block layout %}{% endblock %}

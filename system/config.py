@@ -60,6 +60,7 @@ art_dir          = os.path.join(uploads_dir, "art")
 thumb_dir        = os.path.join(uploads_dir, "thumbs")
 
 image_extensions = ['png', 'jpg', 'jpeg', 'gif', 'tif', 'svg']
+animation_extensions = ['swf']
 icon_extensions  = image_extensions
 
 thumbnail_dimensions = 135,110
@@ -69,10 +70,12 @@ thumbnail_extension  = ".thumbnail.png"
 max_file_size       = 20 * 1024**2
 max_file_size_text  = "Twenty Megabytes"
 
-max_icon_size       = 2 * 1024**2
-max_icon_size_text  = "Two Megabytes"
-max_image_size      = 8 * 1024**2
-max_image_size_text = "Eight Megabytes"
+max_icon_size           = 2 * 1024**2
+max_icon_size_text      = "Two Megabytes"
+max_image_size          = 8 * 1024**2
+max_image_size_text     = "Eight Megabytes"
+max_animation_size      = 15 * 1024**2
+max_animation_size_text = "Fifteen Megabytes"
 
 # Error Messages
 file_type_error = "The file you uploaded had an incorrect filetype. "

@@ -107,18 +107,13 @@
       {% endif %}
       <a href="{{ url_for('index') }}"><div id="header-image"></div></a>
     <nav id="navigation">
+      {% if g.logged_in_user %}
       <ul style="float: right;">
-        <li><a href="{{ url_for('submit_art') }}">Submit Art</a></li>
-        <li><a href="{{ url_for('manage_journal') }}">Journal</a></li>
-        {% if any(util.dict_to_list(logged_in_user["permissions"]) ) %}<li><a href="{{ url_for('staff') }}">Staff</a></li>{% endif %}
-        <li><a id="logout-button">Logout</a></li>
+        <li><a href="{{ url_for('submit_art') }}">Submit Art</a></li><li><a href="{{ url_for('manage_journal') }}">Journal</a></li>{% if any(util.dict_to_list(logged_in_user["permissions"]) ) %}<li><a href="{{ url_for('staff') }}">Staff</a></li>{% endif %}<li><a id="logout-button">Logout</a></li>
       </ul>
+      {% endif %}
       <ul>
-        <li><a href="{{ url_for('index') }}">News</a></li>
-        <li><a href="{{ url_for("search") }}">Search</a></li>
-        <li><a href="{{ url_for('clubs') }}">Clubs</a></li>
-        <li><a href="/">DRadio</a></li>
-        <li><a href="{{ url_for('donate') }}">Donate</a></li>
+        <li><a href="{{ url_for('index') }}">News</a></li><li><a href="{{ url_for("search") }}">Search</a></li><li><a href="{{ url_for('clubs') }}">Clubs</a></li><li><a href="/">DRadio</a></li><li><a href="{{ url_for('donate') }}">Donate</a></li>
       </ul>
     </nav>
     </div>

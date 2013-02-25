@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 {% block title %}{{ art["title"] }} by {{ art["author"] }}{% endblock %}
 {% block head %}
+<script src="/static/js/lib/swfobject.js"></script>
 <script src="/static/js/art.js"></script>
 <style>
 .user_button { 
@@ -18,7 +19,7 @@
   <span id="author" data-name="{{ art["author"] }}"></span>
   <section class="container" style="text-align:center;overflow:auto;">
     <div id="preview_text"></div>
-    <img src="/art/uploads/{{ art["_id"] }}.{{ art["filetype"] }}" alt='' id="art" data-type="{{ art["type"] }}" data-size="small">
+    {{ draw_artwork(art) }}
   </section>
   <section class="container" style="margin-left: 20%; margin-right: 20%;">
     <div style="float:left;height:100%;margin-right:5px;">

@@ -3,7 +3,6 @@
 {% block head %}
 <script src= "/static/js/submit.js"></script>
 <style>
-
 .art_area
 {
 	display:none;
@@ -32,6 +31,7 @@
         <option>Image</option>
         <option>Audio</option>
         <option>Literature</option>
+        <option>Animation</option>
         <option>Craft</option>
         <option>Culinary</option>
         <option>Performance</option>
@@ -64,6 +64,29 @@
     <div id="audio_area" class="art_area">
     </div>
     <div id="literature_area" class="art_area">
+    </div>
+    <div id="animation_area" class="art_area">
+      <form enctype="multipart/form-data" method="POST" class="container">
+        <input type="hidden" name="art_type" value="animation">
+        <table>
+          <tr>
+            <th>SWF File: </th>
+            <th><input type="file" name="upload"></th>
+          </tr>
+          <tr>
+            <th>Title: </th>
+            <th><input type="text" name="title" class='text_input'></th>
+          </tr>
+          <tr>
+            <th>Description: </th>
+            <th><textarea cols=50 rows=10 style="width: 400px; 150px;" name="description"></textarea></th>
+          </tr>
+          <tr>
+            <th></th>
+            <th><input type="submit"  class='button upload_button'></th>
+          </tr>
+        </table>
+      </form>
     </div>
     <div id="craft_area" class="art_area">
     </div>
